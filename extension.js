@@ -12,12 +12,16 @@ game.bolShowNewPackx = function () {
 	//更新告示
 	var HuoDong_update = [
 		'活动萌扩模块化',
+		'添加模式：微信斗地主2',
+		'对多个模式进行了一定程度上的重写',
 		'To be continued...',
 	];
 	//加载
 	var dialog = ui.create.dialog(
 		'<span class="text center">' +
 		'新人制作扩展，希望大家支持<br>新人技术不足，希望大家包涵' +
+		'<br>' +
+		'<a href="https://github.com/mengxinzxz/MengKuo-update">点击前往活动萌扩Github仓库</a>' +
 		'<br>' +
 		'活动萌扩 ' + lib.extensionPack.活动萌扩.version + ' 更新内容' +
 		'</span>', 'hidden');
@@ -41,14 +45,6 @@ game.bolShowNewPackx = function () {
 		game.resume();
 	});
 };
-var version = lib.config.extension_活动萌扩_HDversion;
-if (!version || version != lib.extensionPack.活动萌扩.version) {
-	lib.game.showChangeLog = function () {
-		game.saveConfig('extension_活动萌扩_HDversion', lib.extensionPack.活动萌扩.version);
-		game.bolShowNewPackx();
-		lib.init.onfree();
-	};
-}
 
 let extensionPackage = {
 	name: "活动萌扩",
@@ -58,11 +54,15 @@ let extensionPackage = {
 	config: config,
 	help: help,
 	package: {
-		intro: "活动武将分离系列之一，旨在补充部分活动场<br>当前萌币：" + lib.config.extension_活动萌扩_decade_Coin,
+		intro: '活动武将分离系列之一，旨在补充部分活动场' +
+			'<br>当前萌币：' + lib.config.extension_活动萌扩_decade_Coin +
+			'<a href="https://github.com/mengxinzxz/MengKuo-update">点击前往活动萌扩Github仓库</a>' +
+			'<br>感谢大家对活动萌扩的支持！' +
+			'',
 		author: '萌新（转型中）',
 		diskURL: '',
 		forumURL: '',
-		version: '0.1.9',
+		version: '0.2.0',
 		//新人制作扩展，希望大家支持。
 		//新人技术不足，希望大家包涵。
 		//壹、贰、叁、肆、伍、陆、柒、捌、玖、拾

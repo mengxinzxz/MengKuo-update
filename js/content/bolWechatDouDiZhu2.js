@@ -1,56 +1,24 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const brawl = {
-    name: '微信斗地主<br>白板之争',
+    name: '微信斗地主<br>额外技能',
     mode: 'identity',
     intro: [
         '进行此游戏需要支付10萌币作为门票（<span class=\'texiaotext\' style=\'color:#FF0000\'>若萌币不足则无法进入游戏</span>），游戏获胜后会获得当前游戏倍数的萌币，失败后会失去当前游戏倍数的萌币（逃跑会失去当前游戏倍数的萌币+10）<br>' +
         '游戏规则：<br>' +
-        '所有角色为4血白板（性别请在扩展页面进行选择，群雄）。<br>' +
         '从随机一名玩家开始依次开始叫分抢地主，玩家选择叫分倍数，叫分最多的玩家成为地主，最多为3倍，也可放弃叫分。<br>' +
         '每位玩家仅有一次叫分机会，且叫分必须大于上家的叫分，否则放弃叫分。<br>' +
         '叫分过程中，若有玩家叫分3倍则该玩家直接成为地主。<br>' +
         '若三名玩家都放弃叫分，第一个叫分的玩家以最低倍数成为地主。<br>' +
-        '确认地主后，地主玩家成为一号位，且初始体力上限和体力值+1。其余玩家自动成为农民玩家。然后地主/农民从随机十五个技能中选择三/两个作为自己的初始技能开始本局游戏<br>',
-        '地主额外技能：<br>' +
+        '确认地主后，地主玩家成为一号位，其余玩家自动成为农民玩家。地主/农民初始拥有五/三个备选武将，所有玩家于选将同时从随机十个技能中选择一个作为自己的额外技能开始本局游戏<br>',
+        '地主的初始体力上限和体力值+1，且拥有地主专属技能：<br>' +
         '【飞扬】：锁定技。①准备阶段，你摸一张牌。②你使用【杀】的额定次数+1。<br>' +
         '【跋扈】：判定阶段开始时，你可以弃置两张手牌并弃置判定区所有牌。',
         '农民死亡后，其队友可以选择摸两张牌或回复1点体力',
     ],
     init: function () {
-        if (!lib.config.extension_活动萌扩_chooseSex) lib.config.extension_活动萌扩_chooseSex = 'male';
-        //空白角色
+        //技能确定
         if (!_status.characterlist) lib.skill.pingjian.initList();
-        //男
-        lib.character.bol_unknown_male0 = ['male', 'qun', 4, [], ['ext:活动萌扩/image/bol_unknown_male0.jpg']];
-        lib.translate.bol_unknown_male0 = '士兵';
-        lib.character.bol_unknown_male1 = ['male', 'qun', 4, [], ['ext:活动萌扩/image/bol_unknown_male1.jpg']];
-        lib.translate.bol_unknown_male1 = '步兵';
-        lib.character.bol_unknown_male2 = ['male', 'qun', 4, [], ['ext:活动萌扩/image/bol_unknown_male2.jpg']];
-        lib.translate.bol_unknown_male2 = '常山府军';
-        lib.character.bol_unknown_male3 = ['male', 'qun', 4, [], ['ext:活动萌扩/image/bol_unknown_male3.jpg']];
-        lib.translate.bol_unknown_male3 = '江夏弓骑兵';
-        lib.character.bol_unknown_male4 = ['male', 'qun', 4, [], ['ext:活动萌扩/image/bol_unknown_male4.jpg']];
-        lib.translate.bol_unknown_male4 = '太行山游侠';
-        lib.character.bol_unknown_male5 = ['male', 'qun', 4, [], ['ext:活动萌扩/image/bol_unknown_male5.jpg']];
-        lib.translate.bol_unknown_male5 = '武林山隐伏';
-        lib.character.bol_unknown_male6 = ['male', 'qun', 4, [], ['ext:活动萌扩/image/bol_unknown_male6.jpg']];
-        lib.translate.bol_unknown_male6 = '羽林内军';
-        //女
-        lib.character.bol_unknown_female0 = ['female', 'qun', 4, [], ['ext:活动萌扩/image/bol_unknown_female0.jpg']];
-        lib.translate.bol_unknown_female0 = '士兵';
-        lib.character.bol_unknown_female1 = ['female', 'qun', 4, [], ['ext:活动萌扩/image/bol_unknown_female1.jpg']];
-        lib.translate.bol_unknown_female1 = '黑绸巫女';
-        lib.character.bol_unknown_female2 = ['female', 'qun', 4, [], ['ext:活动萌扩/image/bol_unknown_female2.jpg']];
-        lib.translate.bol_unknown_female2 = '美人计';
-        lib.character.bol_unknown_female3 = ['female', 'qun', 4, [], ['ext:活动萌扩/image/bol_unknown_female3.jpg']];
-        lib.translate.bol_unknown_female3 = '婆娑匠奴';
-        lib.character.bol_unknown_female4 = ['female', 'qun', 4, [], ['ext:活动萌扩/image/bol_unknown_female4.jpg']];
-        lib.translate.bol_unknown_female4 = '武库清点';
-        lib.character.bol_unknown_female5 = ['female', 'qun', 4, [], ['ext:活动萌扩/image/bol_unknown_female5.jpg']];
-        lib.translate.bol_unknown_female5 = '血婆娑巧手';
-        lib.character.bol_unknown_female6 = ['female', 'qun', 4, [], ['ext:活动萌扩/image/bol_unknown_female6.jpg']];
-        lib.translate.bol_unknown_female6 = '佣兵';
         var characters = _status.characterlist, skills = [];
         for (var i = 0; i < characters.length; i++) {
             var name = characters[i];
@@ -248,10 +216,6 @@ const brawl = {
                     "step 0"
                     game.saveConfig('extension_活动萌扩_decade_Coin_Gaming', 100);
                     ui.arena.classList.add('choose-character');
-                    for (var i of game.players) {
-                        if (i == game.me) i.init('bol_unknown_' + lib.config.extension_活动萌扩_chooseSex + get.rand(0, 6));
-                        else i.init('bol_unknown_' + ['male', 'female'].randomGet() + get.rand(0, 6));
-                    }
                     var target = game.players.randomGet();
                     event.control = ['一倍', '两倍', '三倍', '不叫'];
                     event.target = target;
@@ -313,8 +277,8 @@ const brawl = {
                     });
                     for (var i of game.players) {
                         i.identity = (game.winner == i ? 'zhu' : 'fan');
-                        i.node.name.innerHTML = (game.winner == i ? '地主' : '农民');
-                        i.OriginalSkills = game.doudizhuSkills.randomRemove(15);
+                        i.OriginalSkills = game.doudizhuSkills.randomRemove(10);
+                        i.OriginalCharacters = _status.characterlist.randomRemove(game.winner == i ? 5 : 3);
                         i.setIdentity();
                         i.identityShown = true;
                         if (i.identity == 'zhu') game.zhu = i;
@@ -322,29 +286,32 @@ const brawl = {
                     'step 4'
                     event.targets = game.players.sortBySeat(game.zhu).slice(0);
                     event.map = {};
-                    game.zhu.maxHp = game.zhu.maxHp + 1;
-                    game.zhu.hp = game.zhu.hp + 1;
-                    game.zhu.update();
-                    game.zhu.addSkill('decade_feiyang');
-                    game.zhu.addSkill('decade_bahu');
                     'step 5'
                     var target = event.targets.shift();
                     event.target = target;
                     var list = target.OriginalSkills;
                     for (var i = 0; i < list.length; i++) list[i] = ['', '', 'skillCard_' + list[i]];
-                    target.chooseButton(['请选择你的初始技能', [list, 'vcard']], true, game.zhu == target ? 3 : 2);
+                    target.chooseButton(['请选择你的初始角色和技能', [target.OriginalCharacters, 'character'], [list, 'vcard']], true, 2).set('filterButton', button => {
+                        return _status.event.player.OriginalCharacters.includes(button.link) === Boolean(!ui.selected.buttons.length);
+                    });
                     'step 6'
                     if (result.bool) {
-                        var skills = [];
-                        for (var i = 0; i < result.links.length; i++) {
-                            skills.push(result.links[i][2].slice(10));
-                        }
-                        event.map[target.playerid] = skills;
+                        event.map[target.playerid] = [result.links[0], result.links[1][2].slice(10)];
                     }
                     if (event.targets.length) event.goto(5);
                     else {
                         for (var i of game.players) {
-                            if (event.map[i.playerid]) i.addSkill(event.map[i.playerid]);
+                            if (event.map[i.playerid]) {
+                                i.init(event.map[i.playerid][0]);
+                                _status.characterlist.addArray(i.OriginalCharacters.filter(j => j != event.map[i.playerid][0]));
+                                i.addSkill(event.map[i.playerid].slice(1));
+                            }
+                            if (i == game.zhu) {
+                                game.zhu.maxHp = game.zhu.maxHp + 1;
+                                game.zhu.hp = game.zhu.hp + 1;
+                                game.zhu.addSkill(['decade_feiyang', 'decade_bahu']);
+                                game.zhu.update();
+                            }
                         }
                     }
                     'step 7'
