@@ -1,0 +1,8 @@
+/*诸侯伐董*/
+.player .identity[data-color="cxyMengJun"] {
+	text-shadow: rgba(255, 255, 10, 1) 0 0 2px, rgba(255, 255, 10, 1) 0 0 5px, rgba(255, 255, 10, 1) 0 0 10px, rgba(255, 255, 10, 1) 0 0 10px, rgba(255, 255, 10, 1) 0 0 20px, rgba(255, 255, 10, 1) 0 0 20px, black 0 0 1px;
+}
+.player .identity[data-color="cxySuiCong"],
+.player .identity[data-color="cxyJiangLing"] {
+	text-shadow: rgba(255, 10, 10, 1) 0 0 2px, rgba(255, 10, 10, 1) 0 0 5px, rgba(255, 10, 10, 1) 0 0 10px, rgba(255, 10, 10, 1) 0 0 10px, rgba(255, 10, 10, 1) 0 0 20px, rgba(255, 10, 10, 1) 0 0 20px, black 0 0 1px;
+}
