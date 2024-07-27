@@ -2166,6 +2166,10 @@ const brawl = {
     content: {
         submode: 'normal',
         //更改游戏配置
+        checkResult(){
+            if(!game.players.some(i=>i.identity=='zhu')) game.over(true);
+            else if(!game.players.some(i=>i.identity=='fan')) game.over(false);
+        },
         chooseCharacterBefore: function () {
             //加载武将牌堆
             if (!_status.characterlist) lib.skill.pingjian.initList();
@@ -2416,7 +2420,7 @@ const brawl = {
                                 {
                                     name: "横扫六合",
                                     intro: "横扫六合，并吞八荒。举山河内外，皆匍匐脚下。",
-                                    players:[
+                                    players: [
                                         { name: "hezongkangqin_player", identity: "fan", isMe: true },
                                         { name: "daqin_yingzheng", identity: "zhu", isMe: false },
                                         { name: "daqin_qibing", identity: "zhong", isMe: false },
