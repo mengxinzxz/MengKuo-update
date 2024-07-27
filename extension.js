@@ -11,9 +11,7 @@ lib.init.css(lib.assetURL + 'extension/活动萌扩', 'extension');
 game.bolShowNewPackx = function () {
 	//更新告示
 	var HuoDong_update = [
-		'活动萌扩模块化',
-		'添加模式：微信斗地主2',
-		'对多个模式进行了一定程度上的重写',
+		'添加模式合纵抗秦',
 		'To be continued...',
 	];
 	//加载
@@ -62,7 +60,7 @@ let extensionPackage = {
 		author: '萌新（转型中）',
 		diskURL: '',
 		forumURL: '',
-		version: '0.2.0',
+		version: '0.2.1',
 		//新人制作扩展，希望大家支持。
 		//新人技术不足，希望大家包涵。
 		//壹、贰、叁、肆、伍、陆、柒、捌、玖、拾

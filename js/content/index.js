@@ -18,6 +18,7 @@ import bol_longzhoux from './bol_longzhoux.js';
 import bilibili_wuhuang from './bilibili_wuhuang.js';
 import bol_kunyangzhizhan from './bol_kunyangzhizhan.js';
 import ol_characterTest from './ol_characterTest.js';
+import ol_hezongkangqin from './ol_hezongkangqin.js';
 
 export function content(config, pack) {
 	//更新公告
@@ -74,6 +75,7 @@ export function content(config, pack) {
 	lib.brawl.bolWechatDouDiZhu2 = bolWechatDouDiZhu2;
 	//OL活动场
 	lib.brawl.bol_zhuhou = bol_zhuhou;
+	lib.brawl.ol_hezongkangqin = ol_hezongkangqin;
 	lib.brawl.bol_longzhou = bol_longzhou;
 	lib.brawl.bol_longzhoux = bol_longzhoux;
 	lib.brawl.bolLongZhouRe = bolLongZhouRe;
