@@ -7,25 +7,37 @@ const brawl = {
     init() {
         let pack = {
             character: {
-                daqin_zhangyi: ['male', 'daqin', 4, ['zhangyi_lianheng', 'zhangyi_xichu', 'zhangyi_xiongbian', 'zhangyi_qiaoshe'], ['die_audio', 'unseen', 'forbidal']],
-                daqin_zhaogao: ['male', 'daqin', 3, ['zhaogao_zhilu', 'zhaogao_gaizhao', 'zhaogao_haizhong', 'zhaogao_aili'], ['unseen', 'forbidal']],
-                daqin_yingzheng: ["male", "daqin", 4, ["yingzheng_yitong", "yingzheng_shihuang", "yingzheng_zulong", "yingzheng_fenshu"], ['unseen', 'forbidal']],
-                daqin_shangyang: ["male", "daqin", 4, ["shangyang_bianfa", "shangyang_limu", "shangyang_kencao"], ['unseen', 'forbidal']],
-                daqin_nushou: ["male", "daqin", 3, ["daqin_tongpao", "nushou_jinnu"], ['unseen', 'forbidal']],
-                daqin_qibing: ["male", "daqin", 3, ["daqin_tongpao", "qibing_changjian", "qibing_liangju"], ['unseen', 'forbidal']],
-                daqin_bubing: ["male", "daqin", 4, ["daqin_tongpao", "bubing_fangzhen", "bubing_changbing"], ['unseen', 'forbidal']],
-                daqin_baiqi: ["male", "daqin", 4, ["baiqi_wuan", "baiqi_shashen", "baiqi_fachu", "baiqi_changsheng"], ['unseen', 'forbidal']],
-                daqin_miyue: ["female", "daqin", 3, ["miyue_zhangzheng", "miyue_taihou", "miyue_youmie", "miyue_yintui"], ['unseen', 'forbidal']],
-                daqin_lvbuwei: ["male", "daqin", 3, ["lvbuwei_jugu", "lvbuwei_qihuo", "lvbuwei_chunqiu", "lvbuwei_baixiang"], ['unseen', 'forbidal']],
-                daqin_zhaoji: ["female", "daqin", 3, ["zhaoji_shanwu", "zhaoji_daqi", "zhaoji_xianji", "zhaoji_huoluan"], ['unseen', 'forbidal']],
-                hezongkangqin_player: ['male', 'key', 3, ['hezongkangqin_player_init'], ['unseen', 'forbidal']],
-                daqin_alpha0: ['male', 'key', 1, [], ['unseen', 'forbidal']],
-                daqin_alpha1: ['male', 'key', 1, [], ['unseen', 'forbidal']],
-                daqin_alpha2: ['male', 'key', 1, [], ['unseen', 'forbidal']],
-                daqin_alpha3: ['male', 'key', 1, [], ['unseen', 'forbidal']],
-                daqin_alpha4: ['male', 'key', 1, [], ['unseen', 'forbidal']],
-                daqin_random1: ['male', 'key', 1, [], ['unseen', 'forbidal']],
-                daqin_random2: ['male', 'key', 1, [], ['unseen', 'forbidal']],
+                daqin_zhangyi: ['male', 'daqin', 4, ['zhangyi_lianheng', 'zhangyi_xichu', 'zhangyi_xiongbian', 'zhangyi_qiaoshe'], ['die:ext:活动萌扩/audio/daqin_zhangyi.jpg']],
+                daqin_zhaogao: ['male', 'daqin', 3, ['zhaogao_zhilu', 'zhaogao_gaizhao', 'zhaogao_haizhong', 'zhaogao_aili'], ['die:ext:活动萌扩/audio/daqin_zhaogao.jpg']],
+                daqin_yingzheng: ["male", "daqin", 4, ["yingzheng_yitong", "yingzheng_shihuang", "yingzheng_zulong", "yingzheng_fenshu"], ['die:ext:活动萌扩/audio/daqin_yingzheng.jpg']],
+                daqin_shangyang: ["male", "daqin", 4, ["shangyang_bianfa", "shangyang_limu", "shangyang_kencao"], ['die:ext:活动萌扩/audio/daqin_shangyang.jpg']],
+                daqin_nushou: ["male", "daqin", 3, ["daqin_tongpao", "nushou_jinnu"], ['die:ext:活动萌扩/audio/daqin_nushou.jpg']],
+                daqin_qibing: ["male", "daqin", 3, ["daqin_tongpao", "qibing_changjian", "qibing_liangju"], ['die:ext:活动萌扩/audio/daqin_qibing.jpg']],
+                daqin_bubing: ["male", "daqin", 4, ["daqin_tongpao", "bubing_fangzhen", "bubing_changbing"], ['die:ext:活动萌扩/audio/daqin_bubing.jpg']],
+                daqin_baiqi: ["male", "daqin", 4, ["baiqi_wuan", "baiqi_shashen", "baiqi_fachu", "baiqi_changsheng"], ['die:ext:活动萌扩/audio/daqin_baiqi.jpg']],
+                daqin_miyue: ["female", "daqin", 3, ["miyue_zhangzheng", "miyue_taihou", "miyue_youmie", "miyue_yintui"], ['die:ext:活动萌扩/audio/daqin_miyue.jpg']],
+                daqin_lvbuwei: ["male", "daqin", 3, ["lvbuwei_jugu", "lvbuwei_qihuo", "lvbuwei_chunqiu", "lvbuwei_baixiang"], ['die:ext:活动萌扩/audio/daqin_lvbuwei.jpg']],
+                daqin_zhaoji: ["female", "daqin", 3, ["zhaoji_shanwu", "zhaoji_daqi", "zhaoji_xianji", "zhaoji_huoluan"], ['die:ext:活动萌扩/audio/daqin_zhaoji.jpg']],
+                hezongkangqin_player: ['male', 'key', 3, ['hezongkangqin_player_init']],
+                daqin_alpha0: ['male', 'key', 1, []],
+                daqin_alpha1: ['male', 'key', 1, []],
+                daqin_alpha2: ['male', 'key', 1, []],
+                daqin_alpha3: ['male', 'key', 1, []],
+                daqin_alpha4: ['male', 'key', 1, []],
+                daqin_random1: ['male', 'key', 1, []],
+                daqin_random2: ['male', 'key', 1, []],
+                bol_unknown_male6: ['male', 'key', 3, []],
+                bol_unknown_male1: ['male', 'key', 3, []],
+                bol_unknown_male2: ['male', 'key', 3, []],
+                bol_unknown_male3: ['male', 'key', 3, []],
+                bol_unknown_male4: ['male', 'key', 3, []],
+                bol_unknown_male5: ['male', 'key', 3, []],
+                bol_unknown_female6: ['female', 'key', 3, []],
+                bol_unknown_female1: ['female', 'key', 3, []],
+                bol_unknown_female2: ['female', 'key', 3, []],
+                bol_unknown_female3: ['female', 'key', 3, []],
+                bol_unknown_female4: ['female', 'key', 3, []],
+                bol_unknown_female5: ['female', 'key', 3, []],
             },
             characterIntro: {
                 daqin_shangyang: '商鞅（约公元前395年－公元前338年），姬姓，公孙氏，名鞅，卫国人。战国时期政治家、改革家、思想家，法家代表人物，卫国国君后代。商鞅辅佐秦孝公，积极实行变法，使秦国成为富裕强大的国家，史称“商鞅变法”。政治上，改革了秦国户籍、军功爵位、土地制度、行政区划、税收、度量衡以及民风民俗，并制定了严酷的法律；经济上，主张重农抑商、奖励耕战；军事上，统率秦军收复了河西之地，赐予商于十五邑，号为商君，史称为商鞅。公元前338年，秦孝公逝世后，商鞅被公子虔指为谋反，战败死于彤地，尸身车裂，全家被杀。',
@@ -164,10 +176,6 @@ const brawl = {
                         lib.hezongkangqin.skills = skills;
                         'step 1'
                         event.map = lib.hezongkangqin.versusMap.randomGet();
-                        for (const name of lib.hezongkangqin.characters) {
-                            lib.character[name] = [name.slice('bol_unknown_'.length).slice(0, -1), 'key', 3, [], ['unseen', 'forbidal']];
-                            lib.translate[name] = lib.hezongkangqin.characterName[name];
-                        }
                         var list = game.filterPlayer(function (current) {
                             if (current.name.indexOf('daqin_alpha') == 0) {
                                 var index = parseInt(current.name.slice(11));
@@ -193,14 +201,15 @@ const brawl = {
                                     current.uninit()
                                     current.init(lib.hezongkangqin.character || 'bol_unknown_male6');
                                     current.changeGroup(lib.hezongkangqin.group || 'wei', false);
-                                    current._tempTranslate = lib.config.connect_nickname;
-                                    current.node.name.innerHTML = lib.config.connect_nickname;
+                                    const name = lib.config.connect_nickname;
+                                    current._tempTranslate = name;
+                                    current.node.name.innerHTML = name;
                                 }
                                 else {
                                     var name = lib.hezongkangqin.playername.randomRemove(1)[0];
                                     current.uninit();
-                                    current.init(lib.hezongkangqin.characters.randomGet());
-                                    current.changeGroup(['wei', 'shu', 'wu', 'qun', 'jin'].randomGet(), false);
+                                    current.init('bol_unknown_' + ['male', 'female'].randomGet() + parseFloat(get.rand(1, 6)));
+                                    current.changeGroup(lib.group.randomGet(), false);
                                     current._tempTranslate = name;
                                     current.node.name.innerHTML = name;
                                 };
@@ -292,8 +301,7 @@ const brawl = {
                         }
                         if (event.list.length) event.goto(3);
                         'step 5'
-                        if (_status._aozhan)
-                            game.me.$fullscreenpop('鏖战模式', get.groupnature(game.me.group, 'raw'));
+                        if (_status._aozhan) game.me.$fullscreenpop('鏖战模式', get.groupnature(game.me.group, 'raw'));
                     },
                 },
                 kangqin_hezonglianheng: {
@@ -2015,6 +2023,18 @@ const brawl = {
                 daqin_alpha4: '占位符4',
                 daqin_random1: '刘备/夏侯惇',
                 daqin_random2: '张角/孙权',
+                bol_unknown_male6: '步兵',
+                bol_unknown_male1: '羽林内军',
+                bol_unknown_male2: '常山府军',
+                bol_unknown_male3: '江夏弓骑兵',
+                bol_unknown_male4: '太行山豪侠',
+                bol_unknown_male5: '武林山隐伏',
+                bol_unknown_female6: '佣兵',
+                bol_unknown_female1: '黑绸巫女',
+                bol_unknown_female2: '美人计',
+                bol_unknown_female3: '婆娑匠奴',
+                bol_unknown_female4: '武库清点',
+                bol_unknown_female5: '血婆娑巧手',
                 "daqin_yingzheng": "嬴政",
                 "daqin_shangyang": "商鞅",
                 "daqin_nushou": "秦军弩手",
@@ -2129,6 +2149,8 @@ const brawl = {
             },
         };
         for (var i in pack.character) {
+            if (!pack.character[i][4]) pack.character[i][4] = [];
+            pack.character[i][4].addArray(['unseen', 'forbidal']);
             if (lib.device || lib.node) {
                 pack.character[i][4].push('ext:活动萌扩/image/' + i + '.jpg');
             }
@@ -2145,6 +2167,9 @@ const brawl = {
         submode: 'normal',
         //更改游戏配置
         chooseCharacterBefore: function () {
+            //加载武将牌堆
+            if (!_status.characterlist) lib.skill.pingjian.initList();
+            //配置基本变量
             var next = {
                 versusMap: [
                     ['qinchao', 'daqin_shangyang', 'qinchao', 'sanguo', 'sanguo'],
@@ -2169,8 +2194,8 @@ const brawl = {
                 getLevel: function (player) {
                     if (player == game.me) return parseInt(lib.hezongkangqin.characterLevel);
                     if (player._isKangqinPlayer) return [3, 3, 3, 4, 4, 5].randomGet();
-                    if (_status.brawl.scene) {
-                        var name = _status.brawl.scene.name;
+                    if (_status.ol_hezongkangqin_name) {
+                        var name = _status.ol_hezongkangqin_name;
                         if (player.group != 'daqin') {
                             if (name == '匹配模式' || name == '变法者') return 3;
                             else if (['帝国先驱', '中流砥柱', '乱！', '璀璨星河'].includes(name)) return 5;
@@ -2281,21 +2306,6 @@ const brawl = {
                 characterLevel: lib.config.extension_活动萌扩_kangqin_level,
                 character: lib.config.extension_活动萌扩_kangqin_player,
                 group: lib.config.extension_活动萌扩_kangqin_group,
-                characterName: {
-                    bol_unknown_male6: '步兵',
-                    bol_unknown_male1: '羽林内军',
-                    bol_unknown_male2: '常山府军',
-                    bol_unknown_male3: '江夏弓骑兵',
-                    bol_unknown_male4: '太行山豪侠',
-                    bol_unknown_male5: '武林山隐伏',
-                    bol_unknown_female6: '佣兵',
-                    bol_unknown_female1: '黑绸巫女',
-                    bol_unknown_female2: '美人计',
-                    bol_unknown_female3: '婆娑匠奴',
-                    bol_unknown_female4: '武库清点',
-                    bol_unknown_female5: '血婆娑巧手',
-                },
-                characters: ['daqin_male1', 'daqin_female1', 'daqin_male2', 'daqin_female2', 'daqin_male3', 'daqin_female3', 'daqin_male4', 'daqin_female4', 'daqin_male5', 'daqin_female5', 'daqin_male6', 'daqin_female6'],
                 playername: [
                     '月宫亚由', '神尾观铃', '古河渚', '坂上智代', '星野梦美', '枣铃', '库特莉亚芙卡', '神户小鸟', '立华奏', '友利奈绪', '汐奈', '鸣濑白羽', '仲村ゆり', '藤林杏',
                     '烟雨墨染', '诗笺', '苏婆玛丽奥', 'doremy', '楼小楼', '西沉', '叫我蠢直', '骑着二乔上貂蝉', '内奸不会错', '綦薵', '轮回中的消逝者', 'Sukincen', '太上大牛',
@@ -2335,8 +2345,9 @@ const brawl = {
             //选将
             game.chooseCharacter = function () {
                 var next = game.createEvent('chooseCharacter', false);
-                next.setContent(async function (event, trigger) {
+                next.setContent(async function () {
                     const player = game.me;
+                    game.zhu = game.me;
                     ui.arena.classList.add('choose-character');
                     const result = await player.chooseButton([
                         '合纵抗秦：请选择你要游玩的剧情',
@@ -2485,7 +2496,7 @@ const brawl = {
                     while (players[0] != item) players.push(players.shift());
                     ui.arena.setNumber(players.length);
                     for (const map of players) {
-                        if (map == item) game.me.init(map.name);
+                        if (map == item) player.init(map.name);
                         const fellow = map == item ? player : game.addFellow(players.indexOf(map), map.name);
                         fellow.identity = map.identity;
                         if (fellow.identity == 'zhu') _status.firstAct2 = fellow;

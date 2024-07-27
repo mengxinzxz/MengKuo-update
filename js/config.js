@@ -240,12 +240,23 @@ export let config = {
 		name: '玩家势力',
 		intro: '选择玩家在抗秦模式中的登场势力',
 		init: 'wei',
-		item: {
-			wei: '魏',
-			shu: '蜀',
-			wu: '吴',
-			qun: '群',
-			jin: '晋',
+		get item() {
+			if (!(lib.group || []).length) {
+				return {
+					wei: '魏',
+					shu: '蜀',
+					wu: '吴',
+					qun: '群',
+					jin: '晋',
+				};
+			}
+			let map = {};
+			lib.group.forEach(group => {
+				if (group != 'daqin' && group != 'shen') {
+					map[group] = get.translation(group);
+				}
+			})
+			return map;
 		},
 	},
 	kangqin_level: {
