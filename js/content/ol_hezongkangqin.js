@@ -178,7 +178,7 @@ const brawl = {
                         event.map = lib.hezongkangqin.versusMap.randomGet();
                         var list = game.filterPlayer(function (current) {
                             if (current.name.indexOf('daqin_alpha') == 0) {
-                                var index = parseInt(current.name.slice(11));
+                                var index = parseInt(current.name.slice('daqin_alpha'.length));
                                 if (index == 1) _status.firstAct2 = current;
                                 var name = event.map[index];
                                 if (name == 'sanguo') name = _status.characterlist.randomRemove(1)[0];
@@ -228,6 +228,11 @@ const brawl = {
                                     _status.firstAct2 = game.me;
                                     break;
                                 }
+                                case '合纵连横': {
+                                    name = '合纵连横';
+                                    _status.firstAct2 = game.me.previous;
+                                    break;
+                                }
                                 case '始太后': {
                                     name = '始称太后';
                                     _status.firstAct2 = game.me.previous;
@@ -253,11 +258,6 @@ const brawl = {
                                     _status.firstAct2 = game.me.previous.previous;
                                     break;
                                 }
-                                case '合纵连横': {
-                                    name = '合纵连横';
-                                    _status.firstAct2 = game.me;
-                                    break;
-                                }
                                 case '沙丘谋变': {
                                     name = '沙丘之变';
                                     _status.firstAct2 = game.me.previous.previous;
@@ -269,6 +269,7 @@ const brawl = {
                                 }
                                 case '中流砥柱': {
                                     name = '长平之战';
+                                    _status.firstAct2 = game.me.previous;
                                     break;
                                 }
                                 case '乱！': {
@@ -764,7 +765,7 @@ const brawl = {
                 "yingzheng_zulong": {
                     audio: 'ext:活动萌扩/audio:true',
                     trigger: {
-                        player: "phaseBefore",
+                        player: "phaseBegin",
                     },
                     forced: true,
                     content: function () {
@@ -982,7 +983,7 @@ const brawl = {
                 "nushou_jinnu": {
                     audio: 'ext:活动萌扩/audio:true',
                     trigger: {
-                        player: "phaseBefore",
+                        player: "phaseBegin",
                     },
                     forced: true,
                     filter: function (event, player) {
@@ -1264,7 +1265,7 @@ const brawl = {
                 "miyue_zhangzheng": {
                     audio: 'ext:活动萌扩/audio:true',
                     trigger: {
-                        player: "phaseBefore",
+                        player: "phaseBegin",
                     },
                     forced: true,
                     filter: function (event, player) {
@@ -1385,7 +1386,7 @@ const brawl = {
                         },
                         delete: {
                             trigger: {
-                                player: "phaseBefore",
+                                player: "phaseBegin",
                             },
                             forced: true,
                             direct: true,
@@ -1557,7 +1558,7 @@ const brawl = {
                     animationColor: "thunfer",
                     unique: true,
                     trigger: {
-                        player: "phaseBefore",
+                        player: "phaseBegin",
                     },
                     forced: true,
                     filter: function (event, player) {
@@ -1578,12 +1579,12 @@ const brawl = {
                 "lvbuwei_zhongfu": {
                     audio: 'ext:活动萌扩/audio:true',
                     trigger: {
-                        player: "phaseBefore",
+                        player: "phaseBegin",
                     },
                     forced: true,
                     content: function () {
                         var skill = ['daqin_lvbuwei_rejianxiong', 'daqin_lvbuwei_rerende', 'daqin_lvbuwei_rezhiheng'].randomGet();
-                        player.addTempSkill(skill, { player: "phaseBefore" });
+                        player.addTempSkill(skill, { player: "phaseBegin" });
                         game.log(player, '获得了技能', '〖', skill, '〗');
                     },
                 },
@@ -1643,7 +1644,7 @@ const brawl = {
                         content: "当前有#个“期”标记",
                     },
                     trigger: {
-                        player: "phaseBefore",
+                        player: "phaseBegin",
                     },
                     forced: true,
                     filter: function (event, player) {
@@ -2409,36 +2410,36 @@ const brawl = {
                                     name: "祸乱宫闱",
                                     intro: "谅这天下，也没有一个男人能拒绝我，哼哼哼……",
                                     players: [
+                                        { name: "re_xiahoudun", identity: "fan", isMe: false },
                                         { name: "daqin_bubing", identity: "zhong", isMe: false },
                                         { name: "hezongkangqin_player", identity: "fan", isMe: true },
+                                        { name: "re_caocao", identity: "fan", isMe: false },
                                         { name: "daqin_zhaoji", identity: "zhu", isMe: false },
                                         { name: "daqin_nushou", identity: "zhong", isMe: false },
-                                        { name: "re_xiahoudun", identity: "fan", isMe: false },
-                                        { name: "re_caocao", identity: "fan", isMe: false },
                                     ],
                                 },
                                 {
                                     name: "横扫六合",
                                     intro: "横扫六合，并吞八荒。举山河内外，皆匍匐脚下。",
                                     players: [
+                                        { name: "re_guojia", identity: "fan", isMe: false },
+                                        { name: "re_xiahouyuan", identity: "fan", isMe: false },
                                         { name: "hezongkangqin_player", identity: "fan", isMe: true },
                                         { name: "daqin_yingzheng", identity: "zhu", isMe: false },
                                         { name: "daqin_qibing", identity: "zhong", isMe: false },
                                         { name: "daqin_bubing", identity: "zhong", isMe: false },
-                                        { name: "re_guojia", identity: "fan", isMe: false },
-                                        { name: "re_xiahouyuan", identity: "fan", isMe: false },
                                     ],
                                 },
                                 {
                                     name: "沙丘谋变",
                                     intro: "秦皇已崩，从今天起，我姓赵的说了算。",
                                     players: [
+                                        { name: "re_caocao", identity: "fan", isMe: false },
                                         { name: "daqin_zhaogao", identity: "zhu", isMe: false },
                                         { name: "hezongkangqin_player", identity: "fan", isMe: true },
+                                        { name: "re_liubei", identity: "fan", isMe: false },
                                         { name: "daqin_qibing", identity: "zhong", isMe: false },
                                         { name: "daqin_nushou", identity: "zhong", isMe: false },
-                                        { name: "re_caocao", identity: "fan", isMe: false },
-                                        { name: "re_liubei", identity: "fan", isMe: false },
                                     ],
                                 },
                                 {
@@ -2456,23 +2457,23 @@ const brawl = {
                                     name: "中流砥柱",
                                     intro: "内外夹击的话强烈攻势，你能否坚持多久？",
                                     players: [
-                                        { name: "daqin_baiqi", identity: "zhu", isMe: false },
-                                        { name: "hezongkangqin_player", identity: "fan", isMe: true },
-                                        { name: "daqin_miyue", identity: "zhong", isMe: false },
                                         { name: "dianwei", identity: "fan", isMe: false },
+                                        { name: "hezongkangqin_player", identity: "fan", isMe: true },
                                         { name: "re_liubei", identity: "fan", isMe: false },
+                                        { name: "daqin_miyue", identity: "zhong", isMe: false },
+                                        { name: "daqin_baiqi", identity: "zhu", isMe: false },
                                     ],
                                 },
                                 {
                                     name: "乱！",
                                     intro: "你要知道，有些人就是为乱世而生的。",
                                     players: [
+                                        { name: "re_liubei", identity: "fan", isMe: false },
                                         { name: "daqin_lvbuwei", identity: "zhong", isMe: false },
                                         { name: "daqin_zhaoji", identity: "zhu", isMe: false },
                                         { name: "daqin_zhaogao", identity: "zhong", isMe: false },
-                                        { name: "dianwei", identity: "fan", isMe: false },
                                         { name: "hezongkangqin_player", identity: "fan", isMe: true },
-                                        { name: "re_liubei", identity: "fan", isMe: false },
+                                        { name: "dianwei", identity: "fan", isMe: false },
                                     ],
                                 },
                                 {
