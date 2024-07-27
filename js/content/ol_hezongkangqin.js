@@ -2402,8 +2402,8 @@ const brawl = {
                                     ],
                                 },
                                 {
-                                    name: "横扫六合",
-                                    intro: "横扫六合，并吞八荒。举山河内外，皆匍匐脚下。",
+                                    name: "祸乱宫闱",
+                                    intro: "谅这天下，也没有一个男人能拒绝我，哼哼哼……",
                                     players: [
                                         { name: "daqin_bubing", identity: "zhong", isMe: false },
                                         { name: "hezongkangqin_player", identity: "fan", isMe: true },
@@ -2411,6 +2411,18 @@ const brawl = {
                                         { name: "daqin_nushou", identity: "zhong", isMe: false },
                                         { name: "re_xiahoudun", identity: "fan", isMe: false },
                                         { name: "re_caocao", identity: "fan", isMe: false },
+                                    ],
+                                },
+                                {
+                                    name: "横扫六合",
+                                    intro: "横扫六合，并吞八荒。举山河内外，皆匍匐脚下。",
+                                    players:[
+                                        { name: "hezongkangqin_player", identity: "fan", isMe: true },
+                                        { name: "daqin_yingzheng", identity: "zhu", isMe: false },
+                                        { name: "daqin_qibing", identity: "zhong", isMe: false },
+                                        { name: "daqin_bubing", identity: "zhong", isMe: false },
+                                        { name: "re_guojia", identity: "fan", isMe: false },
+                                        { name: "re_xiahouyuan", identity: "fan", isMe: false },
                                     ],
                                 },
                                 {
