@@ -209,7 +209,7 @@ const brawl = {
                                     var name = lib.hezongkangqin.playername.randomRemove(1)[0];
                                     current.uninit();
                                     current.init('bol_unknown_' + ['male', 'female'].randomGet() + parseFloat(get.rand(1, 6)));
-                                    current.changeGroup(lib.group.randomGet(), false);
+                                    current.changeGroup(lib.group.filter(i => i != 'daqin' && i != 'shen').randomGet(), false);
                                     current._tempTranslate = name;
                                     current.node.name.innerHTML = name;
                                 };
