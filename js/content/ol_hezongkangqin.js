@@ -1109,6 +1109,7 @@ const brawl = {
                     audio: 'ext:活动萌扩/audio:true',
                     trigger: { global: 'useCardAfter' },
                     filter: function (event, player) {
+                        if (event.player.group != 'daqin') return false;
                         return event.player != player && !player.getEquips(2).length && get.subtype(event.card) == 'equip2';
                     },
                     forced: true,
@@ -2016,6 +2017,8 @@ const brawl = {
                 },
             },
             translate: {
+                daqin: '秦',
+                daqin2: '秦朝',
                 hezongkangqin_player: '抗秦主角',
                 daqin_alpha0: '占位符0',
                 daqin_alpha1: '占位符1',
@@ -2167,9 +2170,9 @@ const brawl = {
     content: {
         submode: 'normal',
         //更改游戏配置
-        checkResult(){
-            if(!game.players.some(i=>i.identity=='zhu')) game.over(true);
-            else if(!game.players.some(i=>i.identity=='fan')) game.over(false);
+        checkResult() {
+            if (!game.players.some(i => i.identity == 'zhu')) game.over(true);
+            else if (!game.players.some(i => i.identity == 'fan')) game.over(false);
         },
         chooseCharacterBefore: function () {
             //加载武将牌堆
