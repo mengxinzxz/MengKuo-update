@@ -161,9 +161,9 @@ const brawl = {
                                 if (info.derivation) list.push(...info.derivation);
                             }
                             for (var j = 0; j < list.length; j++) {
-                                if (skills.includes(list[j])) continue;
+                                if (skills.includes(list[j]) || !lib.skill[list[j]]) continue;
                                 var info = get.info(list[j]);
-                                if (!info || info.charlotte || info.zhuSkill || info.changeSeat) continue;
+                                if (!info || info.charlotte || info.zhuSkill || info.changeSeat || info.ai?.combo) continue;
                                 skills.push(list[j]);
                                 lib.card['skillCard_' + list[j]] = {
                                     fullimage: true,
@@ -2319,7 +2319,10 @@ const brawl = {
                     '烟雨墨染', '诗笺', '苏婆玛丽奥', 'doremy', '楼小楼', '西沉', '叫我蠢直', '骑着二乔上貂蝉', '内奸不会错', '綦薵', '轮回中的消逝者', 'Sukincen', '太上大牛',
                     '镜中尘', '明了', '阿Q', '昨日影', '蒜头王八', '凉茶', '萌新瑟瑟发抖', '情何以堪', '元春二六', '炒饭123℃', '夜渐寒忆往昔', '【物质主义】', '一曲离歌高唱',
                     '绵绵不绝于耳', 'L', '逆曲惜寒', '杜元枫', '三生六十', 'Itsuka士道君', '菁幽', '殇雪飘零', '瓦力', '别来无恙', '大叔viv', '深邃暖爱', '北瓜南瓜东', '染柒',
-                    '543(21)0', '萌新转型中', '随性似风', '牢戏志才', '生熏鱼', '宁静致远', '雷', 'Fire win', 'Empty city°', '?', 'lonely patients', '狂神'
+                    '543(21)0', '萌新（转型中）', '随性似风', '牢戏志才', '生熏鱼', '宁静致远', '雷', 'Fire win', 'Empty city°', '?', 'lonely patients', '狂神', '睡觉不玻璃',
+                    '静以修身', '沐如风晨', '白银山幽灵', '咪咪狗', '超困每一天', '阿巴阿巴', '冰可乐喵', '小小王同志', '铝宝', '诺离鸡', '牢狂1103', '汤', '九个芒果', '梦的原野',
+                    '婉儿', '鹤鸣太初', '鬼神易', '风流之姿刘玄德', '鹿都智川介', '九黎东玥', '云时亦雨', '龙九帧', '老东西', '塞尔卡利亚当', '志志志志志志志志', '芝士雪豹',
+                    '寒影', '尼家老子―尼蝶', '炙热心光', '血羽风饕', '是只起名废的祈明', '永雏塔菲', '孙笑川', '柴油鹿鹿', '琉紫苑', '狗妈', '丁真', '157', '科比布莱恩特', '牢大'
                 ],
                 dieAfter2: function (source) {
                     if (source) {
