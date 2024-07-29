@@ -217,6 +217,11 @@ export let config = {
 		clear: true,
 		name: '<li>关于《合纵抗秦》',
 	},
+	kangqin_lineName: {
+		name: '竖直ID',
+		intro: '抗秦模式玩家ID默认横向显示，开启此选项后玩家ID为竖直显示',
+		init: false,
+	},
 	kangqin_player: {
 		name: '玩家形象',
 		intro: '选择玩家在抗秦模式中的登场形象',

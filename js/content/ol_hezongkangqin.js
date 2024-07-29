@@ -202,16 +202,22 @@ const brawl = {
                                     current.init(lib.hezongkangqin.character || 'bol_unknown_male6');
                                     current.changeGroup(lib.hezongkangqin.group || 'wei', false);
                                     const name = lib.config.connect_nickname;
+                                    const span = document.createElement('span'), style = span.style;
+                                    style.writingMode = style.webkitWritingMode = 'horizontal-tb';
+                                    span.textContent = name;
                                     current._tempTranslate = name;
-                                    current.node.name.innerHTML = name;
+                                    current.node.name.innerHTML = lib.hezongkangqin.lineName ? name : span.outerHTML;
                                 }
                                 else {
-                                    var name = lib.hezongkangqin.playername.randomRemove(1)[0];
                                     current.uninit();
                                     current.init('bol_unknown_' + ['male', 'female'].randomGet() + parseFloat(get.rand(1, 6)));
                                     current.changeGroup(lib.group.filter(i => i != 'daqin' && i != 'shen').randomGet(), false);
+                                    const name = lib.hezongkangqin.playername.randomRemove(1)[0];
+                                    const span = document.createElement('span'), style = span.style;
+                                    style.writingMode = style.webkitWritingMode = 'horizontal-tb';
+                                    span.textContent = name;
                                     current._tempTranslate = name;
-                                    current.node.name.innerHTML = name;
+                                    current.node.name.innerHTML = lib.hezongkangqin.lineName ? name : span.outerHTML;
                                 };
                             }
                             lib.hezongkangqin.setLevel(current);
@@ -2314,6 +2320,7 @@ const brawl = {
                 characterLevel: lib.config.extension_活动萌扩_kangqin_level,
                 character: lib.config.extension_活动萌扩_kangqin_player,
                 group: lib.config.extension_活动萌扩_kangqin_group,
+                lineName: Boolean(lib.config.extension_活动萌扩_kangqin_lineName),
                 playername: [
                     '月宫亚由', '神尾观铃', '古河渚', '坂上智代', '星野梦美', '枣铃', '库特莉亚芙卡', '神户小鸟', '立华奏', '友利奈绪', '汐奈', '鸣濑白羽', '仲村ゆり', '藤林杏',
                     '烟雨墨染', '诗笺', '苏婆玛丽奥', 'doremy', '楼小楼', '西沉', '叫我蠢直', '骑着二乔上貂蝉', '内奸不会错', '綦薵', '轮回中的消逝者', 'Sukincen', '太上大牛',
