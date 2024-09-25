@@ -1,6 +1,6 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 //点击显示
-get.bolskillTips = function (tipname, id) {
+get.mx_skillTips = function (tipname, id) {
     var dibeijing = ui.create.div('.bol-dibeijing', document.body);
     dibeijing.style.zIndex = 16;
     var skilltip = ui.create.div('.bol-skilltip', dibeijing);
@@ -18,17 +18,16 @@ get.bolskillTips = function (tipname, id) {
         this.remove();
     })
 };
-get.bolInformX = function (str1, str2) {
-    if (_status.bolInform_temp) delete _status.bolInform_temp;
-    _status.bolInform_temp = Math.random().toString(36).slice(-8);
-    return "<a id='" + _status.bolInform_temp + "' style='color:unset' href=\"javascript:get.bolskillTips('" + str2 + "','" + _status.bolInform_temp + "');\">" + str1 + "※</a>";
+get.mx_inform = function (str1, str2) {
+    const id = Math.random().toString(36).slice(-8);
+    return "<a id='" + id + "' style='color:unset' href=\"javascript:get.mx_skillTips('" + str2 + "','" + id + "');\">" + str1 + "※</a>";
 };
 const brawl = {
     name: '新斗地主',
     mode: 'identity',
     intro: [
         '萌币系统：<br>' +
-        '当前拥有<span class=\'texiaotext\' style=\'color:#FFD700\'>' + lib.config.extension_活动萌扩_decade_Coin + '</span>' + get.bolInformX('萌币', '<li>萌币作为活动萌扩的特殊货币，可在新斗地主模式使用，本模式获胜/失败/逃跑均会改变萌币数<br><li>当前萌币仅用于新斗地主模式作为仿十周年斗地主金票的筹码，未来可能会支持更多功能') + '<br>' +
+        '当前拥有<span class=\'texiaotext\' style=\'color:#FFD700\'>' + lib.config.extension_活动萌扩_decade_Coin + '</span>' + get.mx_inform('萌币', '<li>萌币作为活动萌扩的特殊货币，可在新斗地主模式使用，本模式获胜/失败/逃跑均会改变萌币数<br><li>当前萌币仅用于新斗地主模式作为仿十周年斗地主金票的筹码，未来可能会支持更多功能') + '<br>' +
         '进行此游戏需要支付10萌币作为门票（<span class=\'texiaotext\' style=\'color:#FF0000\'>若萌币不足则无法进入游戏</span>），游戏获胜后会获得当前游戏倍数的萌币，失败后会失去当前游戏倍数的萌币（逃跑会失去当前游戏倍数的萌币+10）<br>' +
         '第一次进入无名杀会获得初始1000萌币，从第二天开始每天进入无名杀可以获得300萌币',
         '游戏规则：<br>' +

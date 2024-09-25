@@ -97,7 +97,7 @@ export function precontent(bilibilicharacter) {
         for (var i in pack) lib.translate[i] = pack[i];
     };
     //点击显示
-    get.bolskillTips = function (tipname, id) {
+    get.mx_skillTips = function (tipname, id) {
         var dibeijing = ui.create.div('.bol-dibeijing', document.body);
         dibeijing.style.zIndex = 16;
         var skilltip = ui.create.div('.bol-skilltip', dibeijing);
@@ -115,10 +115,9 @@ export function precontent(bilibilicharacter) {
             this.remove();
         })
     };
-    get.bolInformX = function (str1, str2) {
-        if (_status.bolInform_temp) delete _status.bolInform_temp;
-        _status.bolInform_temp = Math.random().toString(36).slice(-8);
-        return "<a id='" + _status.bolInform_temp + "' style='color:unset' href=\"javascript:get.bolskillTips('" + str2 + "','" + _status.bolInform_temp + "');\">" + str1 + "※</a>";
+    get.mx_inform = function (str1, str2) {
+        const id = Math.random().toString(36).slice(-8);
+        return "<a id='" + id + "' style='color:unset' href=\"javascript:get.mx_skillTips('" + str2 + "','" + id + "');\">" + str1 + "※</a>";
     };
     //筛选没有同名替换的武将
     get.originalCharacterList = function (filter) {
