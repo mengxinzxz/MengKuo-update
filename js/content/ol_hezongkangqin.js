@@ -162,8 +162,9 @@ const brawl = {
                             }
                             for (var j = 0; j < list.length; j++) {
                                 if (skills.includes(list[j]) || !lib.skill[list[j]]) continue;
+                                if (!Object.keys(list[j]).some(i => !i.startsWith('audio') && i !== '_priority' && i !== 'sub')) continue;
                                 var info = get.info(list[j]);
-                                if (!info || info.charlotte || info.zhuSkill || info.changeSeat || info.ai?.combo) continue;
+                                if (!info || info.charlotte || info.zhuSkill || info.nopop || info.changeSeat || info.ai?.combo) continue;
                                 skills.push(list[j]);
                                 lib.card['skillCard_' + list[j]] = {
                                     fullimage: true,
@@ -2329,7 +2330,8 @@ const brawl = {
                     '543(21)0', '萌新（转型中）', '随性似风', '牢戏', '生熏鱼', '宁静致远', '雷', 'Fire win', 'Empty city°', '?', 'lonely patients', '狂神', '睡觉不玻璃', '佐巴杨',
                     '静以修身', '沐如风晨', '白银山幽灵', '咪咪狗', '超困每一天', '阿巴阿巴', '冰可乐喵', '小小王同志', '铝宝', '诺离鸡', '牢狂1103', '汤', '九个芒果', '梦的原野',
                     '婉儿', '鹤鸣太初', '鬼神易', '风流之姿刘玄德', '鹿都智川介', '九黎东玥', '云时亦雨', '龙九帧', '老东西', '塞尔卡利亚当', '志志志志志志志志', '芝士雪豹', '策谋',
-                    '寒影', '尼家老子―尼蝶', '炙热心光', '血羽风饕', '是只起名废的祈明', '永雏塔菲', '孙笑川', '柴油鹿鹿', '琉紫苑', '狗妈', '丁真', '157', '科比布莱恩特', '牢大'
+                    '寒影', '尼家老子―尼蝶', '炙热心光', '血羽风饕', '是只起名废的祈明', '永雏塔菲', '孙笑川', '柴油鹿鹿', '琉紫苑', '狗妈', '丁真', '157', '科比布莱恩特', '牢大',
+                    '暴暴虫', '一人一小建', '吃蛋挞的折棒', '张献忠', '宝',
                 ],
                 dieAfter2: function (source) {
                     if (source) {
