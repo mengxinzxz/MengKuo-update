@@ -1049,7 +1049,7 @@ const brawl = {
                         "step 0"
                         trigger.target.judge(function (card) {
                             return (get.suit(card) == 'spade') ? -2 : 0;
-                        });
+                        }).set('judge2', result => result.bool === false ? true : false);
                         "step 1"
                         if (result.judge < 0) {
                             trigger.getParent().directHit.add(trigger.target);
@@ -1078,7 +1078,6 @@ const brawl = {
                                     trigger.getParent().excluded.add(player);
                                 }
                             },
-                            sub: true,
                         },
                     },
                 },
@@ -1121,50 +1120,17 @@ const brawl = {
                     },
                     forced: true,
                     content: function () {
-                        game.addGlobalSkill('daqin_tongpao_destroy');
                         var card = game.createCard2(trigger.card.name, trigger.card.suit, trigger.card.number);
-                        if (!_status.tongpaoList) _status.tongpaoList = [];
-                        _status.tongpaoList.push(card);
+                        card._destroy = true;
                         player.$gain2(card);
                         game.delayx();
                         player.equip(card);
-                    },
-                    subSkill: {
-                        destroy: {
-                            charlotte: true,
-                            trigger: { global: 'loseEnd' },
-                            filter: function (event, player) {
-                                if (!_status.tongpaoList) return false;
-                                return event.cards.filter(function (card) {
-                                    return _status.tongpaoList.includes(card);
-                                }).length;
-                            },
-                            direct: true,
-                            forceDie: true,
-                            priority: Infinity,
-                            content: function () {
-                                if (!_status.tongpaodestory) _status.tongpaodestory = {};
-                                var list = [];
-                                var cs = trigger.cards;
-                                for (var i = 0; i < cs.length; i++) {
-                                    if (_status.tongpaoList.includes(cs[i])) {
-                                        _status.tongpaodestory[cs[i].name] = false;
-                                        _status.tongpaoList.remove(cs[i]);
-                                        list.push(cs[i]);
-                                    }
-                                }
-                                game.log(list, '被销毁了');
-                                game.cardsGotoSpecial(list);
-                            },
-                        },
                     },
                 },
                 "baiqi_wuan": {
                     audio: 'ext:活动萌扩/audio:true',
                     firstDo: true,
-                    trigger: {
-                        global: "useCard1",
-                    },
+                    trigger: { global: "useCard1" },
                     forced: true,
                     filter: function (event, player) {
                         return !event.audioed && player.isAlive() && event.source && event.source.group == 'daqin' && event.card.name == 'sha' && player.countUsed('sha', true) > 1 && event.getParent().type == 'phase';
@@ -1501,7 +1467,7 @@ const brawl = {
                             return get.type(card, 'trick') == result.control;
                         });
                         player.discard(cards);
-                        player.draw(cards.length * 2);
+                        player.draw(cards.length);
                     },
                     ai: {
                         order: 1,
@@ -1513,69 +1479,30 @@ const brawl = {
                 },
                 "lvbuwei_chunqiu": {
                     audio: 'ext:活动萌扩/audio:true',
-                    group: ["lvbuwei_chunqiu_biaoji", "lvbuwei_chunqiu_gain", "lvbuwei_chunqiu_delete"],
-                    subSkill: {
-                        biaoji: {
-                            trigger: {
-                                global: "phaseBefore",
-                            },
-                            forced: true,
-                            popup: false,
-                            direct: true,
-                            content: function () {
-                                player.storage.lvbuwei_chunqiu = [];
-                            },
-                            sub: true,
-                        },
-                        gain: {
-                            trigger: {
-                                player: ["useCard", "respond"],
-                            },
-                            audio: 'lvbuwei_chunqiu',
-                            forced: true,
-                            filter: function (event, player) {
-                                return player.storage.lvbuwei_chunqiu != undefined && !player.storage.lvbuwei_chunqiu.includes(get.type(event.card, 'trick'));
-                            },
-                            content: function () {
-                                'step 0'
-                                player.storage.lvbuwei_chunqiu.push(get.type(trigger.card, 'trick'));
-                                'step 1'
-                                player.draw();
-                                'step 2'
-                                game.updateRoundNumber();
-                            },
-                            sub: true,
-                        },
-                        delete: {
-                            trigger: {
-                                global: "phaseAfter",
-                            },
-                            forced: true,
-                            direct: true,
-                            popup: false,
-                            content: function () {
-                                delete player.storage.nzry_shicai;
-                            },
-                            sub: true,
-                        },
+                    trigger: { player: ["useCard", "respond"] },
+                    filter(event, player) {
+                        return game.getGlobalHistory('everything', evt => {
+                            return evt.player === player && ['useCard', 'respond'].includes(evt.name);
+                        }).indexOf(event) === 0;
+                    },
+                    forced: true,
+                    content() {
+                        player.draw();
                     },
                 },
                 "lvbuwei_baixiang": {
-                    audio: 'ext:活动萌扩/audio:true',
-                    skillAnimation: true,
-                    animationColor: "thunfer",
                     unique: true,
-                    trigger: {
-                        player: "phaseBegin",
+                    audio: 'ext:活动萌扩/audio:true',
+                    trigger: { player: "phaseBegin" },
+                    filter: function (event, player) {
+                        return player.countCards('h') >= player.hp * 3;
                     },
                     forced: true,
-                    filter: function (event, player) {
-                        return player.countCards('h') >= player.hp * 2 && !player.storage.lvbuwei_baixiang;
-                    },
-                    derivation: ["lvbuwei_zhongfu"],
+                    juexingji: true,
+                    skillAnimation: true,
+                    animationColor: "thunfer",
                     content: function () {
                         'step 0'
-                        player.storage.lvbuwei_baixiang = true;
                         player.awakenSkill('lvbuwei_baixiang');
                         'step 1'
                         var num = player.maxHp - player.hp;
@@ -1583,17 +1510,16 @@ const brawl = {
                         player.addSkill('lvbuwei_zhongfu');
                         game.log(player, '获得了技能〖仲父〗')
                     },
+                    derivation: ['lvbuwei_zhongfu', 'rejianxiong', 'rerende', 'rezhiheng'],
                 },
                 "lvbuwei_zhongfu": {
                     audio: 'ext:活动萌扩/audio:true',
-                    trigger: {
-                        player: "phaseBegin",
-                    },
+                    trigger: { player: "phaseBegin" },
                     forced: true,
                     content: function () {
-                        var skill = ['daqin_lvbuwei_rejianxiong', 'daqin_lvbuwei_rerende', 'daqin_lvbuwei_rezhiheng'].randomGet();
-                        player.addTempSkill(skill, { player: "phaseBegin" });
-                        game.log(player, '获得了技能', '〖', skill, '〗');
+                        var skill = ['rejianxiong', 'rerende', 'rezhiheng'].randomGet();
+                        player.popup(skill);
+                        player.addTempSkills(skill, { player: "phaseBegin" });
                     },
                 },
                 "zhaoji_shanwu": {
@@ -1774,254 +1700,6 @@ const brawl = {
                         }
                     },
                 },
-                daqin_lvbuwei_rezhiheng: {
-                    audio: 'ext:活动萌扩/audio:true',
-                    enable: 'phaseUse',
-                    usable: 1,
-                    position: 'he',
-                    filterCard: lib.filter.cardDiscardable,
-                    discard: false,
-                    lose: false,
-                    delay: false,
-                    selectCard: [1, Infinity],
-                    check: function (card) {
-                        var player = _status.event.player;
-                        if (get.position(card) == 'h' && !player.countCards('h', function (card) {
-                            return get.value(card) >= 8;
-                        })) {
-                            return 8 - get.value(card);
-                        }
-                        return 6 - get.value(card)
-                    },
-                    content: function () {
-                        'step 0'
-                        player.discard(cards);
-                        event.num = 1;
-                        var hs = player.getCards('h');
-                        if (!hs.length) event.num = 0;
-                        for (var i = 0; i < hs.length; i++) {
-                            if (!cards.includes(hs[i])) {
-                                event.num = 0; break;
-                            }
-                        }
-                        'step 1'
-                        player.draw(event.num + cards.length);
-                    },
-                    subSkill: {
-                        draw: {
-                            trigger: { player: 'loseEnd' },
-                            silent: true,
-                            filter: function (event, player) {
-                                if (event.getParent(2).skill != 'daqin_lvbuwei_rezhiheng' && event.getParent(2).skill != 'jilue_zhiheng') return false;
-                                if (player.countCards('h')) return false;
-                                for (var i = 0; i < event.cards.length; i++) {
-                                    if (event.cards[i].original == 'h') return true;
-                                }
-                                return false;
-                            },
-                            content: function () {
-                                player.addTempSkill('daqin_lvbuwei_rezhiheng_delay', trigger.getParent(2).skill + 'After');
-                            }
-                        },
-                        delay: {}
-                    },
-                    ai: {
-                        order: 1,
-                        result: {
-                            player: 1
-                        },
-                        threaten: 1.55
-                    },
-                },
-                "daqin_lvbuwei_rejianxiong": {
-                    audio: 'ext:活动萌扩/audio:true',
-                    trigger: {
-                        player: "damageEnd",
-                    },
-                    content: function () {
-                        "step 0"
-                        if (get.itemtype(trigger.cards) == 'cards' && get.position(trigger.cards[0], true) == 'o') {
-                            player.gain(trigger.cards, "gain2");
-                        }
-                        player.draw('nodelay');
-                    },
-                    ai: {
-                        maixie: true,
-                        "maixie_hp": true,
-                        effect: {
-                            target: function (card, player, target) {
-                                if (player.hasSkillTag('jueqing', false, target)) return [1, -1];
-                                if (get.tag(card, 'damage') && player != target) return [1, 0.6];
-                            },
-                        },
-                    },
-                },
-                daqin_lvbuwei_rerende: {
-                    audio: 'ext:活动萌扩/audio:true',
-                    enable: 'phaseUse',
-                    filterCard: true,
-                    selectCard: [1, Infinity],
-                    discard: false,
-                    lose: false,
-                    delay: false,
-                    filterTarget: function (card, player, target) {
-                        if (player.storage.daqin_lvbuwei_rerende2 && player.storage.daqin_lvbuwei_rerende2.includes(target)) return false;
-                        return player != target;
-                    },
-                    onremove: ['daqin_lvbuwei_rerende', 'daqin_lvbuwei_rerende2'],
-                    check: function (card) {
-                        if (ui.selected.cards.length && ui.selected.cards[0].name == 'du') return 0;
-                        if (!ui.selected.cards.length && card.name == 'du') return 20;
-                        var player = get.owner(card);
-                        if (ui.selected.cards.length >= Math.max(2, player.countCards('h') - player.hp)) return 0;
-                        if (player.hp == player.maxHp || player.storage.daqin_lvbuwei_rerende < 0 || player.countCards('h') <= 1) {
-                            var players = game.filterPlayer();
-                            for (var i = 0; i < players.length; i++) {
-                                if (players[i].hasSkill('haoshi') &&
-                                    !players[i].isTurnedOver() &&
-                                    !players[i].hasJudge('lebu') &&
-                                    get.attitude(player, players[i]) >= 3 &&
-                                    get.attitude(players[i], player) >= 3) {
-                                    return 11 - get.value(card);
-                                }
-                            }
-                            if (player.countCards('h') > player.hp) return 10 - get.value(card);
-                            if (player.countCards('h') > 2) return 6 - get.value(card);
-                            return -1;
-                        }
-                        return 10 - get.value(card);
-                    },
-                    content: function () {
-                        'step 0'
-                        var evt = _status.event.getParent('phaseUse');
-                        if (evt && evt.name == 'phaseUse' && !evt.daqin_lvbuwei_rerende) {
-                            var next = game.createEvent('daqin_lvbuwei_rerende_clear');
-                            _status.event.next.remove(next);
-                            evt.after.push(next);
-                            evt.daqin_lvbuwei_rerende = true;
-                            next.player = player;
-                            next.setContent(lib.skill.daqin_lvbuwei_rerende1.content);
-                        }
-                        if (!Array.isArray(player.storage.daqin_lvbuwei_rerende2)) {
-                            player.storage.daqin_lvbuwei_rerende2 = [];
-                        }
-                        player.storage.daqin_lvbuwei_rerende2.push(target);
-                        target.gain(cards, player, 'giveAuto');
-                        if (typeof player.storage.daqin_lvbuwei_rerende != 'number') {
-                            player.storage.daqin_lvbuwei_rerende = 0;
-                        }
-                        if (player.storage.daqin_lvbuwei_rerende >= 0) {
-                            player.storage.daqin_lvbuwei_rerende += cards.length;
-                            if (player.storage.daqin_lvbuwei_rerende >= 2) {
-                                var list = [];
-                                if (lib.filter.cardUsable({ name: 'sha' }, player, event.getParent('chooseToUse')) && game.hasPlayer(function (current) {
-                                    return player.canUse('sha', current);
-                                })) {
-                                    list.push(['基本', '', 'sha']);
-                                    list.push(['基本', '', 'sha', 'fire']);
-                                    list.push(['基本', '', 'sha', 'thunder']);
-                                }
-                                if (lib.filter.cardUsable({ name: 'tao' }, player, event.getParent('chooseToUse')) && game.hasPlayer(function (current) {
-                                    return player.canUse('tao', current);
-                                })) {
-                                    list.push(['基本', '', 'tao']);
-                                }
-                                if (lib.filter.cardUsable({ name: 'jiu' }, player, event.getParent('chooseToUse')) && game.hasPlayer(function (current) {
-                                    return player.canUse('jiu', current);
-                                })) {
-                                    list.push(['基本', '', 'jiu']);
-                                }
-                                if (list.length) {
-                                    player.chooseButton(['是否视为使用一张基本牌？', [list, 'vcard']]).set('ai', function (button) {
-                                        var player = _status.event.player;
-                                        var card = { name: button.link[2], nature: button.link[3] };
-                                        if (card.name == 'tao') {
-                                            if (player.hp == 1 || (player.hp == 2 && !player.hasShan()) || player.needsToDiscard()) {
-                                                return 5;
-                                            }
-                                            return 1;
-                                        }
-                                        if (card.name == 'sha') {
-                                            if (game.hasPlayer(function (current) {
-                                                return player.canUse(card, current) && get.effect(current, card, player, player) > 0
-                                            })) {
-                                                if (card.nature == 'fire') return 2.95;
-                                                if (card.nature == 'thunder') return 2.92;
-                                                return 2.9;
-                                            }
-                                            return 0;
-                                        }
-                                        if (card.name == 'jiu') {
-                                            return 0.5;
-                                        }
-                                        return 0;
-                                    });
-                                }
-                                else {
-                                    event.finish();
-                                }
-                                player.storage.daqin_lvbuwei_rerende = -1;
-                            }
-                            else {
-                                event.finish();
-                            }
-                        }
-                        else {
-                            event.finish();
-                        }
-                        'step 1'
-                        if (result && result.bool && result.links[0]) {
-                            var card = { name: result.links[0][2], nature: result.links[0][3] };
-                            player.chooseUseTarget(card, true);
-                        }
-                    },
-                    ai: {
-                        order: function (skill, player) {
-                            if (player.hp < player.maxHp && player.storage.daqin_lvbuwei_rerende < 2 && player.countCards('h') > 1) {
-                                return 10;
-                            }
-                            return 4;
-                        },
-                        result: {
-                            target: function (player, target) {
-                                if (target.hasSkillTag('nogain')) return 0;
-                                if (ui.selected.cards.length && ui.selected.cards[0].name == 'du') {
-                                    if (target.hasSkillTag('nodu')) return 0;
-                                    return -10;
-                                }
-                                if (target.hasJudge('lebu')) return 0;
-                                var nh = target.countCards('h');
-                                var np = player.countCards('h');
-                                if (player.hp == player.maxHp || player.storage.daqin_lvbuwei_rerende < 0 || player.countCards('h') <= 1) {
-                                    if (nh >= np - 1 && np <= player.hp && !target.hasSkill('haoshi')) return 0;
-                                }
-                                return Math.max(1, 5 - nh);
-                            }
-                        },
-                        effect: {
-                            target: function (card, player, target) {
-                                if (player == target && get.type(card) == 'equip') {
-                                    if (player.countCards('e', { subtype: get.subtype(card) })) {
-                                        if (game.hasPlayer(function (current) {
-                                            return current != player && get.attitude(player, current) > 0;
-                                        })) {
-                                            return 0;
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        threaten: 0.8
-                    }
-                },
-                daqin_lvbuwei_rerende1: {
-                    trigger: { player: 'phaseUseBegin' },
-                    silent: true,
-                    content: function () {
-                        player.storage.daqin_lvbuwei_rerende = 0;
-                        player.storage.daqin_lvbuwei_rerende2 = [];
-                    }
-                },
             },
             translate: {
                 daqin: '秦',
@@ -2118,13 +1796,13 @@ const brawl = {
                 "lvbuwei_jugu": "巨贾",
                 "lvbuwei_jugu_info": "锁定技，你的手牌上限+X；游戏开始时，你多摸X张牌（X为你的体力上限）。",
                 "lvbuwei_qihuo": "奇货",
-                "lvbuwei_qihuo_info": "出牌阶段限一次，你可以弃置一种类型的牌，并摸等同于你弃置牌数量2倍的牌。",
+                "lvbuwei_qihuo_info": "出牌阶段限一次，你可以弃置一种类型的牌，并摸等同于你弃置牌数量的牌。",
                 "lvbuwei_chunqiu": "春秋",
-                "lvbuwei_chunqiu_info": "锁定技，每个回合你使用或打出每种类型的第一张牌时，摸一张牌。",
+                "lvbuwei_chunqiu_info": "锁定技，每个回合你使用或打出第一张牌时，摸一张牌。",
                 "lvbuwei_baixiang": "拜相",
-                "lvbuwei_baixiang_info": "觉醒技，你的回合开始时，若你的手牌数大于等于你当前体力的2倍，则你将体力恢复至体力上限，并获得“仲父”技能。",
+                "lvbuwei_baixiang_info": "觉醒技，你的回合开始时，若你的手牌数大于等于你当前体力的三倍，则你将体力恢复至体力上限，并获得“仲父”技能。",
                 "lvbuwei_zhongfu": "仲父",
-                "lvbuwei_zhongfu_info": "锁定技，你的回合开始时，直到你的下个回合开始为止，你随机获得“界奸雄”、“界仁德”、“界制衡”中的一个。",
+                "lvbuwei_zhongfu_info": "锁定技，你的回合开始时，你随机获得【奸雄】、【仁德】、【制衡】中的一个直到你的下个回合开始。",
                 "zhaoji_shanwu": "善舞",
                 "zhaoji_shanwu_info": "锁定技，你使用【杀】指定目标后，你进行判定，若为黑色则敌方不能打出【闪】；当你成为【杀】的目标后，你进行判定，若为红色此杀无效。",
                 "zhaoji_daqi": "大期",
@@ -2143,12 +1821,6 @@ const brawl = {
                 zhaogao_haizhong_info: '锁定技，非秦势力角色回复体力时，其需要选择：1.弃置一张红色牌，2.受到你造成的X点伤害（X为该角色拥有的“害”标记，且至少为1）。然后该角色获得一个“害”标记。',
                 zhaogao_aili: '爰历',
                 zhaogao_aili_info: '锁定技，你的出牌阶段开始时，你额外获得2张普通锦囊。',
-                daqin_lvbuwei_rezhiheng: '制衡',
-                daqin_lvbuwei_rezhiheng_info: '出牌阶段限一次，你可以弃置任意张牌并摸等量的牌，若你在发动〖制衡〗时弃置了所有手牌，则你多摸一张牌。',
-                daqin_lvbuwei_rerende: '仁德',
-                daqin_lvbuwei_rerende_info: '出牌阶段，你可以将至少一张手牌交给其他角色，然后你于此阶段内不能再以此法交给该角色牌；若你于此阶段内给出的牌首次达到两张，你可以视为使用一张基本牌',
-                "daqin_lvbuwei_rejianxiong": "奸雄",
-                "daqin_lvbuwei_rejianxiong_info": "当你受到伤害后，你可以获得对你造成伤害的牌并摸一张牌。",
                 shangyangbianfa: "商鞅变法",
                 "shangyangbianfa_info": "出牌阶段，对一名其他角色使用。对其造成随机1~2点伤害，若该角色进入濒死状态，则进行判定，若判定结果为黑色，则该角色本次濒死状态无法向其他角色求桃。",
                 zhenlongchangjian: "真龙长剑",
