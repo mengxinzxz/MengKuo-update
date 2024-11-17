@@ -1508,6 +1508,7 @@ const brawl = {
                         var num = player.maxHp - player.hp;
                         if (num > 0) player.recover(num);
                         'step 2'
+                        player.popup('lvbuwei_zhongfu');
                         player.addSkills('lvbuwei_zhongfu');
                     },
                     derivation: ['lvbuwei_zhongfu', 'new_rejianxiong', 'rerende', 'rezhiheng'],
