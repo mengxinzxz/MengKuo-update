@@ -1507,17 +1507,17 @@ const brawl = {
                         'step 1'
                         var num = player.maxHp - player.hp;
                         if (num > 0) player.recover(num);
-                        player.addSkill('lvbuwei_zhongfu');
-                        game.log(player, '获得了技能〖仲父〗')
+                        'step 2'
+                        player.addSkills('lvbuwei_zhongfu');
                     },
-                    derivation: ['lvbuwei_zhongfu', 'rejianxiong', 'rerende', 'rezhiheng'],
+                    derivation: ['lvbuwei_zhongfu', 'new_rejianxiong', 'rerende', 'rezhiheng'],
                 },
                 "lvbuwei_zhongfu": {
                     audio: 'ext:活动萌扩/audio:true',
                     trigger: { player: "phaseBegin" },
                     forced: true,
                     content: function () {
-                        var skill = ['rejianxiong', 'rerende', 'rezhiheng'].randomGet();
+                        var skill = ['new_rejianxiong', 'rerende', 'rezhiheng'].randomGet();
                         player.popup(skill);
                         player.addTempSkills(skill, { player: "phaseBegin" });
                     },
