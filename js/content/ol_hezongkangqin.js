@@ -164,7 +164,7 @@ const brawl = {
                                 if (skills.includes(list[j]) || !lib.skill[list[j]]) continue;
                                 if (!Object.keys(list[j]).some(i => !i.startsWith('audio') && i !== '_priority' && i !== 'sub')) continue;
                                 var info = get.info(list[j]);
-                                if (!info || info.charlotte || info.zhuSkill || info.nopop || info.changeSeat || info.ai?.combo) continue;
+                                if (!info || info.charlotte || info.zhuSkill || info.nopop || info.hiddenSkill || info.changeSeat || info.ai?.combo) continue;
                                 skills.push(list[j]);
                                 lib.card['skillCard_' + list[j]] = {
                                     fullimage: true,
@@ -306,6 +306,11 @@ const brawl = {
                         'step 4'
                         for (var i = 0; i < result.links.length; i++) {
                             event.current.addSkill(result.links[i][2].slice(10));
+                            game.broadcastAll((player, names) => {
+                                player.tempname.addArray(names.map(list => {
+                                    return lib.card[list[2]].image.slice('character:'.length);
+                                }).unique());
+                            }, event.current, result.links.slice());
                         }
                         if (event.list.length) event.goto(3);
                         'step 5'
@@ -663,7 +668,7 @@ const brawl = {
                         effect: {
                             target: function (card, player, target) {
                                 if (card.name == 'sha' && !player.countCards('h', { number: 6 }) && game.hasPlayer(function (current) {
-                                    return current != player && current != target && lib.filter.targetInRange(card, trigger.player, current);
+                                    return current != player && current != target && lib.filter.targetInRange(card, player, current);
                                 })) return 'zeroplayertarget';
                             },
                         },
