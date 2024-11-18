@@ -1,13 +1,6 @@
 import { lib, game, ui, get, ai, _status } from '../../../noname.js';
 
 export function precontent(bilibilicharacter) {
-    //判断是否有XX扩展
-    game.TrueHasExtension = function (ext) {
-        return lib.config.extensions && lib.config.extensions.includes(ext);
-    };
-    game.HasExtension = function (ext) {
-        return game.TrueHasExtension(ext) && lib.config['extension_' + ext + '_enable'];
-    };
     //颜色显示
     get.bolColor = function (str, color) {
         return '<span class=\'texiaotext\' style=\'color:' + color + '\'>' + str + '</span>';
