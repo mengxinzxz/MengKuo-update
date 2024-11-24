@@ -123,6 +123,6 @@ export function precontent(bilibilicharacter) {
                 list.addArray(map[i].filter(j => j != i)); return list;
             }, []);
         }
-        return _status.characterlist.slice().filter(i => filter(i) && !_status.mx_originalCharcter.includes(i));
+        return _status.characterlist.filter(i => filter(i) && !_status.mx_originalCharcter.includes(i));
     };
 }
