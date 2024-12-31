@@ -54,7 +54,7 @@ let extensionPackage = {
 	package: {
 		intro: '活动武将分离系列之一，旨在补充部分活动场' +
 			'<br>当前萌币：' + lib.config.extension_活动萌扩_decade_Coin +
-			'<a href="https://github.com/mengxinzxz/MengKuo-update">点击前往活动萌扩Github仓库</a>' +
+			'<br><a href="https://github.com/mengxinzxz/MengKuo-update">点击前往活动萌扩Github仓库</a>' +
 			'<br>感谢大家对活动萌扩的支持！' +
 			'',
 		author: '萌新（转型中）',
