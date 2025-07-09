@@ -1,2 +1,2 @@
-# MengKuo-update
-MengKuo-update
+# 活动萌扩
+这是一个已经停止维护的扩展，正等待一位有心人拯救...
