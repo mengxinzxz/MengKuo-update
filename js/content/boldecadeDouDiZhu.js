@@ -26,10 +26,6 @@ const brawl = {
     name: '新斗地主',
     mode: 'identity',
     intro: [
-        '萌币系统：<br>' +
-        '当前拥有<span class=\'texiaotext\' style=\'color:#FFD700\'>' + lib.config.extension_活动萌扩_decade_Coin + '</span>' + get.mx_inform('萌币', '<li>萌币作为活动萌扩的特殊货币，可在新斗地主模式使用，本模式获胜/失败/逃跑均会改变萌币数<br><li>当前萌币仅用于新斗地主模式作为仿十周年斗地主金票的筹码，未来可能会支持更多功能') + '<br>' +
-        '进行此游戏需要支付10萌币作为门票（<span class=\'texiaotext\' style=\'color:#FF0000\'>若萌币不足则无法进入游戏</span>），游戏获胜后会获得当前游戏倍数的萌币，失败后会失去当前游戏倍数的萌币（逃跑会失去当前游戏倍数的萌币+10）<br>' +
-        '第一次进入无名杀会获得初始1000萌币，从第二天开始每天进入无名杀可以获得300萌币',
         '游戏规则：<br>' +
         '游戏开始时，牌局将为玩家分发五张初始武将牌，玩家可以根据武将信息决定是否叫分抢地主。<br>' +
         '从随机一名玩家开始依次开始叫分抢地主，玩家选择叫分倍数，叫分最多的玩家成为地主，最多为3倍，也可放弃叫分。<br>' +
@@ -166,16 +162,6 @@ const brawl = {
     content: {
         submode: 'normal',
         chooseCharacterBefore: function () {
-            if (lib.config.extension_活动萌扩_decade_Coin < 10) {
-                alert('很遗憾，您的萌币数不足以进入游戏');
-                setTimeout(function () {
-                    game.reload();
-                }, 1500);
-                return;
-            }
-            game.saveConfig('extension_活动萌扩_decade_Coin_game', true);
-            game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin - 10);
-            game.bolSay('门票支付10萌币');
             //开启闪连
             if (lib.config.extension_活动萌扩_decade_shanlian) {
                 lib.skill.decade_shanlian = {
@@ -211,8 +197,6 @@ const brawl = {
             if (!_status.characterlist) lib.skill.pingjian.initList();
             _status.HDcharacterlist = _status.characterlist.slice();
             if (lib.config.extension_活动萌扩_use_DDZname) {
-                game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin - 500);
-                game.bolSay('使用特定将池花费500萌币');
                 var map = lib.config.extension_活动萌扩_DDZname || [
                     'shen_zhaoyun', 'shen_ganning', 'liuyan', 'xizhicai', 're_wuyi', 'xin_lingtong', 'zhoushan', 'chengui',
                     'dc_liuye', 'dc_tengfanglan', 'shen_machao', 'shen_zhangfei', 'shen_zhangjiao', 'shen_dengai', 're_liuzan', 'caojinyu',
@@ -295,17 +279,7 @@ const brawl = {
                 ui.decade_ddzInfo.innerHTML = '抢地主阶段';
             });
             lib.onover.push(function (bool) {
-                game.saveConfig('extension_活动萌扩_decade_Coin_game', null);
-                game.saveConfig('extension_活动萌扩_decade_Coin_Gaming', null);
                 var num = game.max_beishu * 100 * (game.zhu == game.me ? 2 : 1);
-                if (bool == true) {
-                    game.bolSay('恭喜获得' + num + '萌币');
-                    game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin + num);
-                }
-                if (bool == false) {
-                    game.bolSay('很遗憾，你失去了' + num + '萌币');
-                    game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin - num);
-                }
                 var numx = game.max_beishu * 100;
                 if (bool == undefined) {
                     for (var i of game.filterPlayer2()) i.chat('+0');
@@ -323,10 +297,6 @@ const brawl = {
                             else i.chat('+' + numx);
                         }
                     }
-                }
-                if (lib.config.extension_活动萌扩_DDZname && lib.config.extension_活动萌扩_decade_Coin < 500) {
-                    game.saveConfig('extension_活动萌扩_DDZname', false);
-                    game.bolSay('您的萌币已经不足500，已为您自动关闭新服斗地主特定将池使用');
                 }
             });
             game.chooseCharacter = function () {

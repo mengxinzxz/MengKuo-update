@@ -7,7 +7,7 @@ const brawl = {
         '游戏背景：公元23年（地皇四年，更始元年），昆阳之战，刘秀以一万绿林军击败王莽42万新军。昆阳大捷后，更始帝遣王匡攻洛阳，申屠建、李松急攻武关，三辅震动，各地豪强纷纷诛杀新朝牧守，用汉年号，服从更始政令。不久绿林军攻入长安，王莽被杀，新朝灭亡。',
         '游戏规则：玩家扮演刘秀（10血白板）与王莽（42血）和四名士兵（1血）对阵，击败王莽<span class=\'texiaotext\' style=\'color:#FF0000\'>（能做得到就试试吧）</span>或存活七轮即可获得游戏胜利',
         '游戏机制：' +
-        '<br>刘秀于游戏开始时从随机三个技能中选择获得其中的一个技能，刘秀击败士兵后将获得1点信念，刘秀死亡时，若刘秀有信念标记，则刘秀失去1个信念标记并改为休整一轮（无信念时也可花费500萌币进行休整，一局游戏中最多花费三次萌币进行休整，且每次萌币支出须比上一次多花费500萌币），复活时摸七张牌，然后从随机三个技能中选择获得其中一个技能' +
+        '<br>刘秀于游戏开始时从随机三个技能中选择获得其中的一个技能，刘秀击败士兵后将获得1点信念，刘秀死亡时，若刘秀有信念标记，则刘秀失去1个信念标记并改为休整一轮，复活时摸七张牌，然后从随机三个技能中选择获得其中一个技能' +
         '<br>王莽的回合开始时，对刘秀进行嘲讽，刘秀失去3+X点体力（X为场上阵亡角色数）' +
         '<br>士兵死亡后，王莽和所有存活士兵各获得2点体力上限，回复2点体力，摸两张牌',
     ],
@@ -63,25 +63,15 @@ const brawl = {
                     ruleSkill: true,
                     trigger: { player: 'dieBefore' },
                     filter: function (event, player) {
-                        return (player.hasMark('_gw_xinnian') || (_status.reviveLength < 3 && lib.config.extension_活动萌扩_decade_Coin >= 500 * _status.reviveLength)) && player.identity == 'cai';
+                        return player.hasMark('_gw_xinnian') && player.identity == 'cai';
                     },
                     direct: true,
                     priority: 15,
                     content: function () {
                         'step 0'
-                        if (player.hasMark('_gw_xinnian')) {
-                            player.removeMark('_gw_xinnian', 1);
-                            event._result = { bool: true, cost: true };
-                        }
-                        else player.chooseBool().set('prompt', '糟糕！没有信念了！').set('prompt2', '是否花费' + (500 * (_status.reviveLength)) + '萌币进入休整？（当前萌币：' + lib.config.extension_活动萌扩_decade_Coin + '）').set('choice', false);
+                        player.removeMark('_gw_xinnian', 1);
                         'step 1'
                         if (result.bool) {
-                            if (!result.cost) {
-                                var num = 500 * _status.reviveLength;
-                                game.bolSay('购买额外重整次数花费' + num + '萌币');
-                                game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin - num);
-                                _status.reviveLength++;
-                            }
                             if (_status.gw_xinnian_return && _status.gw_xinnian_return[player.playerid]) trigger.cancel();
                             else {
                                 trigger.setContent(lib.skill._gw_die.dieContent);

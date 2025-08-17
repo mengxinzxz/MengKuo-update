@@ -1,12 +1,11 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const brawl = {
-    name: '武将试炼<br>（低配版）',
+    name: '武将试炼<br><span style="font-size:22px;">（低配版）</span>',
     mode: 'identity',
     intro: [
         '四人局，单将模式，玩家为主公；二、三号位为反贼；四号位为忠臣',
         '游戏开始时，反贼和忠臣率先选将（三号位反贼选将范围默认为刘禅/刘备/荀彧/界鲁肃），然后玩家从八张武将牌中选择一张作为自己的武将牌',
-        '本模式可以使用更换武将/自由选将功能，但是使用一次需要花费50/250萌币',
         '其余条件同身份模式',
     ],
     init: function () {
@@ -49,15 +48,8 @@ const brawl = {
                     //换将
                     ui.create.cheat = function () {
                         _status.createControl = ui.cheat2;
-                        ui.cheat = ui.create.control('更换（50萌币）', function () {
+                        ui.cheat = ui.create.control('更换', function () {
                             if (ui.cheat2 && ui.cheat2.dialog == _status.event.dialog) return;
-                            if (lib.config.extension_活动萌扩_decade_Coin < 50) {
-                                game.bolSay('萌币不足！');
-                                return;
-                            }
-                            if (game.changeCoin) game.changeCoin(-3);
-                            game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin - 50);
-                            game.bolSay('更换当前可选武将，消耗50萌币');
                             characters = get.originalCharacterList().randomGets(8);
                             event.characters = characters;
                             var buttons = ui.create.div('.buttons');
@@ -83,11 +75,8 @@ const brawl = {
                     else event.dialogxx = ui.create.characterDialog('heightset');
                     //自由选将
                     ui.create.cheat2 = function () {
-                        ui.cheat2 = ui.create.control('自由选将（250萌币）', function () {
+                        ui.cheat2 = ui.create.control('自由选将', function () {
                             if (this.dialog == _status.event.dialog) {
-                                if (game.changeCoin) game.changeCoin(10);
-                                game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin + 250);
-                                game.bolSay('退还未进行自由选将操作的250萌币');
                                 this.dialog.close();
                                 _status.event.dialog = this.backup;
                                 this.backup.open();
@@ -100,13 +89,6 @@ const brawl = {
                                 }
                             }
                             else {
-                                if (lib.config.extension_活动萌扩_decade_Coin < 250) {
-                                    game.bolSay('萌币不足！');
-                                    return;
-                                }
-                                if (game.changeCoin) game.changeCoin(-10);
-                                game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin - 250);
-                                game.bolSay('使用自由选将，消耗250萌币');
                                 this.backup = _status.event.dialog;
                                 _status.event.dialog.close();
                                 _status.event.dialog = _status.event.parent.dialogxx;

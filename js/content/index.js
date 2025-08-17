@@ -31,12 +31,6 @@ export function content(config, pack) {
 		};
 	}
 	//十周年斗地主初加载
-	if (lib.config.extension_活动萌扩_decade_Coin_game) {
-		var num = (lib.config.extension_活动萌扩_decade_Coin_Gaming + 10);
-		game.bolSay('您于上一场斗地主逃跑了，失去' + num + '萌币');
-		game.saveConfig('extension_活动萌扩_decade_Coin_game', null);
-		game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin - num);
-	}
 	if (!lib.config.extension_活动萌扩_decade_Coin || lib.config.extension_活动萌扩_decade_Coin == 'NaN') {
 		game.saveConfig('extension_活动萌扩_decade_Coin', 1000);
 		var date = new Date();
@@ -46,7 +40,7 @@ export function content(config, pack) {
 			day: date.getDate(),
 		};
 		game.saveConfig('extension_活动萌扩_decade_Coin_Time', time);
-		game.bolSay('非常感谢对《活动萌扩》扩展的支持，安装本扩展后第一次进入无名杀获得1000萌币，可以在无名杀乱斗页面的新斗地主模式使用');
+		game.bolSay('非常感谢对《活动萌扩》扩展的支持，安装本扩展后第一次进入无名杀获得1000萌币');
 	}
 	else {
 		var date = new Date();
@@ -59,12 +53,8 @@ export function content(config, pack) {
 		if (!timex || time.year != timex.year || time.month != timex.month || time.day != timex.day) {
 			game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin + 300);
 			game.saveConfig('extension_活动萌扩_decade_Coin_Time', time);
-			game.bolSay('每日进入无名杀获得300萌币，可以在无名杀乱斗页面的新斗地主模式使用');
+			game.bolSay('每日进入无名杀获得300萌币');
 		}
-	}
-	if (lib.config.extension_活动萌扩_DDZname && lib.config.extension_活动萌扩_decade_Coin < 500) {
-		game.saveConfig('extension_活动萌扩_DDZname', false);
-		game.bolSay('您的萌币已经不足500，已为您自动关闭新服斗地主特定将池使用');
 	}
 	//载入模式
 	if (!lib.brawl) return;

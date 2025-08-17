@@ -1,10 +1,9 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const brawl = {
-    name: '微信斗地主<br>额外技能',
+    name: '<span style="font-size:22px;">微信斗地主</span><br>额外技能',
     mode: 'identity',
     intro: [
-        '进行此游戏需要支付10萌币作为门票（<span class=\'texiaotext\' style=\'color:#FF0000\'>若萌币不足则无法进入游戏</span>），游戏获胜后会获得当前游戏倍数的萌币，失败后会失去当前游戏倍数的萌币（逃跑会失去当前游戏倍数的萌币+10）<br>' +
         '游戏规则：<br>' +
         '从随机一名玩家开始依次开始叫分抢地主，玩家选择叫分倍数，叫分最多的玩家成为地主，最多为3倍，也可放弃叫分。<br>' +
         '每位玩家仅有一次叫分机会，且叫分必须大于上家的叫分，否则放弃叫分。<br>' +
@@ -88,16 +87,6 @@ const brawl = {
     content: {
         submode: 'normal',
         chooseCharacterBefore: function () {
-            if (lib.config.extension_活动萌扩_decade_Coin < 10) {
-                alert('很遗憾，您的萌币数不足以进入游戏');
-                setTimeout(function () {
-                    game.reload();
-                }, 1500);
-                return;
-            }
-            game.saveConfig('extension_活动萌扩_decade_Coin_game', true);
-            game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin - 10);
-            game.bolSay('门票支付10萌币');
             if (!_status.characterlist) lib.skill.pingjian.initList();
             game.decadeDouDiZhu = {
                 hasZhuSkill: () => false,
@@ -178,14 +167,6 @@ const brawl = {
                 game.saveConfig('extension_活动萌扩_decade_Coin_game', null);
                 game.saveConfig('extension_活动萌扩_decade_Coin_Gaming', null);
                 var num = game.max_beishu * 100 * (game.zhu == game.me ? 2 : 1);
-                if (bool == true) {
-                    game.bolSay('恭喜获得' + num + '萌币');
-                    game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin + num);
-                }
-                if (bool == false) {
-                    game.bolSay('很遗憾，你失去了' + num + '萌币');
-                    game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin - num);
-                }
                 var numx = game.max_beishu * 100;
                 if (bool == undefined) {
                     for (var i of game.filterPlayer2()) i.chat('+0');
@@ -203,10 +184,6 @@ const brawl = {
                             else i.chat('+' + numx);
                         }
                     }
-                }
-                if (lib.config.extension_活动萌扩_DDZname && lib.config.extension_活动萌扩_decade_Coin < 500) {
-                    game.saveConfig('extension_活动萌扩_DDZname', false);
-                    game.bolSay('您的萌币已经不足500，已为您自动关闭新服斗地主特定将池使用');
                 }
             });
             game.chooseCharacter = function () {

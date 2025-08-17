@@ -10,19 +10,12 @@ export let config = {
 	},
 	FenJieXianAA: {
 		clear: true,
-		name: '<li>新斗地主/超级斗地主 萌币特殊功能',
+		name: '<li>新斗地主/超级斗地主',
 	},
 	use_DDZname: {
-		name: '超级斗地主启用特定将池<br>cost：一局500萌币',
+		name: '超级斗地主启用特定将池',
 		intro: '打开此选项后，超级斗地主模式改为下方编辑的特定将池（不编辑则默认为新服活动将池）',
 		init: false,
-		onclick: function (bool) {
-			if (bool && lib.config.extension_活动萌扩_decade_Coin < 500 && lib.config.connect_nickname != '萌新（转型中）') {
-				alert('很抱歉，您的萌币不足以使用超级斗地主特定将池');
-				return;
-			}
-			game.saveConfig('extension_活动萌扩_use_DDZname', bool);
-		},
 	},
 	decade_shanlian: {
 		name: '闪连模式',
@@ -42,15 +35,9 @@ export let config = {
 		},
 	},
 	edit_DDZname: {
-		name: '编辑新服斗地主专属将池<br>cost：2000萌币',
+		name: '编辑新服斗地主专属将池',
 		clear: true,
 		onclick: function () {
-			if (lib.config.extension_活动萌扩_decade_Coin < 2000 && lib.config.connect_nickname != '萌新（转型中）') {
-				alert('很遗憾，您的萌币不足以编辑超级斗地主特定将池');
-				return;
-			}
-			game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin - 2000);
-			game.bolSay('编辑超级斗地主特定将池，已花费2000萌币');
 			var container = ui.create.div('.popup-container.editor');
 			var node = container;
 			var map = lib.config.extension_活动萌扩_DDZname || [

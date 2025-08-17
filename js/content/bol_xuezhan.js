@@ -1,7 +1,7 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const brawl = {
-    name: '十周年血战',
+    name: '<span style="font-size:22px;">十周年血战</span>',
     mode: 'identity',
     intro: [
         '本模式为2V2三局两胜制，所有角色的体力上限视为1（护甲不变）',

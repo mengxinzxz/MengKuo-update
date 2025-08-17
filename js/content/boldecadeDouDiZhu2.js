@@ -1,11 +1,10 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 const brawl = {
-    name: '超级斗地主',
+    name: '<span style="font-size:22px;">超级斗地主</span>',
     mode: 'identity',
     intro: [
-        '本模式同“新斗地主”模式，支持萌币系统',
-        '本模式门票价格为“新斗地主”模式的十倍(100萌币)',
+        '本模式同“新斗地主”模式',
         '本模式基础倍数为“新斗地主”模式的两倍，所有角色初始手牌为10张',
         '地主【飞扬】技能调整：锁定技，你的摸牌阶段的额定摸牌数为5，出牌阶段使用【杀】的额定次数+4。',
         '其他所有规则同十周年斗地主',
@@ -155,16 +154,6 @@ const brawl = {
     content: {
         submode: 'normal',
         chooseCharacterBefore: function () {
-            if (lib.config.extension_活动萌扩_decade_Coin < 100) {
-                alert('很遗憾，您的萌币数不足以进入游戏');
-                setTimeout(function () {
-                    game.reload();
-                }, 1500);
-                return;
-            }
-            game.saveConfig('extension_活动萌扩_decade_Coin_game', true);
-            game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin - 100);
-            game.bolSay('门票支付100萌币');
             //开启闪连
             if (lib.config.extension_活动萌扩_decade_shanlian) {
                 lib.skill.decade_shanlian = {
@@ -200,8 +189,6 @@ const brawl = {
             if (!_status.characterlist) lib.skill.pingjian.initList();
             _status.HDcharacterlist = _status.characterlist.slice();
             if (lib.config.extension_活动萌扩_use_DDZname) {
-                game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin - 500);
-                game.bolSay('使用特定将池花费500萌币');
                 var map = lib.config.extension_活动萌扩_DDZname || [
                     'shen_zhaoyun', 'shen_ganning', 'liuyan', 'xizhicai', 're_wuyi', 'xin_lingtong', 'zhoushan', 'chengui',
                     'dc_liuye', 'dc_tengfanglan', 'shen_machao', 'shen_zhangfei', 'shen_zhangjiao', 'shen_dengai', 're_liuzan', 'caojinyu',
@@ -287,14 +274,6 @@ const brawl = {
                 game.saveConfig('extension_活动萌扩_decade_Coin_game', null);
                 game.saveConfig('extension_活动萌扩_decade_Coin_Gaming', null);
                 var num = game.max_beishu * 100 * (game.zhu == game.me ? 2 : 1);
-                if (bool == true) {
-                    game.bolSay('恭喜获得' + num + '萌币');
-                    game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin + num);
-                }
-                if (bool == false) {
-                    game.bolSay('很遗憾，你失去了' + num + '萌币');
-                    game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin - num);
-                }
                 var numx = game.max_beishu * 100;
                 if (bool == undefined) {
                     for (var i of game.filterPlayer2()) i.chat('+0');
@@ -312,10 +291,6 @@ const brawl = {
                             else i.chat('+' + numx);
                         }
                     }
-                }
-                if (lib.config.extension_活动萌扩_DDZname && lib.config.extension_活动萌扩_decade_Coin < 500) {
-                    game.saveConfig('extension_活动萌扩_DDZname', false);
-                    game.bolSay('您的萌币已经不足500，已为您自动关闭超级斗地主特定将池使用');
                 }
             });
             game.chooseCharacter = function () {
