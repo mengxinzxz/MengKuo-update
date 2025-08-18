@@ -40,7 +40,7 @@ const brawl = {
                     return this.getFriends(true).includes(player);
                 },
                 getEnemies: function (func) {
-                    var player = this, identity = player.identity;
+                    var player = this;
                     return game.filterPlayer(function (current) {
                         return get.rawAttitude(player, current) < 0;
                     });

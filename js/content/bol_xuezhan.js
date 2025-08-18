@@ -61,9 +61,10 @@ const brawl = {
                         func = null;
                         self = true;
                     }
+                    var player = this, identity = player.identity;
                     return game.filterPlayer(function (current) {
-                        if (!self && current == this) return false;
-                        return current.identity == this.identity;
+                        if (!self && current == player) return false;
+                        return current.identity == identity;
                     });
                 },
                 isFriendOf: function (player) {

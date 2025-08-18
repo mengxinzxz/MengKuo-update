@@ -636,13 +636,14 @@ const brawl = {
             game.RElz = {
                 getFriends: function (func) {
                     var self = false;
+                    var player = this;
                     if (func === true) {
                         func = null;
                         self = true;
                     }
                     return game.filterPlayer(function (current) {
-                        if (!self && current == this) return false;
-                        return current.identity == this.identity;
+                        if (!self && current == player) return false;
+                        return current.identity == player.identity;
                     });
                 },
                 isFriendOf: function (player) {
