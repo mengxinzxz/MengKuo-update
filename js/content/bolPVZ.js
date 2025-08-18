@@ -15,7 +15,7 @@ const brawl = {
         '当主公的“退治”标记数达到8后，或者第二轮的尸变全部完成后或场上没有忠臣角色后场上的反贼和内奸全部阵亡，则主忠获胜；反贼和内奸的获胜方式不变',
         '本模式击杀角色无奖惩机制，场上有角色满足游戏机制反贼尸化时游戏不会结束，其余条件与身份模式相同',
     ],
-    init: function () {
+    init() {
         game.zomble = 0;
         lib.configOL.number = 8;
         lib.config.mode_config.identity.change_identity = false;
@@ -25,18 +25,18 @@ const brawl = {
             _huzhu: {
                 ruleSkill: true,
                 enable: 'phaseUse',
-                filter: function (event, player) {
+                filter(event, player) {
                     if (player.identity != 'zhu' && player.identity != 'zhong') return false;
                     return player.countCards('h', { name: 'tao' }) && game.hasPlayer(function (target) {
                         return lib.skill._huzhu.filterTarget(null, player, target);
                     });
                 },
-                filterTarget: function (card, player, target) {
+                filterTarget(card, player, target) {
                     return target != player && ['zhu', 'zhong'].includes(target.identity) && target.isDamaged() && get.distance(player, target) <= 1;
                 },
                 usable: 1,
                 filterCard: { name: 'tao' },
-                content: function () {
+                content() {
                     target.recover();
                 },
                 ai: {
@@ -47,7 +47,7 @@ const brawl = {
             _getZomble1: {
                 ruleSkill: true,
                 trigger: { player: 'phaseBeginStart' },
-                filter: function (event, player) {
+                filter(event, player) {
                     if (game.roundNumber < 2) return false;
                     else player._getZomble1 = true;
                     var list = game.filterPlayer(function (current) {
@@ -58,7 +58,7 @@ const brawl = {
                 },
                 forced: true,
                 firstDo: true,
-                content: function () {
+                content() {
                     'step 0'
                     game.zomble++;
                     'step 1'
@@ -79,13 +79,13 @@ const brawl = {
                 },
             },
             fanZomble: {
-                init: function (player) {
+                init(player) {
                     player.removeSkill('neiZomble');
                 },
                 mark: true,
                 marktext: '尸',
                 intro: {
-                    content: function (storage) {
+                    content(storage) {
                         var str = '反贼尸化特殊技能：';
                         for (var i of lib.skill.fanZomble.group) {
                             str += '<br><li>' + lib.translate[i] + '：' + lib.translate[i + '_info'];
@@ -98,17 +98,17 @@ const brawl = {
             },
             fanZomble_xunmeng: {
                 trigger: { source: 'damageBegin1' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.card && event.card.name == 'sha' && event.notLink();
                 },
                 forced: true,
-                content: function () {
+                content() {
                     trigger.num++;
                     if (player.hp > 1) player.loseHp();
                 },
             },
             fanZomble_zaibian: {
-                getNum: function () {
+                getNum() {
                     var num = 1;
                     for (var i of game.players) {
                         if (['zhu', 'zhong'].includes(i.identity)) num++;
@@ -117,17 +117,17 @@ const brawl = {
                     return num;
                 },
                 trigger: { player: 'phaseUseBegin' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return lib.skill.fanZomble_zaibian.getNum() > 0;
                 },
                 forced: true,
-                content: function () {
+                content() {
                     player.draw(lib.skill.fanZomble_zaibian.getNum());
                 },
             },
             fanZomble_ganran: {
                 mod: {
-                    cardname: function (card, player) {
+                    cardname(card, player) {
                         var bool = false;
                         if (!_status.ganranCheck) {
                             _status.ganranCheck = true;
@@ -143,7 +143,7 @@ const brawl = {
                 mark: true,
                 marktext: '尸',
                 intro: {
-                    content: function (storage) {
+                    content(storage) {
                         var str = '内奸尸化特殊技能：';
                         for (var i of lib.skill.neiZomble.group) {
                             str += '<br><li>' + lib.translate[i] + '：' + lib.translate[i + '_info'];
@@ -156,7 +156,7 @@ const brawl = {
             neiZomble_shishi: {
                 trigger: { source: 'dieAfter' },
                 forced: true,
-                content: function () {
+                content() {
                     'step 0'
                     player.gainMaxHp();
                     player.recover();
@@ -177,11 +177,11 @@ const brawl = {
             _zhu_tuizhi: {
                 intro: { content: 'mark' },
                 trigger: { player: 'phaseBegin' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return player.identity == 'zhu';
                 },
                 forced: true,
-                content: function () {
+                content() {
                     'step 0'
                     player.addMark('_zhu_tuizhi', 1);
                     'step 1'
@@ -193,11 +193,11 @@ const brawl = {
             },
             _logZomble: {
                 trigger: { global: 'roundStart' },
-                filterx: function (event, player) {
+                filterx(event, player) {
                     return game.roundNumber >= 2 && !game._logZomble;
                 },
                 forced: true,
-                content: function () {
+                content() {
                     for (var i of game.players) delete i._getZomble1;
                     if (lib.skill._logZomble.filterx(trigger, player)) {
                         game._logZomble = true;
@@ -209,12 +209,12 @@ const brawl = {
                 charlotte: true,
                 ruleSkill: true,
                 trigger: { global: ['chooseButtonBefore', 'gameStart', 'gameDrawAfter', 'phaseBefore'] },
-                filter: function (event, player) {
+                filter(event, player) {
                     return !game._identityLogZomble;
                 },
                 direct: true,
                 priority: 114 + 514 - 1919 - 810 + Infinity,
-                content: function () {
+                content() {
                     'step 0'
                     game._identityLogZomble = true;
                     for (var target of game.filterPlayer()) {
@@ -252,13 +252,13 @@ const brawl = {
         submode: 'normal',
         chooseCharacterBefore() {
             game.bilibili_wuhuang = {
-                dieAfter: function () {
+                dieAfter() {
                     var player = this;
                     if (player.identity == 'fan' || player.identity == 'nei') player.$fullscreenpop('僵尸灭亡', 'thunder');
                     if ((game.zomble < 2 && game.players.some(target => target.identity == 'zhong' || target.identity == 'nei')) || player.identity == 'zhong' || (player.identity == 'zhu' && game.players.some(target => target.identity == 'zhong'))) return;
                     game.checkResult();
                 },
-                dieAfter2: function () {
+                dieAfter2() {
                     var next, player = this;
                     if (player.identity == 'zhu') {
                         next = game.createEvent('setNewZhu', false, _status.event.getParent());

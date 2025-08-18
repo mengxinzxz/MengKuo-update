@@ -9,7 +9,7 @@ const brawl = {
         '所有人摸牌阶段多摸一张牌，出牌阶段可以额外使用一张杀',
         '所有涉及“受到伤害后”的技能均改为按次数发动'
     ],
-    showcase: function (init) {
+    showcase(init) {
         var bjlz = ui.create.div();
         bjlz.style.height = '267px';
         bjlz.style.width = '500px';
@@ -18,7 +18,7 @@ const brawl = {
         bjlz.setBackgroundImage('extension/活动萌扩/image/bolbingjingliangzu.png');
         this.appendChild(bjlz);
     },
-    init: function () {
+    init() {
         lib.configOL.number = 8;
         const origin = lib.element.player.phaseDraw;
         lib.element.player.phaseDraw = function () {
@@ -29,14 +29,14 @@ const brawl = {
         lib.skill._bolbingjing2 = {
             charlotte: true,
             mod: {
-                cardUsable: function (card, player, num) {
+                cardUsable(card, player, num) {
                     if (card.name == 'sha') return num + 1;
                 },
             },
         };
     },
     content: {
-        chooseCharacterBefore: function () {
+        chooseCharacterBefore() {
             for (var skill in lib.skill) {
                 var trans = get.plainText(lib.translate[skill + '_info'] || '');
                 if (trans.includes('受到') && trans.includes('点伤害后')) {

@@ -10,21 +10,21 @@ const brawl = {
         '胜利条件：率先击败对方所有武将',
         '玩家方胜利后，可以选择对决强敌（？？/？？双将组合），若选择对决，无论对局是否胜利均不会影响游戏结果（即玩家胜利）',
     ],
-    init: function () {
+    init() {
         lib.configOL.number = 2;
         lib.config.mode_config.identity.double_hp = 'hejiansan';
         lib.config.mode_config.identity.double_character = false;
     },
     content: {
         submode: 'normal',
-        chooseCharacterBefore: function () {
+        chooseCharacterBefore() {
             lib.translate.fan = '先';
             lib.translate.fan2 = '先手';
             lib.translate.zhong = '后';
             lib.translate.zhong2 = '后手';
             if (!_status.characterlist) lib.skill.pingjian.initList();
             game.bilibili_wuhuang = {
-                getFriends: function (func) {
+                getFriends(func) {
                     var self = false;
                     var player = this;
                     if (func === true) {
@@ -36,23 +36,23 @@ const brawl = {
                         return get.rawAttitude(player, current) > 0;
                     });
                 },
-                isFriendOf: function (player) {
+                isFriendOf(player) {
                     return this.getFriends(true).includes(player);
                 },
-                getEnemies: function (func) {
+                getEnemies(func) {
                     var player = this;
                     return game.filterPlayer(function (current) {
                         return get.rawAttitude(player, current) < 0;
                     });
                 },
-                isEnemyOf: function (player) {
+                isEnemyOf(player) {
                     return this.getEnemies(true).includes(player);
                 },
-                dieAfter: function () {
+                dieAfter() {
                     var target = this;
                     if (!_status.characterMap[game.me.identity].length || (game.wuhuangED && target == game.me.enemy)) game.checkResult();
                 },
-                dieAfter2: function () {
+                dieAfter2() {
                     var next, target = this;
                     if (target == game.me || _status.characterMap[game.me.enemy.identity].length) {
                         next = game.createEvent('replacePlayerSingle', false, _status.event.getParent());

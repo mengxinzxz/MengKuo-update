@@ -16,7 +16,7 @@ const brawl = {
         '【跋扈】：判定阶段开始时，你可以弃置两张手牌并弃置判定区所有牌。',
         '农民死亡后，其队友可以选择摸两张牌或回复1点体力',
     ],
-    init: function () {
+    init() {
         if (!lib.config.extension_活动萌扩_chooseSex) lib.config.extension_活动萌扩_chooseSex = 'male';
         //空白角色
         if (!_status.characterlist) lib.skill.pingjian.initList();
@@ -85,11 +85,11 @@ const brawl = {
         lib.skill.decade_feiyang = {
             charlotte: true,
             trigger: { player: 'phaseJudgeBegin' },
-            filter: function (event, player) {
+            filter(event, player) {
                 return player.countCards('j') && player.countCards('h') >= 2;
             },
             direct: true,
-            content: function () {
+            content() {
                 'step 0'
                 player.chooseToDiscard(get.prompt2('decade_bahu'), 2).set('ai', function (card) {
                     return 6 - get.value(card);
@@ -101,13 +101,13 @@ const brawl = {
         lib.skill.decade_bahu = {
             charlotte: true,
             mod: {
-                cardUsable: function (card, player, num) {
+                cardUsable(card, player, num) {
                     if (card.name == 'sha') return num + 1;
                 },
             },
             trigger: { player: 'phaseZhunbeiBegin' },
             forced: true,
-            content: function () {
+            content() {
                 player.draw();
             },
         };
@@ -118,11 +118,11 @@ const brawl = {
     },
     content: {
         submode: 'normal',
-        chooseCharacterBefore: function () {
+        chooseCharacterBefore() {
             if (!_status.characterlist) lib.skill.pingjian.initList();
             game.decadeDouDiZhu = {
                 hasZhuSkill: () => false,
-                $dieAfter: function () {
+                $dieAfter() {
                     if (_status.video) return;
                     if (!this.node.dieidentity) {
                         var str = { zhu: '地主', fan: '农民' }[this.identity];
@@ -147,10 +147,10 @@ const brawl = {
                         this.node.dieidentity.style.transform = '';
                     }
                 },
-                dieAfter: function () {
+                dieAfter() {
                     game.checkResult();
                 },
-                dieAfter2: function () {
+                dieAfter2() {
                     if (this.identity != 'fan') return;
                     var player = this, target = game.findPlayer(function (current) {
                         return current != player && current.identity == 'fan';

@@ -3,7 +3,7 @@ export let config = {
 	HDcheckNew: {
 		name: '<span style="font-family: xingkai">点击查看更新公告</span>',
 		clear: true,
-		onclick: function () {
+		onclick() {
 			try { game.bolShowNewPackx() }
 			catch (e) { alert('打开更新公告时出问题了，请凭此截图找萌新转型中反馈此bug') }
 		},
@@ -25,7 +25,7 @@ export let config = {
 	view_DDZname: {
 		clear: true,
 		name: '新斗地主默认将池一览',
-		onclick: function () {
+		onclick() {
 			alert(get.translation([
 				'shen_zhaoyun', 'shen_ganning', 'liuyan', 'xizhicai', 're_wuyi', 'xin_lingtong', 'zhoushan', 'chengui',
 				'dc_liuye', 'dc_tengfanglan', 'shen_machao', 'shen_zhangfei', 'shen_zhangjiao', 'shen_dengai', 're_liuzan', 'caojinyu',
@@ -37,7 +37,7 @@ export let config = {
 	edit_DDZname: {
 		name: '编辑新服斗地主专属将池',
 		clear: true,
-		onclick: function () {
+		onclick() {
 			var container = ui.create.div('.popup-container.editor');
 			var node = container;
 			var map = lib.config.extension_活动萌扩_DDZname || [
@@ -110,7 +110,7 @@ export let config = {
 	reset_DDZname: {
 		name: '重置新服斗地主专属将池',
 		clear: true,
-		onclick: function () {
+		onclick() {
 			if (confirm('是否重置已编辑的新服斗地主将池？')) {
 				if (confirm('该操作不可撤销！是否确认重置？')) {
 					game.saveConfig('extension_活动萌扩_DDZname', null);

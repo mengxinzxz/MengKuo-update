@@ -35,7 +35,7 @@ const brawl = {
         '击杀奖惩：击杀不同势力的角色和队友各摸一张牌；击杀队友的角色弃置所有牌。',
         '禁用将池：左慈，布骘，蔡文姬，大乔，徐晃，黄皓，灵雎，SP贾诩(OL)，司马师(手杀)，神貂蝉，神邓艾，标袁术(OL)',
     ],
-    init: function () {
+    init() {
         if (!_status.characterlist) lib.skill.pingjian.initList();
         for (var i in lib.skill) {
             if (lib.skill[i].changeSeat) {
@@ -61,20 +61,20 @@ const brawl = {
                     fullimage: true,
                     type: 'basic',
                     cardcolor: 'red',
-                    enable: function (card, player) {
+                    enable(card, player) {
                         return game.hasPlayer(function (target) {
                             return player.identity == target.identity && target.isDamaged();
                         });
                     },
-                    filterTarget: function (card, player, target) {
+                    filterTarget(card, player, target) {
                         return player.identity == target.identity && target.isDamaged();
                     },
-                    content: function () {
+                    content() {
                         target.recover();
                     },
                     ai: {
                         basic: {
-                            order: function (card, player) {
+                            order(card, player) {
                                 if (player.hasSkillTag('pretao')) return 5;
                                 return 2;
                             },
@@ -82,7 +82,7 @@ const brawl = {
                             value: [8, 6.5, 5, 4],
                         },
                         result: {
-                            player: function (player, target) {
+                            player(player, target) {
                                 return get.recoverEffect(target, player, player);
                             },
                         },
@@ -95,21 +95,21 @@ const brawl = {
                     image: 'ext:活动萌扩/image/xionghuangjiu.png',
                     fullimage: true,
                     type: "basic",
-                    enable: function (event, player) {
+                    enable(event, player) {
                         return !player.hasSkill('jiu');
                     },
                     lianheng: true,
                     logv: false,
-                    savable: function (card, player, dying) {
+                    savable(card, player, dying) {
                         return dying == player;
                     },
                     usable: 1,
                     selectTarget: -1,
                     modTarget: true,
-                    filterTarget: function (card, player, target) {
+                    filterTarget(card, player, target) {
                         return target == player;
                     },
-                    content: function () {
+                    content() {
                         if (target.isDying()) {
                             target.recover();
                             if (_status.currentPhase == target) {
@@ -142,7 +142,7 @@ const brawl = {
                     },
                     ai: {
                         basic: {
-                            useful: function (card, i) {
+                            useful(card, i) {
                                 if (_status.event.player.hp > 1) {
                                     if (i == 0) return 5;
                                     return 1;
@@ -150,7 +150,7 @@ const brawl = {
                                 if (i == 0) return 7.3;
                                 return 3;
                             },
-                            value: function (card, player, i) {
+                            value(card, player, i) {
                                 if (player.hp > 1) {
                                     if (i == 0) return 5;
                                     return 1;
@@ -159,11 +159,11 @@ const brawl = {
                                 return 3;
                             },
                         },
-                        order: function () {
+                        order() {
                             return get.order({ name: 'sha' }) + 0.2;
                         },
                         result: {
-                            target: function (player, target) {
+                            target(player, target) {
                                 if (target && target.isDying()) return 2;
                                 if (lib.config.mode == 'stone' && !player.isMin()) {
                                     if (player.getActCount() + 1 >= player.actcount) return 0;
@@ -209,10 +209,10 @@ const brawl = {
                     enable: true,
                     type: 'trick',
                     selectTarget: -1,
-                    filterTarget: function (card, player, target) {
+                    filterTarget(card, player, target) {
                         return player.identity == target.identity;
                     },
-                    content: function () {
+                    content() {
                         target.draw('nodelay');
                     },
                     ai: {
@@ -237,7 +237,7 @@ const brawl = {
                     enable: true,
                     selectTarget: -1,
                     filterTarget: true,
-                    content: function () {
+                    content() {
                         target.draw(player.identity == target.identity ? game.countGroup() : 1, 'nodelay');
                     },
                     ai: {
@@ -247,7 +247,7 @@ const brawl = {
                             value: 7,
                         },
                         result: {
-                            target: function (player, target) {
+                            target(player, target) {
                                 return player.identity == target.identity ? 100 : 1;
                             },
                         },
@@ -262,10 +262,10 @@ const brawl = {
                     fullimage: true,
                     enable: true,
                     type: 'trick',
-                    filterTarget: function (card, player, target) {
+                    filterTarget(card, player, target) {
                         return player.identity != target.identity;
                     },
-                    content: function () {
+                    content() {
                         for (var i of game.filterPlayer(function (current) {
                             return target.identity == current.identity;
                         })) {
@@ -293,10 +293,10 @@ const brawl = {
                     type: 'equip',
                     subtype: 'equip1',
                     ai: {
-                        order: function () {
+                        order() {
                             return get.order({ name: 'sha' }) - 0.1;
                         },
-                        equipValue: function (card, player) {
+                        equipValue(card, player) {
                             if (player._liannu_temp) return 1;
                             player._liannu_temp = true;
                             var result = function () {
@@ -333,7 +333,7 @@ const brawl = {
                     charlotte: true,
                     ruleSkill: true,
                     mod: {
-                        cardSavable: function (card, player, target) {
+                        cardSavable(card, player, target) {
                             if (player.identity != target.identity) return false;
                         },
                     },
@@ -342,22 +342,22 @@ const brawl = {
                 _LZ_jiazu_wei: {
                     trigger: { player: 'phaseBegin' },
                     direct: true,
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return player.identity == 'wei' && player.countCards('he') > 0;
                     },
-                    content: function () {
+                    content() {
                         'step 0'
                         player.chooseCardTarget({
                             prompt: get.prompt2(event.name),
                             filterCard: lib.filter.cardDiscardable,
-                            filterTarget: function (card, player, target) {
+                            filterTarget(card, player, target) {
                                 return player.identity != target.identity;
                             },
                             position: 'he',
-                            ai1: function (card) {
+                            ai1(card) {
                                 return 6 - get.value(card);
                             },
-                            ai2: function (target) {
+                            ai2(target) {
                                 var player = _status.event.player;
                                 return (2 - get.sgn(get.attitude(player, target))) / (target.countCards('he') + 1);
                             },
@@ -375,38 +375,38 @@ const brawl = {
                 },
                 _LZ_jiazu_shu: {
                     mod: {
-                        cardUsable: function (card, player, num) {
+                        cardUsable(card, player, num) {
                             if (card.name == 'sha' && player.identity == 'shu') return num + 1;
                         },
                     },
                     trigger: { player: 'phaseUseEnd' },
                     forced: true,
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return player.identity == 'shu' && player.getHistory('useCard', function (evt) {
                             return evt.card && evt.card.name == 'sha' && evt.getParent('phaseUse') == event;
                         }).length > 1;
                     },
-                    content: function () {
+                    content() {
                         player.draw();
                     },
                 },
                 _LZ_jiazu_wu: {
                     trigger: { player: 'phaseEnd' },
                     forced: true,
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return player.identity == 'wu' && player.countCards('h') != player.hp;
                     },
-                    content: function () {
+                    content() {
                         player.draw();
                     },
                 },
                 _LZ_jiazu_qun: {
                     trigger: { player: 'phaseDiscardBegin' },
                     forced: true,
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return player.identity == 'qun' && (player.isDamaged() || player.countCards('h') - player.hp > 1);
                     },
-                    content: function () {
+                    content() {
                         var num = 0;
                         if (player.isDamaged()) num++;
                         if (player.countCards('h') - player.hp > 1) num++;
@@ -416,7 +416,7 @@ const brawl = {
                 },
                 _LZ_jiazu_jin: {
                     trigger: { player: 'phaseDrawEnd' },
-                    filter: function (event, player) {
+                    filter(event, player) {
                         var hs = player.getCards('h');
                         return player.identity == 'jin' && hs.length > 0 && player.getHistory('gain', function (evt) {
                             if (evt.getParent().name != 'draw' || evt.getParent('phaseDraw') != event) return false;
@@ -426,7 +426,7 @@ const brawl = {
                             return false;
                         }).length > 0;
                     },
-                    check: function (event, player) {
+                    check(event, player) {
                         var hs = player.getCards('h'), cards = [], suits = [];
                         player.getHistory('gain', function (evt) {
                             if (evt.getParent().name != 'draw' || evt.getParent('phaseDraw') != event) return false;
@@ -439,7 +439,7 @@ const brawl = {
                         });
                         return cards.length == suits.length;
                     },
-                    content: function () {
+                    content() {
                         var hs = player.getCards('h'), cards = [], suits = [];
                         player.getHistory('gain', function (evt) {
                             if (evt.getParent().name != 'draw' || evt.getParent('phaseDraw') != trigger) return false;
@@ -458,7 +458,7 @@ const brawl = {
                     noGlobal: true,
                     onremove: true,
                     mod: {
-                        maxHandcard: function (player, num) {
+                        maxHandcard(player, num) {
                             return num + player.countMark('LZqunxin_temp');
                         },
                     },
@@ -470,10 +470,10 @@ const brawl = {
                     },
                     trigger: { player: 'damageEnd' },
                     forced: true,
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return player._LZ_jiazuAwaken && player.identity == 'wei';
                     },
-                    content: function () {
+                    content() {
                         player.draw();
                     },
                 },
@@ -484,10 +484,10 @@ const brawl = {
                     },
                     trigger: { source: 'damageSource' },
                     forced: true,
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return player._LZ_jiazuAwaken && player.identity == 'shu' && event.card && event.card.name == 'sha';
                     },
-                    content: function () { player.draw() },
+                    content() { player.draw() },
                 },
                 _LZ_jiazu_awaken_wu: {
                     popup: '武昌',
@@ -496,10 +496,10 @@ const brawl = {
                     },
                     trigger: { player: 'useCard' },
                     forced: true,
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return player._LZ_jiazuAwaken && player.identity == 'wu' && get.type(event.card) == 'equip';
                     },
-                    content: function () {
+                    content() {
                         player.draw();
                     },
                 },
@@ -510,14 +510,14 @@ const brawl = {
                     },
                     trigger: { player: 'useCardToPlayered' },
                     forced: true,
-                    filter: function (event, player) {
+                    filter(event, player) {
                         if (!player._LZ_jiazuAwaken || player.identity != 'qun' || !event.isFirstTarget || get.type(event.card, 'trick') != 'trick') return false;
                         for (var i = 0; i < event.targets.length; i++) {
                             if (event.targets[i] != player) return true;
                         }
                         return false;
                     },
-                    content: function () {
+                    content() {
                         player.draw();
                     },
                 },
@@ -528,7 +528,7 @@ const brawl = {
                     },
                     trigger: { player: 'phaseJieshuBegin' },
                     forced: true,
-                    filter: function (event, player) {
+                    filter(event, player) {
                         if (!player._LZ_jiazuAwaken || player.identity != 'jin') return false;
                         var hs = player.getCards('h'), suits = [];
                         if (hs.length < 3) return true;
@@ -538,7 +538,7 @@ const brawl = {
                         }
                         return true;
                     },
-                    content: function () {
+                    content() {
                         player.draw();
                     },
                 },
@@ -546,10 +546,10 @@ const brawl = {
                 _LZ_jiazu_awaken: {
                     trigger: { global: 'die' },
                     forced: true,
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return !player._LZ_jiazuAwaken && event.player.identity == player.identity;
                     },
-                    content: function () {
+                    content() {
                         player._LZ_jiazuAwaken = true;
                         var name = '_LZ_jiazu_awaken_' + player.identity;
                         if (lib.skill[name]) player.markSkill(name);
@@ -564,14 +564,14 @@ const brawl = {
                     limited: true,
                     skillAnimation: true,
                     animationColor: 'wood',
-                    filter: function (event, player) {
+                    filter(event, player) {
                         if (event.type == 'dying') {
                             if (player != event.dying) return false;
                             return true;
                         }
                         return false;
                     },
-                    content: function () {
+                    content() {
                         'step 0'
                         player.awakenSkill('LZ_aiye');
                         player.discard(player.getCards('he'));
@@ -585,7 +585,7 @@ const brawl = {
                     ai: {
                         order: 0.1,
                         save: true,
-                        skillTagFilter: function (player, arg, target) {
+                        skillTagFilter(player, arg, target) {
                             return target == player;
                         },
                         result: { player: 1 },
@@ -597,20 +597,20 @@ const brawl = {
                     firstDo: true,
                     trigger: { player: 'useCard1' },
                     forced: true,
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return !event.audioed && event.card.name == 'sha' && player.countUsed('sha', true) > 1 && event.getParent().type == 'phase';
                     },
-                    content: function () {
+                    content() {
                         trigger.audioed = true;
                     },
                     mod: {
-                        cardUsable: function (card, player, num) {
+                        cardUsable(card, player, num) {
                             var cardx = player.getEquip('liannu');
                             if (card.name == 'sha' && (!cardx || player.hasSkill('liannu_skill', null, false) || (!_status.liannu_temp && !ui.selected.cards.includes(cardx)))) {
                                 return num + 3;
                             }
                         },
-                        cardEnabled2: function (card, player) {
+                        cardEnabled2(card, player) {
                             if (!_status.event.addCount_extra || player.hasSkill('liannu_skill', null, false)) return;
                             if (card && card == player.getEquip('liannu')) {
                                 try {
@@ -673,7 +673,7 @@ const brawl = {
     content: {
         submode: 'normal',
         //牌堆替换
-        cardPile: function () {
+        cardPile() {
             for (var i = 0; i < lib.card.list.length; i++) {
                 switch (lib.card.list[i][2]) {
                     case 'tao': lib.card.list[i][2] = 'zong'; break;
@@ -688,7 +688,7 @@ const brawl = {
             return lib.card.list;
         },
         //更改游戏配置
-        chooseCharacterBefore: function () {
+        chooseCharacterBefore() {
             //游戏初始阵型
             game.statusNum = 1;
             if (!lib.config.extension_活动萌扩_chooseGroup) lib.config.extension_活动萌扩_chooseGroup = 'wei';
@@ -709,7 +709,7 @@ const brawl = {
             var current = _status.firstAct, currentSeat = 0;
             //覆盖一些设置
             game.LZelement = {
-                getFriends: function (func) {
+                getFriends(func) {
                     var self = false;
                     if (func === true) {
                         func = null;
@@ -721,23 +721,23 @@ const brawl = {
                         return current.identity == identity;
                     });
                 },
-                isFriendOf: function (player) {
+                isFriendOf(player) {
                     return this.getFriends(true).includes(player);
                 },
-                getEnemies: function (func) {
+                getEnemies(func) {
                     var player = this, identity = player.identity;
                     return game.filterPlayer(function (current) {
                         return current.identity != identity;
                     });
                 },
-                isEnemyOf: function (player) {
+                isEnemyOf(player) {
                     return this.getEnemies(true).includes(player);
                 },
-                logAi: function () { },
-                hasZhuSkill: function (skill) {
+                logAi() { },
+                hasZhuSkill(skill) {
                     return false;
                 },
-                dieAfter: function (source) {
+                dieAfter(source) {
                     if (source) {
                         if (source.identity != this.identity) {
                             var fellow = game.findPlayer(function (current) {

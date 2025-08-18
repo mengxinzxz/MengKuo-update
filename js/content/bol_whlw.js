@@ -13,7 +13,7 @@ const brawl = {
         '<ul><li>官方禁将：贾诩、周泰、蔡文姬、于吉、大乔、徐晃、灵雎、袁绍、曹丕、满宠，以及这些武将的所有同名异构武将（个人有删减）' +
         '</li><li>个人禁将：曹肇、卢弈、TW曹操、刘徽、OL董昭',
     ],
-    init: function () {
+    init() {
         lib.configOL.number = 8;
         lib.config.mode_config.identity.auto_mark_identity = false;
         lib.config.mode_config.identity.double_character = false;
@@ -25,11 +25,11 @@ const brawl = {
                     type: 'trick',
                     enable: true,
                     selectTarget: 1,
-                    filterTarget: function (card, player, target) {
+                    filterTarget(card, player, target) {
                         if (player == target) return false;
                         return target.countCards('h') + target.countCards('h') > 1;
                     },
-                    content: function () {
+                    content() {
                         var cards = player.getCards('h').concat(target.getCards('h'));
                         var list1 = [];
                         var list2 = [];
@@ -53,7 +53,7 @@ const brawl = {
                             value: 5,
                         },
                         result: {
-                            target: function (player, target) {
+                            target(player, target) {
                                 var ph = player.countCards('h') - 1;
                                 var th = target.countCards('h');
                                 return ph - th;
@@ -69,11 +69,11 @@ const brawl = {
                     enable: true,
                     selectTarget: -1,
                     toself: true,
-                    filterTarget: function (card, player, target) {
+                    filterTarget(card, player, target) {
                         return target == player;
                     },
                     modTarget: true,
-                    content: function () {
+                    content() {
                         'step 0'
                         event.current = player.next;
                         'step 1'
@@ -103,7 +103,7 @@ const brawl = {
                             value: 9.2,
                         },
                         result: {
-                            player: function (player) {
+                            player(player) {
                                 var num = 0;
                                 var players = game.filterPlayer();
                                 for (var i = 0; i < players.length; i++) {
@@ -136,11 +136,11 @@ const brawl = {
                     enable: true,
                     selectTarget: -1,
                     toself: true,
-                    filterTarget: function (card, player, target) {
+                    filterTarget(card, player, target) {
                         return target == player;
                     },
                     modTarget: true,
-                    content: function () {
+                    content() {
                         var equiplist = [];
                         for (var i = 0; i < game.players.length; i++) {
                             equiplist = equiplist.concat(game.players[i].getCards('e'));
@@ -157,7 +157,7 @@ const brawl = {
                             value: 5,
                         },
                         result: {
-                            target: function (player, target) {
+                            target(player, target) {
                                 var num = game.countPlayer(function (current) {
                                     return current.countCards('e');
                                 });
@@ -173,10 +173,10 @@ const brawl = {
                     type: 'trick',
                     enable: true,
                     selectTarget: 1,
-                    filterTarget: function (card, player, target) {
+                    filterTarget(card, player, target) {
                         return player != target;
                     },
-                    content: function () {
+                    content() {
                         'step 0'
                         event.num = player.hp + target.hp - 2;
                         event.num1 = 1;
@@ -221,7 +221,7 @@ const brawl = {
                             value: 5,
                         },
                         result: {
-                            target: function (player, target) {
+                            target(player, target) {
                                 var ph = player.hp;
                                 var pm = player.maxHp;
                                 var th = target.hp;
@@ -243,7 +243,7 @@ const brawl = {
                 _wenheluanwu_skill: {
                     charlotte: true,
                     ruleSkill: true,
-                    isAct: function (player) {
+                    isAct(player) {
                         for (var i = player.actionHistory.length - 1; i >= 0; i--) {
                             var history = player.actionHistory[i].useSkill;
                             if (history.some(evt => evt.skill == '_wenheluanwu_skill')) return true;
@@ -252,7 +252,7 @@ const brawl = {
                         return false;
                     },
                     trigger: { global: ['roundStart', 'roundEnd'] },
-                    filter: function (event, player, name) {
+                    filter(event, player, name) {
                         if (name === 'roundEnd') return _status.luanwu_result == 'luanwu6';
                         return !game.hasPlayer2(current => lib.skill._wenheluanwu_skill.isAct(current));
                     },
@@ -296,7 +296,7 @@ const brawl = {
                             }
                         }
                     },
-                    luanwu: function () {
+                    luanwu() {
                         'step 0'
                         var target = game.filterPlayer().randomGet();
                         if (!target) return;
@@ -334,15 +334,15 @@ const brawl = {
                 _whlw_effect: {
                     //规则丶濒死不能救助其他参赛者
                     mod: {
-                        cardSavable: function (card, player, target) {
+                        cardSavable(card, player, target) {
                             if (target != player) return false;
                         },
                         //宴安鸠毒
-                        cardname: function (card, player, name) {
+                        cardname(card, player, name) {
                             if (!_status.luanwu_result || _status.luanwu_result != 'luanwu7') return;
                             if (card.name == 'tao') return 'du';
                         },
-                        aiValue: function (player, card, num) {
+                        aiValue(player, card, num) {
                             if (!_status.luanwu_result || _status.luanwu_result != 'luanwu7') return;
                             if (get.name(card) == 'du' && card.name != 'du') return get.value({ name: card.name });
                         },
@@ -354,7 +354,7 @@ const brawl = {
                         source: 'damageBegin1',
                         player: ['phaseBegin', 'phaseEnd'],
                     },
-                    filter: function (event, player, name) {
+                    filter(event, player, name) {
                         if (!_status.luanwu_result) return false;
                         switch (name) {
                             case 'damageBegin1': return _status.luanwu_result == 'luanwu5'; break;
@@ -365,7 +365,7 @@ const brawl = {
                     forced: true,
                     popup: false,
                     firstDo: true,
-                    content: function () {
+                    content() {
                         if (trigger.name == 'damage') trigger.num++;
                         if (event.triggername == 'phaseBegin') {
                             player.loseHp();
@@ -426,7 +426,7 @@ const brawl = {
     },
     content: {
         submode: 'normal',
-        cardPile: function () {
+        cardPile() {
             for (var i = 0; i < lib.card.list.length; i++) {
                 switch (lib.card.list[i][2]) {
                     case 'wuxie': lib.card.list[i][2] = (['heart', 'diamond'].includes(lib.card.list[i][0]) ? 'whlw_lidaitaojiang' : 'whlw_toulianghuanzhu'); break;
@@ -437,23 +437,23 @@ const brawl = {
             }
             return lib.card.list;
         },
-        chooseCharacterBefore: function () {
+        chooseCharacterBefore() {
             var element = {
-                getFriends: function (func) {
+                getFriends(func) {
                     return func === true ? [this] : [];
                 },
-                isFriendOf: function (player) {
+                isFriendOf(player) {
                     return this.getFriends(true).includes(player);
                 },
-                getEnemies: function (func) {
+                getEnemies(func) {
                     var player = this;
                     return game.filterPlayer(current => current != player);
                 },
-                isEnemyOf: function (player) {
+                isEnemyOf(player) {
                     return this.getEnemies(true).includes(player);
                 },
-                logAi: function () { },
-                dieAfter: function (source) {
+                logAi() { },
+                dieAfter(source) {
                     this.$dieAfter();
                     game.checkResult();
                     if (source) {
@@ -464,7 +464,7 @@ const brawl = {
                         source.gainMaxHp(num);
                     }
                 },
-                $dieAfter: function () {
+                $dieAfter() {
                     if (_status.video) return;
                     var str = get.cnNumber(game.players.length + 1, true);
                     var node = ui.create.div('.damage.dieidentity', '第' + str, this);

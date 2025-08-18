@@ -15,7 +15,7 @@ const brawl = {
         ' <img width="65" src="' + lib.assetURL + 'extension/活动萌扩/image/bolxingyun_zhuanyun.png">' +
         ' <img width="65" src="' + lib.assetURL + 'extension/活动萌扩/image/bolxingyun_tianqian.png">'
     ],
-    showcase: function (init) {
+    showcase(init) {
         var xysix = ui.create.div();
         xysix.style.height = '336px';
         xysix.style.width = '628px';
@@ -24,7 +24,7 @@ const brawl = {
         xysix.setBackgroundImage('extension/活动萌扩/image/bolxingyunsixsixsix.png');
         this.appendChild(xysix);
     },
-    init: function () {
+    init() {
         lib.configOL.number = 5;
         lib.translate.bolxingyun_tao = '幸运桃';
         lib.translate.bolxingyun_tao_info = '回复1点体力';
@@ -37,12 +37,12 @@ const brawl = {
         lib.skill._bolxingyunsixsixsix = {
             charlotte: true,
             trigger: { player: ['useCard', 'respond'] },
-            filter: function (event, player) {
+            filter(event, player) {
                 return event.card && get.number(event.card) == 6;
             },
             direct: true,
             priority: Infinity,
-            content: function () {
+            content() {
                 'step 0'
                 var name = _status.xingyunCard.randomRemove();
                 var cardname = name;
@@ -85,7 +85,7 @@ const brawl = {
         };
     },
     content: {
-        gameStart: function () {
+        gameStart() {
             _status.xingyunCard = ['bolxingyun_tao', 'bolxingyun_tao', 'bolxingyun_wuzhong', 'bolxingyun_wuzhong', 'bolxingyun_zhuanyun', 'bolxingyun_tianqian'];
         },
     },

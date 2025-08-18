@@ -11,8 +11,8 @@ lib.init.css(lib.assetURL + 'extension/活动萌扩', 'extension');
 game.bolShowNewPackx = function () {
 	//更新告示
 	let HuoDong_update = [
-		'删除消耗萌币系统的功能，目前仅保留下载扩展和日登录获取萌币，未来将会对萌币功能进行全面升级',
-		'缩小部分模式名称使得样式更工整',
+		'修复部分模式因态度判定和敌友判定引发的弹窗bug',
+		'修复昆阳之战刘秀拥有信念标记无法触发休整的bug',
 		'To be continued...',
 	];
 	//加载

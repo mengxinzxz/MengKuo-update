@@ -8,7 +8,7 @@ const brawl = {
         '游戏开始时，反贼和忠臣率先选将（三号位反贼选将范围默认为刘禅/刘备/荀彧/界鲁肃），然后玩家从八张武将牌中选择一张作为自己的武将牌',
         '其余条件同身份模式',
     ],
-    init: function () {
+    init() {
         lib.configOL.number = 4;
         lib.config.mode_config.identity.double_character = false;
         lib.config.mode_config.identity.auto_mark_identity = false;
@@ -16,7 +16,7 @@ const brawl = {
     },
     content: {
         submode: 'normal',
-        chooseCharacterBefore: function () {
+        chooseCharacterBefore() {
             game.players.sortBySeat(game.me);
             var targets = game.players.sortBySeat(game.me);
             game.zhu = game.me;

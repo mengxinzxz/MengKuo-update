@@ -10,11 +10,11 @@ const brawl = {
         '当一名角色死亡后，其所有存活友方角色各摸一张牌',
         '击败所有敌方阵营的角色获得游戏胜利',
     ],
-    init: function () {
+    init() {
         lib.skill._OLdoubleThree_view = {
             ai: {
                 viewHandcard: true,
-                skillTagFilter: function (player, arg, target) {
+                skillTagFilter(player, arg, target) {
                     return target != player && target.identity == player.identity;
                 },
             },
@@ -26,10 +26,10 @@ const brawl = {
         };
         game.OLrule = {
             hasZhuSkill: () => false,
-            dieAfter: function () {
+            dieAfter() {
                 game.checkResult();
             },
-            dieAfter2: function () {
+            dieAfter2() {
                 var identity = this.identity;
                 var targets = game.filterPlayer(function (current) {
                     return current.identity == identity;
@@ -45,7 +45,7 @@ const brawl = {
     },
     content: {
         submode: 'normal',
-        chooseCharacterBefore: function () {
+        chooseCharacterBefore() {
             game.zhu = game.players[get.rand(0, game.players.length - 1)];
             game.players.sortBySeat(game.zhu);
             lib.translate.fan = '龙';

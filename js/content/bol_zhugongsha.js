@@ -10,7 +10,7 @@ const brawl = {
         '击杀奖惩新增一条：内奸/反贼击杀忠臣摸三张牌',
         '场上两名角色阵亡后，所有角色出牌阶段使用【杀】的额定次数+1',
     ],
-    init: function () {
+    init() {
         if (lib.skill._fenghuyunlong) delete lib.skill._fenghuyunlong;//防止忠臣身份查探
         lib.element.player.dieAfter2 = function (source) {
             if (this.identity == 'fan' && source) source.draw(3);
@@ -25,11 +25,11 @@ const brawl = {
                 charlotte: true,
                 superCharlotte: true,
                 trigger: { global: 'phaseBefore', player: 'enterGame' },
-                filter: function (event, player) {
+                filter(event, player) {
                     return event.name != 'phase' || game.phaseNumber == 0;
                 },
                 direct: true,
-                content: function () {
+                content() {
                     'step 0'
                     player.chooseTarget(get.prompt('bol_mingcha'), '公开查探一名其他角色的身份是否为反贼', lib.filter.notMe).set('ai', function (target) {
                         return 1 + Math.random();
@@ -61,12 +61,12 @@ const brawl = {
                 marktext: '战',
                 intro: { content: 'mark' },
                 trigger: { player: ['phaseZhunbeiBegin', 'phaseJieshuBegin'] },
-                filter: function (event, player) {
+                filter(event, player) {
                     if (event.name == 'phaseZhunbei') return player.hasMark('bol_fenzhan');
                     return (!player.getHistory('sourceDamage').length && player.hasMark('bol_fenzhan')) || (player.getHistory('sourceDamage').length && player.countMark('bol_fenzhan') < 3);
                 },
                 forced: true,
-                content: function () {
+                content() {
                     if (trigger.name == 'phaseZhunbei') player.draw(player.countMark('bol_fenzhan'));
                     else {
                         if (!player.getHistory('sourceDamage').length && player.hasMark('bol_fenzhan')) player.removeMark('bol_fenzhan', 1);
@@ -77,7 +77,7 @@ const brawl = {
             _bol_aozhan_buff: {
                 ruleSkill: true,
                 mod: {
-                    cardUsable: function (card, player, num) {
+                    cardUsable(card, player, num) {
                         if (card.name == 'sha' && game.dead.length >= 2) return num + 1;
                     },
                 },
@@ -93,7 +93,7 @@ const brawl = {
         game.bolLoadTrans(translate);
     },
     content: {
-        gameStart: function () {
+        gameStart() {
             for (var i of game.players) {
                 i.dieAfter2 = function (source) {
                     if (this.identity == 'fan' && source) source.draw(3);

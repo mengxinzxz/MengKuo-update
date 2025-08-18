@@ -11,7 +11,7 @@ const brawl = {
         '<span class=\'texiaotext\' style=\'color:#FF0000\'>一阶段boss【堕魔】数值累计+7，二阶段boss【堕魔】数值累计+12后亦会进入重整状态</span>，三个阶段【堕魔】数值均不重置',
         '击败三个形态的boss后盟军获得游戏胜利，盟军全员阵亡游戏失败',
     ],
-    init: function () {
+    init() {
         var sheet = '{text-shadow:rgba(20,20,200,1) 0 0 2px,rgba(20,20,200,1) 0 0 5px,rgba(57, 123, 4,1) 0 0 5px,rgba(20,20,200,1) 0 0 5px,black 0 0 1px;}';
         lib.init.sheet('.player .identity[data-color="HuNv"]' + sheet);
         lib.configOL.number = 3;
@@ -31,14 +31,14 @@ const brawl = {
                     superCharlotte: true,
                     ruleSkill: true,
                     trigger: { global: 'phaseAfter' },
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return player == game.HuNv && player.isDead() && (game.players.length == 1 || event.player.getSeatNum() == 2);
                     },
                     forceDie: true,
                     direct: true,
                     lastDo: true,
                     priority: -Infinity,
-                    content: function () {
+                    content() {
                         'step 0'
                         player.revive();
                         game.HuNvRound++;
@@ -55,11 +55,11 @@ const brawl = {
                     superCharlotte: true,
                     ruleSkill: true,
                     trigger: { global: 'phaseBefore' },
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return game.phaseNumber == 0 && player.identity == 'cai';
                     },
                     direct: true,
-                    content: function () {
+                    content() {
                         'step 0'
                         var skills = game.HuNv_sixieSkills.filter(function (skill) {
                             return !player.hasSkill(skill);
@@ -84,14 +84,14 @@ const brawl = {
                     },
                 },
                 HuNv_sixie: {
-                    init: function (player) {
+                    init(player) {
                         player.storage.HuNv_sixie = [];
                     },
                     charlotte: true,
                     superCharlotte: true,
                     trigger: { player: 'phaseZhunbeiBegin' },
                     direct: true,
-                    content: function () {
+                    content() {
                         'step 0'
                         var skills = game.HuNv_sixieSkills.filter(function (skill) {
                             return !player.hasSkill(skill);
@@ -131,28 +131,28 @@ const brawl = {
                     },
                 },
                 HuNv_duomo: {
-                    init: function (player) {
+                    init(player) {
                         if (!player.storage.HuNv_duomo) player.storage.HuNv_duomo = [0, 0, 0];
                     },
                     mark: true,
                     intro: {
                         markcount: () => undefined,
-                        content: function (storage) {
+                        content(storage) {
                             return '<li>准备阶段摸' + storage[0] + '张牌' +
                                 '<br><li>使用【杀】的次数上限+' + storage[1] +
                                 '<br><li>手牌上限+' + storage[2];
                         },
                     },
                     mod: {
-                        cardUsable: function (card, player, num) {
+                        cardUsable(card, player, num) {
                             if (card.name == 'sha') return num + player.storage.HuNv_duomo[1];
                         },
-                        maxHandcard: function (player, num) {
+                        maxHandcard(player, num) {
                             return num + player.storage.HuNv_duomo[2];
                         },
                     },
                     trigger: { global: 'logSkill', player: ['phaseZhunbeiBegin', 'phaseBegin'] },
-                    filter: function (event, player) {
+                    filter(event, player) {
                         var summer = player.storage.HuNv_duomo[0] + player.storage.HuNv_duomo[1] + player.storage.HuNv_duomo[2];
                         if (summer >= 15 && event.name != 'phaseZhunbei') return false;
                         if (event.name == 'phase') return true;
@@ -160,7 +160,7 @@ const brawl = {
                         return event.skill == 'HuNv_sixie' && event.player != player;
                     },
                     forced: true,
-                    content: function () {
+                    content() {
                         'step 0'
                         if (trigger.name == 'phaseZhunbei') {
                             player.draw(player.storage.HuNv_duomo[0]);
@@ -179,7 +179,7 @@ const brawl = {
                 },
                 HuNv_meihuo: {
                     inherit: 'xianzhen',
-                    content: function () {
+                    content() {
                         'step 0'
                         player.chooseToCompare(target);
                         'step 1'
@@ -194,12 +194,12 @@ const brawl = {
                 },
                 HuNv_yushou: {
                     trigger: { player: 'phaseUseBegin' },
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return player.hasValueTarget({ name: 'nanman', isCard: true });
                     },
                     forced: true,
                     locked: false,
-                    content: function () {
+                    content() {
                         player.chooseUseTarget(true, { name: 'nanman', isCard: true });
                     },
                 },
@@ -208,11 +208,11 @@ const brawl = {
                 },
                 HuNv_duanwei: {
                     trigger: { player: 'phaseJudgeBegin' },
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return player.countCards('j') && player.countCards('h') > 1;
                     },
                     direct: true,
-                    content: function () {
+                    content() {
                         'step 0'
                         player.chooseToDiscard('h', 2, get.prompt2('HuNv_duanwei')).set('ai', function (card) {
                             return 6 - get.value(card);
@@ -247,7 +247,7 @@ const brawl = {
     content: {
         submode: 'normal',
         //更改游戏配置
-        chooseCharacterBefore: function () {
+        chooseCharacterBefore() {
             //游戏初始加载
             game.HuNvRound = 1;
             game.HuNv_sixieSkills = [];
@@ -257,7 +257,7 @@ const brawl = {
             lib.translate.cai2 = '盟军';
             //覆盖一些设置
             game.HNelement = {
-                getFriends: function (func) {
+                getFriends(func) {
                     var self = false;
                     if (func === true) {
                         func = null;
@@ -269,23 +269,23 @@ const brawl = {
                         return current.identity == identity;
                     });
                 },
-                isFriendOf: function (player) {
+                isFriendOf(player) {
                     return this.getFriends(true).includes(player);
                 },
-                getEnemies: function (func) {
+                getEnemies(func) {
                     var player = this, identity = player.identity;
                     return game.filterPlayer(function (current) {
                         return current.identity != identity;
                     });
                 },
-                isEnemyOf: function (player) {
+                isEnemyOf(player) {
                     return this.getEnemies(true).includes(player);
                 },
-                logAi: function () { },
-                hasZhuSkill: function (skill) {
+                logAi() { },
+                hasZhuSkill(skill) {
                     return false;
                 },
-                dieAfter: function (source) {
+                dieAfter(source) {
                     game.checkResult();
                 },
             };

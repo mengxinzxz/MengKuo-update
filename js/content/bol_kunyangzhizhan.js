@@ -11,7 +11,7 @@ const brawl = {
         '<br>王莽的回合开始时，对刘秀进行嘲讽，刘秀失去3+X点体力（X为场上阵亡角色数）' +
         '<br>士兵死亡后，王莽和所有存活士兵各获得2点体力上限，回复2点体力，摸两张牌',
     ],
-    init: function () {
+    init() {
         lib.configOL.number = 6;
         lib.config.mode_config.identity.double_character = false;
         lib.config.mode_config.identity.auto_mark_identity = false;
@@ -33,11 +33,11 @@ const brawl = {
                     superCharlotte: true,
                     ruleSkill: true,
                     trigger: { global: 'phaseBefore' },
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return game.phaseNumber == 0 && player.identity == 'cai';
                     },
                     direct: true,
-                    content: function () {
+                    content() {
                         'step 0'
                         var skills = game.gwSkills.filter(skill => !player.hasSkill(skill)).randomGets(3);
                         if (!skills.length) { event.finish(); return; }
@@ -62,24 +62,20 @@ const brawl = {
                     superCharlotte: true,
                     ruleSkill: true,
                     trigger: { player: 'dieBefore' },
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return player.hasMark('_gw_xinnian') && player.identity == 'cai';
                     },
                     direct: true,
                     priority: 15,
-                    content: function () {
-                        'step 0'
+                    content() {
                         player.removeMark('_gw_xinnian', 1);
-                        'step 1'
-                        if (result.bool) {
-                            if (_status.gw_xinnian_return && _status.gw_xinnian_return[player.playerid]) trigger.cancel();
-                            else {
-                                trigger.setContent(lib.skill._gw_die.dieContent);
-                                trigger.includeOut = true;
-                            }
+                        if (_status.gw_xinnian_return && _status.gw_xinnian_return[player.playerid]) trigger.cancel();
+                        else {
+                            trigger.setContent(lib.skill._gw_die.dieContent);
+                            trigger.includeOut = true;
                         }
                     },
-                    dieContent: function () {
+                    dieContent() {
                         'step 0'
                         event.forceDie = true;
                         if (source) {
@@ -143,13 +139,13 @@ const brawl = {
                     superCharlotte: true,
                     ruleSkill: true,
                     trigger: { player: 'phaseBefore' },
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return !event._gw_xinnian_return && event.player.isOut() && _status.gw_xinnian_return[event.player.playerid];
                     },
                     direct: true,
                     forceDie: true,
                     forceOut: true,
-                    content: function () {
+                    content() {
                         'step 0'
                         _status.gw_xinnian_return[trigger.player.playerid]--;
                         if (_status.gw_xinnian_return[trigger.player.playerid]) event.finish();
@@ -167,11 +163,11 @@ const brawl = {
                     superCharlotte: true,
                     ruleSkill: true,
                     trigger: { global: 'restEnd' },
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return event.getTrigger().player == player;
                     },
                     direct: true,
-                    content: function () {
+                    content() {
                         'step 0'
                         player.draw(7);
                         'step 1'
@@ -185,13 +181,13 @@ const brawl = {
                     superCharlotte: true,
                     ruleSkill: true,
                     trigger: { global: 'roundStart' },
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return game.roundNumber > 7 && player.identity == 'cai';
                     },
                     direct: true,
                     forceDie: true,
                     forceOut: true,
-                    content: function () {
+                    content() {
                         'step 0'
                         var targets = game.filterPlayer(target => target != player);
                         if (targets.length) targets.forEach(target => player.throwEmotion(target, 'egg'));
@@ -208,12 +204,12 @@ const brawl = {
                     superCharlotte: true,
                     ruleSkill: true,
                     trigger: { player: 'phaseBegin' },
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return game.zhu.isIn() && player.identity == 'zhu';
                     },
                     forced: true,
                     logTarget: () => game.zhu,
-                    content: function () {
+                    content() {
                         var num = player.getAllHistory('useSkill', evt => evt.skill == '_gw_chaofeng').length;
                         game.broadcastAll(function (num) {
                             if (lib.config.background_speak) game.playAudio('..', 'extension', '活动萌扩/audio', 'gw_chaofeng' + parseFloat(num));
@@ -234,17 +230,17 @@ const brawl = {
                 //王莽
                 gw_jianqu: {
                     trigger: { player: ['damageBegin4', 'dying'] },
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return event.name == 'damage' || player.hp < 0;
                     },
                     forced: true,
-                    content: function () {
+                    content() {
                         if (trigger.name == 'dying') player.recover(1 - player.hp);
                         else trigger.num--;
                     },
                     ai: {
                         effect: {
-                            target: function (card, player, target) {
+                            target(card, player, target) {
                                 if (player.hasSkillTag('jueqing', false, target)) return;
                                 if (!get.tag(card, 'damage') || get.tag(card, 'damage') <= 1) return 'zerotarget';
                             },
@@ -270,7 +266,7 @@ const brawl = {
     },
     content: {
         submode: 'normal',
-        chooseCharacterBefore: function () {
+        chooseCharacterBefore() {
             //身份翻译
             lib.translate.cai = '盟';
             lib.translate.cai2 = '刘秀';
@@ -289,7 +285,7 @@ const brawl = {
             });
             //阵亡修改
             game.bilibili_gw = {
-                getFriends: function (func) {
+                getFriends(func) {
                     var self = false;
                     var player = this;
                     if (func === true) {
@@ -301,24 +297,24 @@ const brawl = {
                         return get.rawAttitude(player, current) > 0;
                     });
                 },
-                isFriendOf: function (player) {
+                isFriendOf(player) {
                     return this.getFriends(true).includes(player);
                 },
-                getEnemies: function (func) {
+                getEnemies(func) {
                     var player = this, identity = player.identity;
                     return game.filterPlayer(function (current) {
                         return get.rawAttitude(player, current) < 0;
                     });
                 },
-                isEnemyOf: function (player) {
+                isEnemyOf(player) {
                     return this.getEnemies(true).includes(player);
                 },
-                dieAfter: function () {
+                dieAfter() {
                     var that = this;
                     if (that.identity == 'zhu') target.chat('我焯，挂');
                     if (that.identity != 'zhong') game.checkResult();
                 },
-                dieAfter2: function (source) {
+                dieAfter2(source) {
                     var that = this;
                     if (that.identity == 'zhong') {
                         if (source && source.identity == 'cai') source.addMark('_gw_xinnian', 1);

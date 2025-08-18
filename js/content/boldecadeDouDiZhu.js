@@ -39,17 +39,17 @@ const brawl = {
         '【飞扬】：锁定技，你的摸牌阶段的摸牌数+1，出牌阶段使用【杀】的额定次数+1。<br>' +
         '【跋扈】：判定阶段开始时，你可以弃置两张手牌并弃置判定区所有牌。',
     ],
-    init: function () {
+    init() {
         lib.configOL.number = 3;
         lib.config.mode_config.identity.double_character = false;
         lib.skill.decade_feiyang = {
             charlotte: true,
             trigger: { player: 'phaseJudgeBegin' },
-            filter: function (event, player) {
+            filter(event, player) {
                 return player.countCards('j') && player.countCards('h') >= 2;
             },
             direct: true,
-            content: function () {
+            content() {
                 'step 0'
                 player.chooseToDiscard(get.prompt2('decade_bahu'), 2).set('ai', function (card) {
                     return 6 - get.value(card);
@@ -61,16 +61,16 @@ const brawl = {
         lib.skill.decade_bahu = {
             charlotte: true,
             mod: {
-                cardUsable: function (card, player, num) {
+                cardUsable(card, player, num) {
                     if (card.name == 'sha') return num + 1;
                 },
             },
             trigger: { player: 'phaseDrawBegin2' },
-            filter: function (event, player) {
+            filter(event, player) {
                 return !event.numFixed;
             },
             forced: true,
-            content: function () {
+            content() {
                 trigger.num++;
             },
         };
@@ -81,7 +81,7 @@ const brawl = {
             direct: true,
             priority: 1 + 1 + 1,
             firstDo: true,
-            content: function () {
+            content() {
                 'step 0'
                 player.chooseBool('是否明牌？', '令本局游戏的倍数翻' + (game.zhu == player ? '1' : '0.5') + '倍').set('choice', Math.random() < 0.4);
                 'step 1'
@@ -119,7 +119,7 @@ const brawl = {
             mark: true,
             marktext: '牌',
             intro: {
-                mark: function (dialog, content, player) {
+                mark(dialog, content, player) {
                     var hs = player.getCards('h');
                     if (hs.length) {
                         dialog.addText('明牌勇气可嘉，胜负代价更高！本局游戏倍数翻倍！');
@@ -127,7 +127,7 @@ const brawl = {
                     }
                     else dialog.addText('无手牌');
                 },
-                content: function (content, player) {
+                content(content, player) {
                     var hs = player.getCards('h');
                     if (hs.length) return get.translation(hs);
                     else return '无手牌';
@@ -137,7 +137,7 @@ const brawl = {
                 mingpai: {
                     ai: {
                         viewHandcard: true,
-                        skillTagFilter: function (player, arg, target) {
+                        skillTagFilter(player, arg, target) {
                             return target != player && target.hasSkill('decade_dizhu_mingpai');
                         },
                     },
@@ -147,7 +147,7 @@ const brawl = {
         lib.skill._decade_doudizhu_view = {
             ai: {
                 viewHandcard: true,
-                skillTagFilter: function (player, arg, target) {
+                skillTagFilter(player, arg, target) {
                     return target != player && target.identity == player.identity;
                 },
             },
@@ -160,17 +160,17 @@ const brawl = {
     },
     content: {
         submode: 'normal',
-        chooseCharacterBefore: function () {
+        chooseCharacterBefore() {
             //开启闪连
             if (lib.config.extension_活动萌扩_decade_shanlian) {
                 lib.skill.decade_shanlian = {
                     charlotte: true,
                     trigger: { player: 'gainAfter', global: 'loseAsyncAfter' },
-                    filter: function (event, player) {
+                    filter(event, player) {
                         return event.getg(player).some(card => card.name == 'shan');
                     },
                     forced: true,
-                    content: function () {
+                    content() {
                         player.draw();
                     },
                 };
@@ -207,7 +207,7 @@ const brawl = {
             if (!game.decade_doudizhu) game.decade_doudizhu = 1;
             game.decadeDouDiZhu = {
                 hasZhuSkill: () => false,
-                $dieAfter: function () {
+                $dieAfter() {
                     if (_status.video) return;
                     if (!this.node.dieidentity) {
                         var str = { zhu: '地主', fan: '农民' }[this.identity];
@@ -232,10 +232,10 @@ const brawl = {
                         this.node.dieidentity.style.transform = '';
                     }
                 },
-                dieAfter: function () {
+                dieAfter() {
                     game.checkResult();
                 },
-                dieAfter2: function () {
+                dieAfter2() {
                     if (this.identity != 'fan') return;
                     var player = this, target = game.findPlayer(function (current) {
                         return current != player && current.identity == 'fan';

@@ -9,7 +9,7 @@ const brawl = {
         '新的一局游戏开始时，一三号和二四号分别交换座位',
         '本模式中所有增加体力上限和减少体力上限的效果均失效',
     ],
-    init: function () {
+    init() {
         game.gameDraw = function (player, num) {
             var next = game.createEvent('gameDraw');
             next.player = player || game.me;
@@ -35,9 +35,9 @@ const brawl = {
     },
     content: {
         submode: 'normal',
-        chooseCharacterBefore: function () {
+        chooseCharacterBefore() {
             game.bolRules = {
-                dieAfter2: function (source) {
+                dieAfter2(source) {
                     var friend;
                     for (var i = 0; i < game.players.length; i++) {
                         if (game.players[i].side == this.side) {
@@ -55,7 +55,7 @@ const brawl = {
                         next.player = friend;
                     }
                 },
-                getFriends: function (func) {
+                getFriends(func) {
                     var self = false;
                     if (func === true) {
                         func = null;
@@ -67,20 +67,20 @@ const brawl = {
                         return current.identity == identity;
                     });
                 },
-                isFriendOf: function (player) {
+                isFriendOf(player) {
                     return this.getFriends(true).includes(player);
                 },
-                getEnemies: function (func) {
+                getEnemies(func) {
                     const identity = this.identity;
                     return game.filterPlayer(function (current) {
                         return current.identity != identity;
                     });
                 },
-                isEnemyOf: function (player) {
+                isEnemyOf(player) {
                     return this.getEnemies(true).includes(player);
                 },
                 hasZhuSkill: () => false,
-                dieAfter: function (source) {
+                dieAfter(source) {
                     game.checkResult();
                 },
             };

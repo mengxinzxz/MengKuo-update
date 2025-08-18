@@ -26,7 +26,7 @@ const brawl = {
         }
         return intro;
     })(),
-    init: function () {
+    init() {
         if (!_status.characterlist) lib.skill.pingjian.initList();
         _status.characterlist.removeArray(["sp_jiaxu", "buzhi", "sp_guanyu", "ol_yuanshu", "huanghao"]);
         _status.characterlist.removeArray(_status.characterlist.filter(i => lib.character[i][1] == 'shen'));
@@ -190,14 +190,14 @@ const brawl = {
                     //核心魔军
                     cxyMoJun: {
                         trigger: { global: "damageEnd" },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             if (!event.source || !event.source.isAlive()) return false;
                             if (get.attitude(player, event.source) < 2) return false;
                             if (!event.card || event.card.name != "sha") return false;
                             return event.notLink();
                         },
                         forced: true,
-                        content: function () {
+                        content() {
                             'step 0'
                             trigger.source.judge(function (card) {
                                 return get.color(card) == 'black' ? 2 : 0;
@@ -214,13 +214,13 @@ const brawl = {
                     },
                     cxyJieLve: {
                         trigger: { source: "damageEnd" },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             if (!event.player.isAlive() || event.player == player) return false;
                             return event.player.num("hej") > 0;
                         },
                         logTarget: "player",
                         forced: true,
-                        content: function () {
+                        content() {
                             "step 0"
                             var num = 0;
                             if (trigger.player.num("h")) num++;
@@ -242,11 +242,11 @@ const brawl = {
                     },
                     cxyTunJun: {
                         trigger: { global: "roundStart" },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return player.maxHp != 1;
                         },
                         forced: true,
-                        content: function () {
+                        content() {
                             "step 0"
                             player.loseMaxHp();
                             "step 1"
@@ -255,11 +255,11 @@ const brawl = {
                     },
                     cxyFanGong: {
                         trigger: { target: "useCardToAfter" },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return get.attitude(player, event.player) < 0;
                         },
                         direct: true,
-                        content: function () {
+                        content() {
                             player.chooseToUse("是否发动反攻，对" + get.translation(trigger.player) + "使用一张[杀]？", { name: "sha" }).set("filterTarget", function (card, player, target) {
                                 return target == _status.event.source;
                             }).set("selectTarget", -1).set('source', trigger.player).set("logSkill", "cxyFanGong");
@@ -267,18 +267,18 @@ const brawl = {
                     },
                     cxyJiaoXia: {
                         trigger: { global: "phaseDiscardBefore" },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return get.attitude(player, event.player) > 2;
                         },
                         forced: true,
                         logTarget: 'player',
-                        content: function () {
+                        content() {
                             trigger.player.addTempSkill("cxyJiaoXia_buff", "phaseDiscardEnd");
                         },
                         subSkill: {
                             buff: {
                                 mod: {
-                                    maxHandcard: function (player, num) {
+                                    maxHandcard(player, num) {
                                         var hs = player.getCards('h');
                                         for (var i = 0; i < hs.length; i++) {
                                             if (get.color(hs[i]) == 'black') {
@@ -287,7 +287,7 @@ const brawl = {
                                         }
                                         return num;
                                     },
-                                    cardDiscardable: function (card, player, name) {
+                                    cardDiscardable(card, player, name) {
                                         if (name == 'phaseDiscard' && get.color(card) == 'black') return false;
                                     }
                                 },
@@ -296,11 +296,11 @@ const brawl = {
                     },
                     cxyKuangXi: {
                         enable: 'phaseUse',
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return !player.hasSkill('cxyKuangXi_silent');
                         },
                         filterTarget: lib.filter.notMe,
-                        content: function () {
+                        content() {
                             'step 0'
                             player.loseHp();
                             target.damage('nocard');
@@ -310,7 +310,7 @@ const brawl = {
                             })) player.addTempSkill('cxyKuangXi_silent');
                         },
                         ai: {
-                            threaten: function (player, target) {
+                            threaten(player, target) {
                                 if (!game.hasPlayer(function (current) {
                                     return player.getFriends().includes(current) && current.hp <= target.hp;
                                 })) return 1;
@@ -318,7 +318,7 @@ const brawl = {
                             },
                             order: 1,
                             result: {
-                                target: function (player, target) {
+                                target(player, target) {
                                     if (player.hp + player.countCards('hs', { name: ['jiu', 'tao'] }) + game.countPlayer(function (current) {
                                         return current.hasSkill('cxyBaoYing') && !current.awakenedSkills.includes('cxyBaoYing');
                                     }) <= 0) return 0;
@@ -332,7 +332,7 @@ const brawl = {
                     cxyYangWu: {
                         trigger: { player: "phaseZhunbeiBegin" },
                         direct: true,
-                        content: function () {
+                        content() {
                             "step 0"
                             event.targets = game.filterPlayer(function (current) {
                                 return current != player;
@@ -350,7 +350,7 @@ const brawl = {
                     cxyYangLie: {
                         trigger: { player: "phaseZhunbeiBegin" },
                         direct: true,
-                        content: function () {
+                        content() {
                             "step 0"
                             var targets = game.filterPlayer(function (current) {
                                 return current != player;
@@ -410,12 +410,12 @@ const brawl = {
                 skill: {
                     cxyRuiQi: {
                         trigger: { global: "phaseDrawBegin" },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return get.attitude(player, event.player) > 2;
                         },
                         logTarget: 'player',
                         forced: true,
-                        content: function () {
+                        content() {
                             trigger.num++;
                         },
                         ai: {
@@ -424,11 +424,11 @@ const brawl = {
                     },
                     cxyHuYing: {
                         trigger: { player: "phaseUseBegin" },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return game.cxyJiangLing && game.cxyJiangLing.isAlive();
                         },
                         forced: true,
-                        content: function () {
+                        content() {
                             "step 0"
                             player.chooseCard("交给一张[杀]，或失去1点体力，令从牌堆获得一张[杀]", { name: "sha" }).ai = function (card) {
                                 if (player.countCards('h', { name: "sha" }) < 2) {
@@ -458,7 +458,7 @@ const brawl = {
                         subSkill: {
                             distance: {
                                 mod: {
-                                    globalFrom: function (from, to, distance) {
+                                    globalFrom(from, to, distance) {
                                         if (game.hasPlayer(function (current) {
                                             return current.hasSkill('cxyJingQi') && get.attitude(current, from) > 0 && get.attitude(current, to) < 0;
                                         })) return distance - 1;
@@ -475,15 +475,15 @@ const brawl = {
                             content: "limited",
                         },
                         trigger: { global: "dying" },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             if (player.storage.cxyBaoYing) return false;
                             return get.attitude(player, event.player) > 2;
                         },
                         logTarget: "player",
-                        check: function (event, player) {
+                        check(event, player) {
                             return event.player.hp < 1;
                         },
-                        content: function () {
+                        content() {
                             "step 0"
                             player.storage.cxyBaoYing = true;
                             player.awakenSkill("cxyBaoYing");
@@ -497,7 +497,7 @@ const brawl = {
                         subSkill: {
                             use: {
                                 mod: {
-                                    targetEnabled: function (card, player, target) {
+                                    targetEnabled(card, player, target) {
                                         if (game.hasPlayer(function (current) {
                                             return current.hasSkill('cxyFengYing') && get.attitude(current, target) > 0;
                                         })) {
@@ -512,11 +512,11 @@ const brawl = {
                     },
                     cxyLongYing: {
                         trigger: { player: "phaseUseBegin" },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return game.cxyJiangLing && game.cxyJiangLing.isAlive() && game.cxyJiangLing.hp < game.cxyJiangLing.maxHp;
                         },
                         direct: true,
-                        content: function () {
+                        content() {
                             "step 0"
                             player.logSkill("cxyLongYing", game.cxyJiangLing);
                             player.loseHp();
@@ -565,21 +565,21 @@ const brawl = {
                         subSkill: {
                             sub1: {
                                 trigger: { global: "phaseEnd" },
-                                filter: function (event, player) {
+                                filter(event, player) {
                                     return player.num('h') <= player.hp;
                                 },
                                 forced: true,
-                                content: function () {
+                                content() {
                                     player.draw(2);
                                 },
                             },
                             sub2: {
                                 trigger: { global: "damageEnd" },
-                                filter: function (event, player) {
+                                filter(event, player) {
                                     return event.player != player && get.attitude(player, event.player) > 0;
                                 },
                                 forced: true,
-                                content: function () {
+                                content() {
                                     player.chooseToDiscard("魔躯：其他友方角色受到伤害后，你弃置一张牌", "he", true);
                                 },
                             },
@@ -587,14 +587,14 @@ const brawl = {
                     },
                     cxyPoLu: {
                         trigger: { global: 'die' },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             if (event.player == player) return true;
                             if (!player.isAlive()) return false;
                             return event.source && get.attitude(player, event.player) < 0 && get.attitude(player, event.source) > 0;
                         },
                         forced: true,
                         forceDie: true,
-                        content: function () {
+                        content() {
                             'step 0'
                             if (player.storage.cxyPoLu == undefined) player.storage.cxyPoLu = 0;
                             player.storage.cxyPoLu++;
@@ -613,12 +613,12 @@ const brawl = {
                     },
                     cxyYaoWu: {
                         trigger: { player: "damageBegin" },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             if (!event.source || !event.source.isAlive()) return false;
                             return event.card && event.card.name == "sha" && get.color(event.card) == "red";
                         },
                         forced: true,
-                        content: function () {
+                        content() {
                             "step 0"
                             if (trigger.source.hp == trigger.source.maxHp) {
                                 trigger.source.draw();
@@ -638,11 +638,11 @@ const brawl = {
                     },
                     cxyYingHun: {
                         trigger: { player: "phaseZhunbeiBegin" },
-                        filter: function (event, player) {
+                        filter(event, player) {
                             return player.hp < player.maxHp;
                         },
                         direct: true,
-                        content: function () {
+                        content() {
                             "step 0"
                             player.chooseTarget("是否发动英魂？", function (card, player, target) {
                                 return target != player;
@@ -716,12 +716,12 @@ const brawl = {
         lib.skill._cxyJiangLingPhaseBegin = {
             ruleSkill: true,
             trigger: { global: "phaseBegin" },
-            filter: function (event, player) {
+            filter(event, player) {
                 if (_status.cxyCPState != "special") return false;
                 return event.player == player && player == game.cxyJiangLing;
             },
             direct: true,
-            content: function () {
+            content() {
                 "step 0"
                 event.targets = game.filterPlayer(function (current) {
                     return game.cxyAis.includes(current) && current.name != "cxySunJian" && current.hp != 1;
@@ -744,7 +744,7 @@ const brawl = {
     },
     content: {
         playerNumber: _status.cxyCPState == "normal" ? 5 : 8,
-        chooseCharacterBefore: function () {
+        chooseCharacterBefore() {
             lib.element.player.$dieAfter = function () {
                 if (_status.video) return;
                 if (!this.node.dieidentity) {
@@ -1108,7 +1108,7 @@ const brawl = {
                 next.setContent(_status.cxyCPState == "normal" ? sixPlayer : eightPlayer);
             };
         },
-        gameStart: function () {
+        gameStart() {
             ui.cxyButton = ui.create.system("投降", function () {
                 if (get.population("cxyMengJun") != 1) return;
                 game.over(false);
