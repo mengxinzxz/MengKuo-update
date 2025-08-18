@@ -20,14 +20,11 @@ const brawl = {
     },
     init: function () {
         lib.configOL.number = 8;
-        lib.skill._bolbingjing1 = {
-            charlotte: true,
-            trigger: { player: 'phaseDrawBegin1' },
-            direct: true,
-            priority: Infinity,
-            content: function () {
-                trigger.num++;
-            },
+        const origin = lib.element.player.phasDraw;
+        lib.element.player.phasDraw = function () {
+            const next = origin.apply(this, arguments);
+            next.num++;
+            return next;
         };
         lib.skill._bolbingjing2 = {
             charlotte: true,
@@ -37,22 +34,13 @@ const brawl = {
                 },
             },
         };
-        lib.skill._bolbingjing3 = {
-            charlotte: true,
-            trigger: { player: 'damageEnd' },
-            direct: true,
-            priority: Infinity,
-            content: function () {
-                trigger.num = 1;
-            },
-        };
     },
     content: {
         chooseCharacterBefore: function () {
             for (var skill in lib.skill) {
-                var trans = lib.translate[skill + '_info'];
-                if (trans && trans.indexOf('受到') != -1 && trans.indexOf('点伤害后') != -1) {
-                    while (trans.indexOf('点伤害后') != -1) {
+                var trans = get.plainText(lib.translate[skill + '_info'] || '');
+                if (trans.includes('受到') && trans.includes('点伤害后')) {
+                    while (trans.includes('点伤害后')) {
                         var num = trans.indexOf('点伤害后') - 1;
                         var trans1 = '';
                         for (var i = 0; i < num; i++) trans1 += trans[i];
@@ -60,6 +48,12 @@ const brawl = {
                         trans = trans1 + trans2;
                     }
                     lib.translate[skill + '_info'] = trans;
+                    const origin = lib.skill[skill]?.getIndex;
+                    if (typeof origin === 'function') {
+                        lib.skill[skill].getIndex = function () {
+                            return Math.min(1, origin.apply(this, arguments));
+                        };
+                    }
                 }
             }
             for (var name in lib.character) {

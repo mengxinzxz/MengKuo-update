@@ -7,50 +7,54 @@ export function precontent(bilibilicharacter) {
     };
     //提示框--摘自扩展OL
     game.bolSay = function (str, num) {
-        if (game.game_bolSayDialog_height == undefined) game.game_bolSayDialog_height = -45;
-        if (game.game_bolSayDialog_num == undefined) game.game_bolSayDialog_num = 0;
-        game.game_bolSayDialog_num++;
-        var func = function () {
-            game.game_bolSayDialog_onOpened = true;
-            game.game_bolSayDialog_height += 45;
-            var dialog = ui.create.dialog('hidden');
-            dialog.classList.add('static');
-            dialog.add('' + str + '');
-            dialog.classList.add('popped');
-            dialog.style['pointer-events'] = 'none';
-            dialog.style['font-family'] = "'STXinwei','xinwei'";
-            ui.window.appendChild(dialog);
-            var width = str.length * 20;
-            if (num != undefined) width -= num * 20;
-            dialog._mod_height = -16;
-            dialog.style.width = width + 'px';
-            lib.placePoppedDialog(dialog, {
-                clientX: (dialog.offsetLeft + dialog.offsetWidth / 2) * game.documentZoom,
-                clientY: (dialog.offsetTop + dialog.offsetHeight / 4) * game.documentZoom
-            });
-            if (dialog._mod_height) dialog.content.firstChild.style.padding = 0;
-            dialog.style.left = 'calc(50% - ' + (width + 16) / 2 + 'px' + ')';
-            dialog.style.top = 'calc(5% + ' + game.game_bolSayDialog_height + 'px)';
-            dialog.style['z-index'] = 999999;
-            setTimeout(function () {
-                dialog.delete();
-                if (game.game_bolSayDialog_height > ui.window.offsetHeight * 0.95 - dialog.offsetHeight * 2) game.game_bolSayDialog_height = -45;
+        const showFunction = function () {
+            if (game.game_bolSayDialog_height == undefined) game.game_bolSayDialog_height = -45;
+            if (game.game_bolSayDialog_num == undefined) game.game_bolSayDialog_num = 0;
+            game.game_bolSayDialog_num++;
+            var func = function () {
+                game.game_bolSayDialog_onOpened = true;
+                game.game_bolSayDialog_height += 45;
+                var dialog = ui.create.dialog('hidden');
+                dialog.classList.add('static');
+                dialog.add('' + str + '');
+                dialog.classList.add('popped');
+                dialog.style['pointer-events'] = 'none';
+                dialog.style['font-family'] = "'STXinwei','xinwei'";
+                ui.window.appendChild(dialog);
+                var width = str.length * 20;
+                if (num != undefined) width -= num * 20;
+                dialog._mod_height = -16;
+                dialog.style.width = width + 'px';
+                lib.placePoppedDialog(dialog, {
+                    clientX: (dialog.offsetLeft + dialog.offsetWidth / 2) * game.documentZoom,
+                    clientY: (dialog.offsetTop + dialog.offsetHeight / 4) * game.documentZoom
+                });
+                if (dialog._mod_height) dialog.content.firstChild.style.padding = 0;
+                dialog.style.left = 'calc(50% - ' + (width + 16) / 2 + 'px' + ')';
+                dialog.style.top = 'calc(5% + ' + game.game_bolSayDialog_height + 'px)';
+                dialog.style['z-index'] = 999999;
                 setTimeout(function () {
-                    if (game.game_bolSayDialog_num <= 0) game.game_bolSayDialog_height = -45;
-                }, 250);
-            }, 1500);
-            setTimeout(function () {
-                delete game.game_bolSayDialog_onOpened;
-            }, 500);
-        };
-        var interval = setInterval(function () {
-            if (game.game_bolSayDialog_onOpened == undefined) {
-                func();
-                game.game_bolSayDialog_num--;
-                clearInterval(interval);
+                    dialog.delete();
+                    if (game.game_bolSayDialog_height > ui.window.offsetHeight * 0.95 - dialog.offsetHeight * 2) game.game_bolSayDialog_height = -45;
+                    setTimeout(function () {
+                        if (game.game_bolSayDialog_num <= 0) game.game_bolSayDialog_height = -45;
+                    }, 250);
+                }, 1500);
+                setTimeout(function () {
+                    delete game.game_bolSayDialog_onOpened;
+                }, 500);
             };
-        }, 100);
+            var interval = setInterval(function () {
+                if (game.game_bolSayDialog_onOpened == undefined) {
+                    func();
+                    game.game_bolSayDialog_num--;
+                    clearInterval(interval);
+                };
+            }, 100);
+        };
+        ui.window ? showFunction() : lib.arenaReady.push(showFunction);
     };
+    //节日判定
     game.isInSpringFestival = function () {
         const date = new Date(), time = {
             year: date.getFullYear(),

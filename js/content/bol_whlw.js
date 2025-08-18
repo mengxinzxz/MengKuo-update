@@ -251,9 +251,9 @@ const brawl = {
                         }
                         return false;
                     },
-                    trigger: { global: [/*'phaseBegin',*/'roundStart'] },
-                    filter: function (event, player) {
-                        //if(game.roundNumber==1&&(event.name!='phase'||!_status.currentPhase)) return false;
+                    trigger: { global: ['roundStart', 'roundEnd'] },
+                    filter: function (event, player, name) {
+                        if (name === 'roundEnd') return _status.luanwu_result == 'luanwu6';
                         return !game.hasPlayer2(current => lib.skill._wenheluanwu_skill.isAct(current));
                     },
                     forced: true,
@@ -261,39 +261,39 @@ const brawl = {
                     forceDie: true,
                     forceOut: true,
                     priority: Infinity,
-                    content: function () {
-                        'step 0'
-                        if (_status.luanwu_result && _status.luanwu_result == 'luanwu6') {
-                            var num = game.roundNumber - 1;
+                    async content(event, trigger, player) {
+                        if (event.triggername === 'roundEnd') {
+                            var num = game.roundNumber;
                             var targets = game.filterPlayer(current => current.isMinHandcard());
                             targets.forEach(target => target.loseHp(num));
                         }
-                        'step 1'
-                        delete _status.luanwu_result;
-                        'step 2'
-                        var result;
-                        if (game.roundNumber == 1) result = 'luanwu1';
-                        else result = ['luanwu1', 'luanwu2', 'luanwu3', 'luanwu4', 'luanwu5', 'luanwu6', 'luanwu7'].randomGet();
-                        _status.luanwu_result = result;
-                        if (!lib.card[result]) {
-                            lib.card[result] = {
-                                type: 'luanwu',
-                                fullimage: true,
-                            };
-                            lib.card[result].image = 'ext:活动萌扩/image/' + result + '.jpg'
-                        }
-                        var content = ['本轮事件', [[result], 'vcard']];
-                        game.me.chooseControl('ok').set('dialog', content);
-                        game.broadcastAll(function () {
-                            if (lib.config.background_speak) game.playAudio('..', 'extension', '活动萌扩/audio', result);
-                        });
-                        //乱武
-                        if (result == 'luanwu1') {
-                            var next = game.createEvent('whlw');
-                            next.player = player;
-                            next.forceDie = true;
-                            next.forceOut = true;
-                            next.setContent(lib.skill._wenheluanwu_skill.luanwu);
+                        else {
+                            delete _status.luanwu_result;
+                            let result;
+                            if (game.roundNumber == 1) result = 'luanwu1';
+                            else result = ['luanwu1', 'luanwu2', 'luanwu3', 'luanwu4', 'luanwu5', 'luanwu6', 'luanwu7'].randomGet();
+                            _status.luanwu_result = result;
+                            if (!lib.card[result]) {
+                                lib.card[result] = {
+                                    type: 'luanwu',
+                                    fullimage: true,
+                                };
+                                lib.card[result].image = 'ext:活动萌扩/image/' + result + '.jpg'
+                            }
+                            var content = ['本轮事件', [[result], 'vcard']];
+                            await game.me.chooseControl('ok').set('dialog', content);
+                            game.broadcastAll(result => {
+                                if (lib.config.background_speak) game.playAudio('..', 'extension', '活动萌扩/audio', result);
+                            }, result);
+                            //乱武
+                            if (result == 'luanwu1') {
+                                var next = game.createEvent('whlw');
+                                next.player = player;
+                                next.forceDie = true;
+                                next.forceOut = true;
+                                next.setContent(lib.skill._wenheluanwu_skill.luanwu);
+                                await next;
+                            }
                         }
                     },
                     luanwu: function () {
@@ -409,7 +409,7 @@ const brawl = {
                 luanwu5: '横扫千军',
                 luanwu5_info: '本轮所有角色造成的伤害+1。',
                 luanwu6: '饿莩载道',
-                luanwu6_info: '更换事件前，所有手牌最少的角色失去当前轮数-1的体力值。',
+                luanwu6_info: '本轮结束时，所有手牌最少的角色失去当前轮数-1的体力值。',
                 luanwu7: '宴安鸠毒',
                 luanwu7_info: '本轮中，所有的【桃】均视为【毒】。',
                 whlw_lidaitaojiang: '李代桃僵',

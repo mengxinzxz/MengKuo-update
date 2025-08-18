@@ -11,21 +11,6 @@ const brawl = {
         '击败所有敌方阵营的角色获得游戏胜利',
     ],
     init: function () {
-        lib.skill._draw_less = {
-            ruleSkill: true,
-            charlotte: true,
-            trigger: { player: 'phaseDrawBegin' },
-            filter: function (event, player) {
-                return !event.numFixed && game.phaseNumber == 1 && event.num > 0 && !game.drawless;
-            },
-            direct: true,
-            firstDo: true,
-            priority: Infinity,
-            content: function () {
-                game.drawless = true;
-                trigger.num--;
-            },
-        };
         lib.skill._OLdoubleThree_view = {
             ai: {
                 viewHandcard: true,
@@ -55,6 +40,7 @@ const brawl = {
         for (var i in game.OLrule) lib.element.player[i] = game.OLrule[i];
         lib.configOL.number = 6;
         lib.config.mode_config.identity.double_character = false;
+        _status.first_less = true;
     },
     content: {
         submode: 'normal',

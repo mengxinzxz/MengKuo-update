@@ -106,7 +106,6 @@ const brawl = {
                     else {
                         game.log('本局斗地主倍数翻' + game.decade_doudizhu + '倍');
                         game.max_beishu = game.max_beishu * game.decade_doudizhu;
-                        game.saveConfig('extension_活动萌扩_decade_Coin_Gaming', game.max_beishu * 100);
                         game.broadcastAll(function () {
                             if (ui.decade_ddzInfo) ui.decade_ddzInfo.innerHTML = '本局倍数：' + game.max_beishu * 100;
                         });

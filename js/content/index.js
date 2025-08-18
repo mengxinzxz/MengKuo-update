@@ -30,7 +30,7 @@ export function content(config, pack) {
 			lib.init.onfree();
 		};
 	}
-	//十周年斗地主初加载
+	//萌币初加载
 	if (!lib.config.extension_活动萌扩_decade_Coin || lib.config.extension_活动萌扩_decade_Coin == 'NaN') {
 		game.saveConfig('extension_活动萌扩_decade_Coin', 1000);
 		var date = new Date();

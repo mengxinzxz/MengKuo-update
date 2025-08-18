@@ -30,21 +30,7 @@ const brawl = {
             else lib.character[name][2] = 1;
         }
         if (!_status.characterlist) lib.skill.pingjian.initList();
-        lib.skill._draw_less = {
-            ruleSkill: true,
-            charlotte: true,
-            trigger: { player: 'phaseDrawBegin' },
-            filter: function (event, player) {
-                return !event.numFixed && game.phaseNumber == 1 && event.num > 0 && !game.drawless;
-            },
-            direct: true,
-            firstDo: true,
-            priority: Infinity,
-            content: function () {
-                game.drawless = true;
-                trigger.num--;
-            },
-        };
+        _status.first_less = true;
     },
     content: {
         submode: 'normal',
