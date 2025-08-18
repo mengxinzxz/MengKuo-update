@@ -370,10 +370,8 @@ const brawl = {
                 }
             }
             _status.reviveLength = 1;
-            get.attitude = function (from, to) {
-                return (from.identity == 'zhu' || from.identity == 'zhong') == (to.identity == 'zhu' || to.identity == 'zhong') ? 10 : -10;
-            };
             get.rawAttitude = function (from, to) {
+                if (!from || !to) return 0;
                 return (from.identity == 'zhu' || from.identity == 'zhong') == (to.identity == 'zhu' || to.identity == 'zhong') ? 10 : -10;
             };
             game.showIdentity(true);

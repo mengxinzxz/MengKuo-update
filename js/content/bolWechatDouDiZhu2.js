@@ -142,11 +142,8 @@ const brawl = {
                 i.identityShown = true;
             }
             //设置态度值
-            get.attitude = function (from, to) {
-                if (from.identity == to.identity) return 10;
-                return -10;
-            };
             get.rawAttitude = function (from, to) {
+                if (!from || !to) return 0;
                 if (from.identity == to.identity) return 10;
                 return -10;
             };

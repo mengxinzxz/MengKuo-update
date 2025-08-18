@@ -678,13 +678,8 @@ const brawl = {
                 for (var j in game.RElz) i[j] = game.RElz[j];
             }
             //设置态度值
-            get.attitude = function (from, to) {
-                var identity = game.me.identity;
-                if (from.identity == to.identity) return 10;
-                return -10;
-            };
             get.rawAttitude = function (from, to) {
-                var identity = game.me.identity;
+                if (!from || !to) return 0;
                 if (from.identity == to.identity) return 10;
                 return -10;
             };

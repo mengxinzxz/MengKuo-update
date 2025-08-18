@@ -506,9 +506,6 @@ const brawl = {
                 current.node.identity.firstChild.innerHTML = ' ';
                 current.update();
             });
-            get.attitude = function (from, to) {
-                return from == to ? 10 : -10;
-            };
             get.rawAttitude = function (from, to) {
                 return from == to ? 10 : -10;
             };

@@ -766,14 +766,9 @@ const brawl = {
                 if (current == _status.firstAct) break;
             }
             //设置态度值
-            get.attitude = function (from, to) {
-                var identity = game.me.identity;
-                if (from.identity == to.identity) return 10;
-                if (from != to && (from.identity == identity || to.identity == identity)) return -10;
-                return -7.5;
-            };
             get.rawAttitude = function (from, to) {
                 var identity = game.me.identity;
+                if (!from || !to) return 0;
                 if (from.identity == to.identity) return 10;
                 if (from != to && (from.identity == identity || to.identity == identity)) return -10;
                 return -7.5;

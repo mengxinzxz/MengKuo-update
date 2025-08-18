@@ -119,10 +119,8 @@ const brawl = {
                 for (var j in game.bilibili_wuhuang) i[j] = game.bilibili_wuhuang[j];
             }
             //设置态度值
-            get.attitude = function (from, to) {
-                return from.identity == to.identity ? 10 : -10;
-            };
             get.rawAttitude = function (from, to) {
+                if (!from || !to) return 0;
                 return from.identity == to.identity ? 10 : -10;
             };
             game.showIdentity(true);

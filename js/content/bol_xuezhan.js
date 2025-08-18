@@ -108,13 +108,8 @@ const brawl = {
                 target.setSeatNum(game.players.indexOf(target) + 1);
                 target.setNickname(get.cnNumber(game.players.indexOf(target) + 1, true) + '号位');
             }
-            get.attitude = function (from, to) {
-                var identity = game.me.identity;
-                if (from.identity == to.identity) return 10;
-                return -10;
-            };
             get.rawAttitude = function (from, to) {
-                var identity = game.me.identity;
+                if (!from || !to) return 0;
                 if (from.identity == to.identity) return 10;
                 return -10;
             };

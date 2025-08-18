@@ -898,7 +898,8 @@ const brawl = {
                 });
             };
 
-            get.attitude = function (from, to) {
+            get.rawAttitude = function (from, to) {
+                if (!from || !to) return 0;
                 if (from == to) return 10;
                 if (from.identity == "cxyMengJun") {
                     if (to.identity == "cxyMengJun") return 8;
