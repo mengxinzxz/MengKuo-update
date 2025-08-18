@@ -20,10 +20,10 @@ const brawl = {
     },
     init: function () {
         lib.configOL.number = 8;
-        const origin = lib.element.player.phasDraw;
-        lib.element.player.phasDraw = function () {
+        const origin = lib.element.player.phaseDraw;
+        lib.element.player.phaseDraw = function () {
             const next = origin.apply(this, arguments);
-            next.num++;
+            if (typeof next.num === 'number') next.num++;
             return next;
         };
         lib.skill._bolbingjing2 = {

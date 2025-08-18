@@ -31,6 +31,7 @@ const brawl = {
         }
         if (!_status.characterlist) lib.skill.pingjian.initList();
         _status.first_less = true;
+        _status.first_less_forced = true;
     },
     content: {
         submode: 'normal',

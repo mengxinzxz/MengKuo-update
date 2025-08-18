@@ -41,6 +41,7 @@ const brawl = {
         lib.configOL.number = 6;
         lib.config.mode_config.identity.double_character = false;
         _status.first_less = true;
+        _status.first_less_forced = true;
     },
     content: {
         submode: 'normal',
