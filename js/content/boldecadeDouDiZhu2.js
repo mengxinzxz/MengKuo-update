@@ -363,7 +363,7 @@ const brawl = {
                         for (const name in lib.characterReplace) {
                             lib.characterReplace[name] = lib.characterReplace[name].filter(i => list.includes(i));
                         }
-                    }, list);
+                    }, _status.characterlist);
                     game.winner.characterlist.addArray(_status.HDcharacterlist.randomRemove(2));
                     for (var i of game.players) {
                         i.identity = (game.winner == i ? 'zhu' : 'fan');

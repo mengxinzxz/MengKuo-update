@@ -933,13 +933,12 @@ const brawl = {
                         });
                     }
                     var cxyJiangLing = randomCP.shift();
-                    var list = _status.characterlist.slice();
                     game.broadcastAll(list => {
                         for (const name in lib.characterReplace) {
                             lib.characterReplace[name] = lib.characterReplace[name].filter(i => list.includes(i));
                         }
-                    }, list);
-                    var list1 = [], list2 = [];
+                    }, _status.characterlist);
+                    var list = _status.characterlist.slice(), list1 = [], list2 = [];
                     list1 = list.randomRemove(6);
                     list2 = list.randomRemove(6);
                     //分配身份

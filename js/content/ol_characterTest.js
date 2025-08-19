@@ -45,7 +45,7 @@ const brawl = {
                         for (const name in lib.characterReplace) {
                             lib.characterReplace[name] = lib.characterReplace[name].filter(i => list.includes(i));
                         }
-                    }, list);
+                    }, _status.characterlist);
                     'step 1'
                     var dialog = ['请选择你的武将'];
                     dialog.push([get.originalCharacterList().randomGets(8), 'characterx']);
