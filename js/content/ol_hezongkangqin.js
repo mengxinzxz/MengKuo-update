@@ -1,5 +1,4 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
-
 const brawl = {
     name: '合纵抗秦',
     mode: 'identity',
@@ -2220,7 +2219,6 @@ const brawl = {
         },
     },
 };
-
 export default brawl;
 /*
 //模板

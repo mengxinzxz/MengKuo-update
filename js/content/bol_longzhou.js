@@ -1,5 +1,4 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
-
 const brawl = {
     name: '龙舟会战',
     mode: 'identity',
@@ -926,31 +925,6 @@ const brawl = {
                     });
                     'step 1'
                     //玩家方选将
-                    var getNum = function (name) {
-                        var num = 0;
-                        if (name == 'chunyuqiong') num = 7.5;//淳于琼
-                        else if (name == 'boss_zhaoyun') num = 10;//高达一号
-                        else if (name == 'jin_simashi') num = 4;//晋司马师
-                        else switch (game.getRarity(name)) {
-                            case 'junk': num = 1; break;
-                            case 'rare': num = 2; break;
-                            case 'epic': num = 3; break;
-                            case 'legend': num = 4; break;
-                        }
-                        return num;
-                    };
-                    var getCharacter = function (list) {
-                        var listx = [], num = 0;
-                        for (var name of list) {
-                            var numx = getNum(name);
-                            if (numx > num) {
-                                num = numx;
-                                listx = [name];
-                            }
-                            else if (numx == num) listx.push(name);
-                        }
-                        return listx;
-                    };
                     var list = [];
                     for (var name of _status.characterlist) {
                         if (lib.character[name][1] == game.me.identity) list.push(name);
@@ -975,29 +949,15 @@ const brawl = {
                     game.me.chooseButton(createDialog, (lib.config.singleControl ? 2 : 1), true).set('onfree', true).set('filterButton', function (button) {
                         if (!ui.selected.buttons.length) return _status.event.list.includes(button.link);
                         return _status.event.listx.includes(button.link);
-                    }).set('ai', function (button) {
-                        if (!ui.selected.buttons.length) return getCharacter(_status.event.list);
-                        return getCharacter(_status.event.listx);
+                    }).set('ai', button => {
+                        return get.rank(button.link, true);
                     }).set('list', list).set('listx', aiList);
                     'step 2'
                     //玩家方初始化
-                    var getNum = function (name) {
-                        var num = 0;
-                        if (name == 'chunyuqiong') num = 7.5;//淳于琼
-                        else if (name == 'boss_zhaoyun') num = 10;//高达一号
-                        else if (name == 'jin_simashi') num = 4;//晋司马师
-                        else switch (game.getRarity(name)) {
-                            case 'junk': num = 1; break;
-                            case 'rare': num = 2; break;
-                            case 'epic': num = 3; break;
-                            case 'legend': num = 4; break;
-                        }
-                        return num;
-                    };
                     var getCharacter = function (list) {
                         var listx = [], num = 0;
                         for (var name of list) {
-                            var numx = getNum(name);
+                            var numx = get.rank(name, true);
                             if (numx > num) {
                                 num = numx;
                                 listx = [name];
@@ -1096,5 +1056,4 @@ const brawl = {
         },
     },
 };
-
 export default brawl;

@@ -1,5 +1,4 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
-
 const brawl = {
     name: '<span style="font-size:22px;">十周年血战</span>',
     mode: 'identity',
@@ -192,23 +191,10 @@ const brawl = {
                         return _status.event.player.characterStorage.includes(button.link);
                     }).set('onfree', true);
                     'step 2'
-                    var getNum = function (name) {
-                        var num = 0;
-                        if (name == 'chunyuqiong') num = 7.5;//淳于琼
-                        else if (name == 'boss_zhaoyun') num = 10;//高达一号
-                        else if (name == 'jin_simashi') num = 4;//晋司马师
-                        else switch (game.getRarity(name)) {
-                            case 'junk': num = 1; break;
-                            case 'rare': num = 2; break;
-                            case 'epic': num = 3; break;
-                            case 'legend': num = 4; break;
-                        }
-                        return num;
-                    };
                     var getCharacter = function (list) {
                         var listx = [], num = 0;
                         for (var name of list) {
-                            var numx = getNum(name);
+                            var numx = get.rank(name, true);
                             if (numx > num) {
                                 num = numx;
                                 listx = [name];
@@ -254,5 +240,4 @@ const brawl = {
         },
     },
 };
-
 export default brawl;

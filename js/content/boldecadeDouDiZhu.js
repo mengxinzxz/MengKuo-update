@@ -196,6 +196,7 @@ const brawl = {
             if (!_status.characterlist) lib.skill.pingjian.initList();
             _status.HDcharacterlist = _status.characterlist.slice();
             if (lib.config.extension_活动萌扩_use_DDZname) {
+                game._use_DDZname = true;
                 var map = lib.config.extension_活动萌扩_DDZname || [
                     'shen_zhaoyun', 'shen_ganning', 'liuyan', 'xizhicai', 're_wuyi', 'xin_lingtong', 'zhoushan', 'chengui',
                     'dc_liuye', 'dc_tengfanglan', 'shen_machao', 'shen_zhangfei', 'shen_zhangjiao', 'shen_dengai', 're_liuzan', 'caojinyu',
@@ -298,100 +299,81 @@ const brawl = {
             game.chooseCharacter = function () {
                 var next = game.createEvent('chooseCharacter', false);
                 next.showConfig = true;
-                next.setContent(function () {
-                    "step 0"
-                    game.saveConfig('extension_活动萌扩_decade_Coin_Gaming', 100);
+                next.setContent(async function () {
                     ui.arena.classList.add('choose-character');
-                    for (var i of game.players) {
-                        i.characterlist = _status.HDcharacterlist.randomRemove(5);
-                        var content = ['你的初始武将', [i.characterlist, 'character']];
-                        i.chooseControl('ok').set('dialog', content);
+                    const map = lib.characterReplace, list3 = Object.values(map).flat(), getBeiShu = { '一倍': 1, '两倍': 2, '三倍': 3, '不叫': 0 };
+                    for (const i of game.players) {
+                        i.characterlist = _status.HDcharacterlist.filter(name => {
+                            return game._use_DDZname || map[name] || !list3.includes(name);
+                        }).randomGets(5);
+                        _status.HDcharacterlist.removeArray(i.characterlist);
+                        const content = ['你的初始武将', [i.characterlist, 'character']];
+                        await i.chooseControl('ok').set('dialog', content);
                     }
-                    var target = game.players.randomGet();
-                    event.control = ['一倍', '两倍', '三倍', '不叫'];
-                    event.target = target;
-                    event.beginner = target;
-                    "step 1"
-                    var control = event.control;
-                    target.chooseControl(control).set('ai', function () {
-                        return control.randomGet();
-                    }).set('prompt', '是否' + (control.length == 4 ? '叫' : '抢') + '地主？');
-                    "step 2"
-                    var getBeiShu = function (control) {
-                        switch (control) {
-                            case '一倍': return 1; break;
-                            case '两倍': return 2; break;
-                            case '三倍': return 3; break;
-                            case '不叫': return 0; break;
-                        }
-                    };
-                    target.chat(result.control);
-                    var num = event.control.indexOf(result.control);
-                    target.max_beishu = getBeiShu(result.control);
-                    game.saveConfig('extension_活动萌扩_decade_Coin_Gaming', target.max_beishu * 100);
-                    if (result.control == '三倍') {
-                        game.winner = target;
-                        game.max_beishu = 3;
-                    }
-                    else {
-                        if (target.next != event.beginner) game.delay(1.5);
-                        if (result.control != '不叫') {
-                            var temp = [];
-                            for (var i = 0; i < event.control.length; i++) {
-                                if (i > num) temp.push(event.control[i]);
-                            }
-                            event.control = temp;
-                        }
-                        if (target.next == event.beginner) {
-                            if (event.control.length == 4) {
-                                game.winner = event.beginner;
-                                game.max_beishu = 1;
-                            }
-                            else {
-                                var winner = game.findPlayer(function (current) {
-                                    return !game.hasPlayer(function (currentx) {
-                                        return current.max_beishu < currentx.max_beishu;
-                                    });
-                                });
-                                game.winner = winner;
-                                game.max_beishu = winner.max_beishu;
-                            }
+                    let target = game.players.randomGet(), beginner = target, control = ['一倍', '两倍', '三倍', '不叫'];
+                    while (true) {
+                        const result = await target.chooseControl(control).set('ai', () => {
+                            return _status.event.controls.randomGet();
+                        }).set('prompt', '是否' + (control.length == 4 ? '叫' : '抢') + '地主？').forResult();
+                        target.chat(result.control);
+                        const num = control.indexOf(result.control);
+                        target.max_beishu = getBeiShu[result.control];
+                        if (result.control == '三倍') {
+                            game.winner = target;
+                            game.max_beishu = 3;
+                            break;
                         }
                         else {
-                            event.target = target.next;
-                            event.goto(1);
+                            await game.delay(1.5);
+                            if (result.control != '不叫') {
+                                let temp = [];
+                                for (var i = 0; i < control.length; i++) {
+                                    if (i > num) temp.push(control[i]);
+                                }
+                                control = temp;
+                            }
+                            if (target.next == beginner) {
+                                if (control.length == 4) {
+                                    game.winner = beginner;
+                                    game.max_beishu = 1;
+                                }
+                                else {
+                                    var winner = game.findPlayer(function (current) {
+                                        return !game.hasPlayer(function (currentx) {
+                                            return current.max_beishu < currentx.max_beishu;
+                                        });
+                                    });
+                                    game.winner = winner;
+                                    game.max_beishu = winner.max_beishu;
+                                }
+                                break;
+                            }
+                            else target = target.next;
                         }
                     }
-                    'step 3'
                     game.broadcastAll(list => {
                         if (ui.decade_ddzInfo) ui.decade_ddzInfo.innerHTML = '本局倍数：' + game.max_beishu * 100;
                         for (const name in lib.characterReplace) {
                             lib.characterReplace[name] = lib.characterReplace[name].filter(i => list.includes(i));
                         }
                     }, _status.characterlist);
-                    game.winner.characterlist.addArray(_status.HDcharacterlist.randomRemove(2));
-                    for (var i of game.players) {
+                    game.winner.characterlist.addArray((() => {
+                        const gainList = _status.HDcharacterlist.filter(name => {
+                            return game._use_DDZname || map[name] || !list3.includes(name);
+                        }).randomGets(2);
+                        _status.HDcharacterlist.removeArray(gainList);
+                        return gainList;
+                    })());
+                    for (const i of game.players) {
                         i.identity = (game.winner == i ? 'zhu' : 'fan');
                         i.setIdentity();
                         i.identityShown = true;
                         if (i.identity == 'zhu') game.zhu = i;
                     }
-                    'step 4'
-                    var getNum = function (name) {
-                        var num;
-                        switch (game.getRarity(name)) {
-                            case 'junk': num = 1; break;
-                            case 'rare': num = 3; break;
-                            case 'epic': num = 4; break;
-                            case 'legend': num = 5; break;
-                            default: num = 2; break;
-                        }
-                        return num;
-                    };
                     var getCharacter = function (list) {
                         var listx = [], num = 0;
                         for (var name of list) {
-                            var numx = getNum(name);
+                            var numx = get.rank(name, true);
                             if (numx > num) {
                                 num = numx;
                                 listx = [name];
@@ -402,56 +384,23 @@ const brawl = {
                     };
                     var createDialog = ['请选择你的武将'];
                     if (game.me.identity == 'fan') {
-                        var fellow = game.findPlayer(function (current) {
-                            return current != game.me && current.identity == game.me.identity;
-                        });
+                        var fellow = game.players.find(current => current != game.me && current.identity == 'fan');
                         createDialog.push('<div class="text center">玩家武将</div>');
-                        createDialog.push([game.me.characterlist, 'characterx']);
+                        createDialog.push([game.me.characterlist, game._use_DDZname ? 'character' : 'characterx']);
                         createDialog.push('<div class="text center">队友武将</div>');
                         createDialog.push([fellow.characterlist, 'character']);
                     }
-                    else createDialog.push([game.me.characterlist, 'characterx']);
-                    game.me.chooseButton(createDialog, true).set('onfree', true).set('filterButton', function (button) {
+                    else createDialog.push([game.me.characterlist, game._use_DDZname ? 'character' : 'characterx']);
+                    const result2 = await game.me.chooseButton(createDialog, true).set('onfree', true).set('filterButton', button => {
                         return !_status.event.list.includes(button.link);
-                    }).set('ai', function (button) {
-                        return getCharacter(_status.event.listx).randomGet();
-                    }).set('list', fellow ? fellow.characterlist : []).set('listx', game.me.characterlist);
-                    'step 5'
-                    var getNum = function (name) {
-                        var num;
-                        switch (game.getRarity(name)) {
-                            case 'junk': num = 1; break;
-                            case 'rare': num = 3; break;
-                            case 'epic': num = 4; break;
-                            case 'legend': num = 5; break;
-                            default: num = 2; break;
-                        }
-                        return num;
-                    };
-                    var getCharacter = function (list) {
-                        var listx = [], num = 0;
-                        for (var name of list) {
-                            var numx = getNum(name);
-                            if (numx > num) {
-                                num = numx;
-                                listx = [name];
-                            }
-                            else if (numx == num) listx.push(name);
-                        }
-                        return listx;
-                    };
-                    game.me.init(result.links[0]);
+                    }).set('ai', button => {
+                        return getCharacter(_status.event.listx).includes(button.link) ? get.rank(button.link, true) : -1;
+                    }).set('list', fellow ? fellow.characterlist : []).set('listx', game.me.characterlist).forResult();
+                    game.me.init(result2.links[0]);
                     for (var i of game.players) {
                         if (i != game.me) i.init(getCharacter(i.characterlist).randomGet());
                     }
-                    if (game.me.identity == 'zhu') {
-                        ui.create.system('投降', function () {
-                            game.log(game.me, '投降');
-                            game.over(false);
-                        }, true);
-                    }
-                    'step 6'
-                    for (var i of game.players) {
+                    for (const i of game.players) {
                         delete i.characterlist;
                         delete i.max_beishu;
                         _status.characterlist.remove(i.name);
@@ -463,7 +412,11 @@ const brawl = {
                     game.zhu.update();
                     game.zhu.addSkill('decade_feiyang');
                     game.zhu.addSkill('decade_bahu');
-                    'step 7'
+                    ui.create.system('投降', function () {
+                        if (!game.me.isAlive() || (game.me.identity == 'fan' && game.players.some(i => i !== game.me && i.identity === 'fan'))) return;
+                        game.log(game.me, '投降');
+                        game.over(false);
+                    }, true);
                     delete _status.HDcharacterlist;
                     setTimeout(function () {
                         ui.arena.classList.remove('choose-character');
@@ -473,5 +426,4 @@ const brawl = {
         },
     },
 };
-
 export default brawl;

@@ -1,5 +1,4 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
-
 const brawl = {
     name: '武将试炼<br><span style="font-size:22px;">（低配版）</span>',
     mode: 'identity',
@@ -48,7 +47,7 @@ const brawl = {
                     }, _status.characterlist);
                     'step 1'
                     var dialog = ['请选择你的武将'];
-                    dialog.push([_status.characterlist.randomGets(8), 'characterx']);
+                    dialog.push([_status.characterlist.randomGets(8), 'character']);
                     game.me.chooseButton(dialog, true).set('onfree', true);
                     //换将
                     ui.create.cheat = function () {
@@ -59,7 +58,7 @@ const brawl = {
                             event.characters = characters;
                             var buttons = ui.create.div('.buttons');
                             var node = _status.event.dialog.buttons[0].parentNode;
-                            _status.event.dialog.buttons = ui.create.buttons(characters, 'characterx', buttons);
+                            _status.event.dialog.buttons = ui.create.buttons(characters, 'character', buttons);
                             _status.event.dialog.content.insertBefore(buttons, node);
                             buttons.animate('start');
                             node.remove();
@@ -129,5 +128,4 @@ const brawl = {
         },
     },
 };
-
 export default brawl;

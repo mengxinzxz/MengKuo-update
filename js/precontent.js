@@ -1,5 +1,4 @@
 import { lib, game, ui, get, ai, _status } from '../../../noname.js';
-
 export function precontent(bilibilicharacter) {
     //颜色显示
     get.bolColor = function (str, color) {

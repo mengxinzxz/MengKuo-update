@@ -4,9 +4,7 @@ import { config } from './js/config.js';
 import { precontent } from './js/precontent.js';
 import { content } from './js/content/index.js';
 import { help } from './js/help.js';
-
 lib.init.css(lib.assetURL + 'extension/活动萌扩', 'extension');
-
 //更新公告
 game.bolShowNewPackx = function () {
 	//更新告示
@@ -42,7 +40,6 @@ game.bolShowNewPackx = function () {
 		game.resume();
 	});
 };
-
 let extensionPackage = {
 	name: "活动萌扩",
 	editable: false,
@@ -55,7 +52,6 @@ let extensionPackage = {
 	//新人技术不足，希望大家包涵。
 	//壹、贰、叁、肆、伍、陆、柒、捌、玖、拾
 };
-
 export let type = 'extension';
 export default async function () {
 	const { name, intro, ...otherInfo } = await lib.init.promises.json(`${lib.assetURL}extension/活动萌扩/info.json`);

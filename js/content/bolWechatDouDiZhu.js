@@ -1,5 +1,4 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
-
 const brawl = {
     name: '<span style="font-size:22px;">微信斗地主</span><br>白板之争',
     mode: 'identity',
@@ -193,8 +192,6 @@ const brawl = {
                 ui.decade_ddzInfo.innerHTML = '抢地主阶段';
             });
             lib.onover.push(function (bool) {
-                game.saveConfig('extension_活动萌扩_decade_Coin_game', null);
-                game.saveConfig('extension_活动萌扩_decade_Coin_Gaming', null);
                 var num = game.max_beishu * 100 * (game.zhu == game.me ? 2 : 1);
                 var numx = game.max_beishu * 100;
                 if (bool == undefined) {
@@ -220,7 +217,6 @@ const brawl = {
                 next.showConfig = true;
                 next.setContent(function () {
                     "step 0"
-                    game.saveConfig('extension_活动萌扩_decade_Coin_Gaming', 100);
                     ui.arena.classList.add('choose-character');
                     for (var i of game.players) {
                         if (i == game.me) i.init('bol_unknown_' + lib.config.extension_活动萌扩_chooseSex + get.rand(0, 6));
@@ -247,7 +243,6 @@ const brawl = {
                     target.chat(result.control);
                     var num = event.control.indexOf(result.control);
                     target.max_beishu = getBeiShu(result.control);
-                    game.saveConfig('extension_活动萌扩_decade_Coin_Gaming', target.max_beishu * 100);
                     if (result.control == '三倍') {
                         game.winner = target;
                         game.max_beishu = 3;
@@ -331,5 +326,4 @@ const brawl = {
         },
     },
 };
-
 export default brawl;

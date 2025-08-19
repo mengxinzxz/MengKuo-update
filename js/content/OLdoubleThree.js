@@ -1,5 +1,4 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
-
 const brawl = {
     name: '欢乐3V3',
     mode: 'identity',
@@ -91,29 +90,6 @@ const brawl = {
                     if (!_status.characterlist) lib.skill.pingjian.initList();
                     ui.arena.classList.add('choose-character');
                     'step 1'
-                    var getCharacter = function (list) {
-                        var getNum = function (name) {
-                            var num;
-                            switch (game.getRarity(name)) {
-                                case 'junk': num = 1; break;
-                                case 'rare': num = 3; break;
-                                case 'epic': num = 4; break;
-                                case 'legend': num = 5; break;
-                                default: num = 2; break;
-                            }
-                            return num;
-                        };
-                        var listx = [], num = 0;
-                        for (var name of list) {
-                            var numx = getNum(name);
-                            if (numx > num) {
-                                num = numx;
-                                listx = [name];
-                            }
-                            else if (numx == num) listx.push(name);
-                        }
-                        return listx;
-                    };
                     var characters = _status.characterlist.slice(0).randomGets(9);
                     event.characters = characters;
                     var dialog;
@@ -127,8 +103,7 @@ const brawl = {
                         dialog = ui.create.dialog(str, 'hidden', [characters, 'character']);
                     }
                     dialog.setCaption('我方将池');
-                    game.me.chooseButton(dialog, true).set('onfree', true);
-
+                    game.me.chooseButton(dialog, true).set('onfree', true).set('ai', button => get.rank(button.link, true));
                     ui.create.cheat = function () {
                         _status.createControl = ui.cheat2;
                         ui.cheat = ui.create.control('更换', function () {
@@ -138,10 +113,8 @@ const brawl = {
                             if (game.changeCoin) {
                                 game.changeCoin(-3);
                             }
-
                             characters = _status.characterlist.slice(0).randomGets(9);
                             event.characters = characters;
-
                             var buttons = ui.create.div('.buttons');
                             var node = _status.event.dialog.buttons[0].parentNode;
                             _status.event.dialog.buttons = ui.create.buttons(characters, 'character', buttons);
@@ -165,7 +138,6 @@ const brawl = {
                     else {
                         event.dialogxx = ui.create.characterDialog('heightset');
                     }
-
                     ui.create.cheat2 = function () {
                         ui.cheat2 = ui.create.control('自由选将', function () {
                             if (this.dialog == _status.event.dialog) {
@@ -219,20 +191,9 @@ const brawl = {
                         delete ui.cheat2;
                     }
                     var getCharacter = function (list) {
-                        var getNum = function (name) {
-                            var num;
-                            switch (game.getRarity(name)) {
-                                case 'junk': num = 1; break;
-                                case 'rare': num = 3; break;
-                                case 'epic': num = 4; break;
-                                case 'legend': num = 5; break;
-                                default: num = 2; break;
-                            }
-                            return num;
-                        };
                         var listx = [], num = 0;
                         for (var name of list) {
-                            var numx = getNum(name);
+                            var numx = get.rank(name, true);
                             if (numx > num) {
                                 num = numx;
                                 listx = [name];
@@ -264,5 +225,4 @@ const brawl = {
         },
     },
 };
-
 export default brawl;

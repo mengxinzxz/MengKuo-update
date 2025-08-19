@@ -1,5 +1,4 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
-
 const brawl = {
     name: '幸运666',
     mode: 'identity',
@@ -90,5 +89,4 @@ const brawl = {
         },
     },
 };
-
 export default brawl;

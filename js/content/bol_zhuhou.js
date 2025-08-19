@@ -531,14 +531,12 @@ const brawl = {
                     cxyLongXiangJun: "龙骧军",
                     cxyFeiXiongJunZuo: "飞熊军左",
                     cxyFeiXiongJunYou: "飞熊军右",
-
                     cxyRuiQi: "锐骑",
                     cxyHuYing: "虎营",
                     cxyJingQi: "精骑",
                     cxyBaoYing: "豹营",
                     cxyFengYing: "凤营",
                     cxyLongYing: "龙营",
-
                     cxyRuiQi_info: "锁定技，友方角色摸牌阶段额外摸一张牌",
                     cxyJingQi_info: "锁定技，友方角色计算与敌方角色距离-1。",
                     cxyBaoYing_info: "限定技，友方角色进入濒死状态时，你可以令其体力回复至1。",
@@ -775,7 +773,6 @@ const brawl = {
                     game.removePlayer(game.players[game.players.length - 1]);
                 }
             }
-
             for (var i = 0; i < game.players.length; i++) {
                 game.players[i].logAi = function () { };
                 game.players[i].dieAfter = lib.element.player.dieAfter;
@@ -827,7 +824,6 @@ const brawl = {
                     return this.getEnemies(true).includes(player);
                 };
             }
-
             //分配座位
             if (_status.cxyCPState == 'normal') {
                 //五人局，1、2位固定为盟军，3、5位固定为随从，4位固定为将领
@@ -891,7 +887,6 @@ const brawl = {
                     }
                 });
             };
-
             get.rawAttitude = function (from, to) {
                 if (!from || !to) return 0;
                 if (from == to) return 10;
@@ -914,7 +909,6 @@ const brawl = {
                     return 0;
                 }
             };
-
             game.chooseCharacter = function () {
                 var next = game.createEvent("chooseCharacter", false);
                 var sixPlayer = function () {
@@ -938,9 +932,10 @@ const brawl = {
                             lib.characterReplace[name] = lib.characterReplace[name].filter(i => list.includes(i));
                         }
                     }, _status.characterlist);
-                    var list = _status.characterlist.slice(), list1 = [], list2 = [];
-                    list1 = list.randomRemove(6);
-                    list2 = list.randomRemove(6);
+                    const map = lib.characterReplace, list3 = Object.values(map).flat();
+                    var list = _status.characterlist.filter(name => {
+                        return map[name] || !list3.includes(name);
+                    }), list1 = list.randomRemove(6), list2 = list.randomRemove(6);
                     //分配身份
                     game.playerBySeat(1).identity = "cxyMengJun";
                     game.playerBySeat(2).identity = "cxyMengJun";
@@ -966,21 +961,10 @@ const brawl = {
                     }).set('onfree', true).set('list', list2);
                     event.list = list2;
                     "step 1"
-                    var getNum = function (name) {
-                        var num = 0;
-                        if (name == 'litong') num = 1;
-                        else switch (game.getRarity(name)) {
-                            case 'junk': num = 1; break;
-                            case 'rare': num = 2; break;
-                            case 'epic': num = 3; break;
-                            case 'legend': num = 4; break;
-                        }
-                        return num;
-                    };
                     var getCharacter = function (list) {
                         var listx = [], num = 0;
                         for (var name of list) {
-                            var numx = getNum(name);
+                            var numx = get.rank(name, true);
                             if (numx > num) {
                                 num = numx;
                                 listx = [name];
@@ -1061,21 +1045,10 @@ const brawl = {
                     }).set('onfree', true).set('list', list2);
                     event.list = list2;
                     "step 1"
-                    var getNum = function (name) {
-                        var num = 0;
-                        if (name == 'litong') num = 1;
-                        else switch (game.getRarity(name)) {
-                            case 'junk': num = 1; break;
-                            case 'rare': num = 2; break;
-                            case 'epic': num = 3; break;
-                            case 'legend': num = 4; break;
-                        }
-                        return num;
-                    };
                     var getCharacter = function (list) {
                         var listx = [], num = 0;
                         for (var name of list) {
-                            var numx = getNum(name);
+                            var numx = get.rank(name, true);
                             if (numx > num) {
                                 num = numx;
                                 listx = [name];
@@ -1119,5 +1092,4 @@ const brawl = {
         },
     },
 };
-
 export default brawl;

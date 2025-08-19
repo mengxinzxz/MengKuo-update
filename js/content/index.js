@@ -19,7 +19,6 @@ import bilibili_wuhuang from './bilibili_wuhuang.js';
 import bol_kunyangzhizhan from './bol_kunyangzhizhan.js';
 import ol_characterTest from './ol_characterTest.js';
 import ol_hezongkangqin from './ol_hezongkangqin.js';
-
 export function content(config, pack) {
 	//更新公告
 	var version = lib.config.extension_活动萌扩_HDversion;

@@ -1,5 +1,4 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
-
 const brawl = {
     name: '僵尸模式',
     //people vs zomble[doge]
@@ -315,5 +314,4 @@ const brawl = {
         },
     },
 };
-
 export default brawl;
