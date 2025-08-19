@@ -116,17 +116,4 @@ export function precontent(bilibilicharacter) {
         const id = Math.random().toString(36).slice(-8);
         return "<a id='" + id + "' style='color:unset' href=\"javascript:get.mx_skillTips('" + str2 + "','" + id + "');\">" + str1 + "※</a>";
     };
-    //筛选没有同名替换的武将
-    get.originalCharacterList = function (filter) {
-        if (!_status.characterlist) lib.skill.pingjian.initList();
-        if (filter == undefined) filter = () => true;
-        if (typeof filter == 'string') filter = (i) => i == filter;
-        if (!_status.mx_originalCharcter) {
-            const map = (lib.characterReplace || {});
-            _status.mx_originalCharcter = Object.keys(map).reduce((list, i) => {
-                list.addArray(map[i].filter(j => j != i)); return list;
-            }, []);
-        }
-        return _status.characterlist.filter(i => filter(i) && !_status.mx_originalCharcter.includes(i));
-    };
 }

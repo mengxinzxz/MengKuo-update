@@ -48,14 +48,14 @@ const brawl = {
                     }, _status.characterlist);
                     'step 1'
                     var dialog = ['请选择你的武将'];
-                    dialog.push([get.originalCharacterList().randomGets(8), 'characterx']);
+                    dialog.push([_status.characterlist.randomGets(8), 'characterx']);
                     game.me.chooseButton(dialog, true).set('onfree', true);
                     //换将
                     ui.create.cheat = function () {
                         _status.createControl = ui.cheat2;
                         ui.cheat = ui.create.control('更换', function () {
                             if (ui.cheat2 && ui.cheat2.dialog == _status.event.dialog) return;
-                            characters = get.originalCharacterList().randomGets(8);
+                            characters = _status.characterlist.randomGets(8);
                             event.characters = characters;
                             var buttons = ui.create.div('.buttons');
                             var node = _status.event.dialog.buttons[0].parentNode;
