@@ -16,7 +16,6 @@ const brawl = {
             '<span class=\'texiaotext\' style=\'color:#FF0000\'>声明：本扩展原作者为橙续缘，修改更新者为萌新（转型中），目前原作者已退坑，侵删</span>',
             "游戏背景：董卓权倾朝野，荒淫无度，群雄奋起而伐之，可是董卓军势大，旗下拥有众多良将精锐。现在能不能平叛董卓之乱，这重任就托付于你们身上了！",
             "游戏人数：<ul><li>常规关卡：2盟军(己方)vs3董卓军(敌方)</li><li>特殊关卡：3盟军(己方)vs5董卓军(敌方)</li></ul>",
-            '禁将：SP贾诩(OL)、步骘、灵雎、SP关羽(OL)、标袁术(OL)、左慈、黄皓(OL)、大乔、徐晃、韩浩史涣，神武将',
             "特殊规则：<ul><li>(1) 己方角色起始手牌+1</li><li>(2) 一名己方角色阵亡后，若伤害来源不是己方角色，则己方角色摸三张牌</li></ul>",
             "胜利条件：击败关卡将领",
         ];
@@ -28,12 +27,7 @@ const brawl = {
     })(),
     init() {
         if (!_status.characterlist) lib.skill.pingjian.initList();
-        _status.characterlist.removeArray(["sp_jiaxu", "buzhi", "sp_guanyu", "ol_yuanshu", "huanghao"]);
-        _status.characterlist.removeArray(_status.characterlist.filter(i => lib.character[i][1] == 'shen'));
-        for (var name of ["lingju", "zuoci", "xuhuang", "hanhaoshihuan", 'daqiao']) {
-            _status.characterlist.removeArray(_status.characterlist.filter(i => i.indexOf(name) != -1));
-        }
-        _status.cxyCPState = ['normal', 'special'].randomGet();
+        _status.cxyCPState = [...Array.from({ length: 2 }).map(() => 'normal'), 'special'].randomGet();
         var pack = {
             mojunPack: {
                 character: {
@@ -926,7 +920,7 @@ const brawl = {
                 var sixPlayer = function () {
                     "step 0"
                     ui.arena.classList.add('choose-character');
-                    //盟军选将范围与禁将
+                    //盟军选将范围
                     var randomCP = game.checkpoint.randomGet();
                     if (Math.random() < 0.2 && game.isInSpringFestival()) {
                         randomCP[0] = 'fd_kuangshen04';
@@ -940,6 +934,11 @@ const brawl = {
                     }
                     var cxyJiangLing = randomCP.shift();
                     var list = _status.characterlist.slice();
+                    game.broadcastAll(list => {
+                        for (const name in lib.characterReplace) {
+                            lib.characterReplace[name] = lib.characterReplace[name].filter(i => list.includes(i));
+                        }
+                    }, list);
                     var list1 = [], list2 = [];
                     list1 = list.randomRemove(6);
                     list2 = list.randomRemove(6);
@@ -1018,7 +1017,7 @@ const brawl = {
                     var suiCongList = ["cxyHuBenJun", "cxyLongXiangJun", "cxyBaoLveJun", "cxyFengYaoJun", "cxyFeiXiongJunZuo", "cxyFeiXiongJunYou"];
                     var rmList = ["cxyFengYaoJun", "cxyFeiXiongJunZuo"];
                     suiCongList.randomSort();
-                    //盟军选将范围与禁将
+                    //盟军选将范围
                     var list = _status.characterlist.slice();
                     var list1 = [], list2 = [];
                     list1 = list.randomRemove(6);

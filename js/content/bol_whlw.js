@@ -9,9 +9,6 @@ const brawl = {
         '击杀奖惩：击杀一名其他角色后，击杀者摸三张牌并增加1点体力上限。',
         '该模式有7条特殊规则，每轮开始时随机抽取并公布一条特殊规则作为本轮的特殊规则存在（第一轮默认为乱武规则）。',
         '牌堆情况：使用军争卡牌。其中【桃园结义】和【木牛流马】替换为【斗转星移】；黑色【无懈可击】替换为【偷梁换柱】；红色【无懈可击】替换为【李代桃僵】；【兵粮寸断】替换为【文和乱武】；移除所有【乐不思蜀】。',
-        '禁将列表：' +
-        '<ul><li>官方禁将：贾诩、周泰、蔡文姬、于吉、大乔、徐晃、灵雎、袁绍、曹丕、满宠，以及这些武将的所有同名异构武将（个人有删减）' +
-        '</li><li>个人禁将：曹肇、卢弈、TW曹操、刘徽、OL董昭',
     ],
     init() {
         lib.configOL.number = 8;
@@ -531,15 +528,6 @@ const brawl = {
                 next.setContent(function () {
                     'step 0'
                     if (!_status.characterlist) lib.skill.pingjian.initList();
-                    _status.characterlist = _status.characterlist.filter(name => {
-                        var translate = lib.translate[name];
-                        var list = '贾诩、周泰、蔡文姬、于吉、大乔、徐晃、灵雎、袁绍、曹丕、满宠'.split('、');//官方禁将表
-                        var list2 = '曹肇、卢弈、TW曹操、刘徽、OL董昭'.split('、');//个人禁将表
-                        if (!translate || translate == '') return false;
-                        if (list.some(trans => translate.indexOf(trans) != -1)) return false;
-                        if (list2.some(trans => translate == trans)) return false;
-                        return true;
-                    });
                     ui.arena.classList.add('choose-character');
                     'step 1'
                     var list = _status.characterlist.randomGets(5);

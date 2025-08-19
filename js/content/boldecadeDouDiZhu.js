@@ -363,9 +363,12 @@ const brawl = {
                         }
                     }
                     'step 3'
-                    game.broadcastAll(function () {
+                    game.broadcastAll(list => {
                         if (ui.decade_ddzInfo) ui.decade_ddzInfo.innerHTML = '本局倍数：' + game.max_beishu * 100;
-                    });
+                        for (const name in lib.characterReplace) {
+                            lib.characterReplace[name] = lib.characterReplace[name].filter(i => list.includes(i));
+                        }
+                    }, list);
                     game.winner.characterlist.addArray(_status.HDcharacterlist.randomRemove(2));
                     for (var i of game.players) {
                         i.identity = (game.winner == i ? 'zhu' : 'fan');
