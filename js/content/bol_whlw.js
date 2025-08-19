@@ -536,7 +536,6 @@ const brawl = {
                     'step 2'
                     if (result.bool) {
                         game.me.init(result.links[0]);
-                        _status.characterlist.remove(result.links[0]);
                         game.players.forEach(target => {
                             if (target != game.me) target.init(_status.characterlist.randomRemove(1)[0]);
                         });

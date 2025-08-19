@@ -204,14 +204,12 @@ const brawl = {
                     };
                     event.characters.remove(result.links[0]);
                     game.me.init(result.links[0]);
-                    _status.characterlist.remove(result.links[0]);
                     for (var i of game.players) {
                         if (i != game.me) {
                             if (i.identity == game.me.identity) {
                                 var choose = getCharacter(event.characters).randomGet();
                                 event.characters.remove(choose);
                                 i.init(choose);
-                                _status.characterlist.remove(choose);
                             }
                             else i.init(_status.characterlist.randomRemove());
                         }

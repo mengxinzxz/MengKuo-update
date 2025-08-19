@@ -55,6 +55,22 @@ export function content(config, pack) {
 			game.bolSay('每日进入无名杀获得300萌币');
 		}
 	}
+	//init/uninit对武将牌堆的修改
+	const originInit = lib.element.player.init;
+	lib.element.player.init = function () {
+		let player = this, names = get.nameList(player);
+		if (_status.characterlist && names?.length) _status.characterlist.addArray(names);
+		player = originInit.apply(this, arguments), names = get.nameList(player);
+		if (_status.characterlist && names?.length) _status.characterlist.removeArray(names);
+		return player;
+	};
+	const originUnInit = lib.element.player.uninit;
+	lib.element.player.uninit = function () {
+		let player = this, names = get.nameList(player);
+		if (_status.characterlist && names?.length) _status.characterlist.addArray(names);
+		player = originUnInit.apply(this, arguments);
+		return player;
+	};
 	//载入模式
 	if (!lib.brawl) return;
 	//斗地主

@@ -403,9 +403,6 @@ const brawl = {
                     for (const i of game.players) {
                         delete i.characterlist;
                         delete i.max_beishu;
-                        _status.characterlist.remove(i.name);
-                        _status.characterlist.remove(i.name1);
-                        _status.characterlist.remove(i.name2);
                     }
                     game.zhu.maxHp = game.zhu.maxHp + 1;
                     game.zhu.hp = game.zhu.hp + 1;

@@ -31,7 +31,7 @@ const brawl = {
         '<br>群·邺城：锁定技，当你使用锦囊牌指定其他角色为目标后，你摸一张牌。' +
         '<br>晋·洛阳：锁定技，结束阶段，若你手牌中的花色数小于3，则你摸一张牌。',
         '击杀奖惩：击杀不同势力的角色和队友各摸一张牌；击杀队友的角色弃置所有牌。',
-        '禁用将池：左慈，布骘，蔡文姬，大乔，徐晃，黄皓(OL)，灵雎，SP贾诩(OL)，司马师(手杀)，神貂蝉，神邓艾，标袁术(OL)',
+        '禁用所有换位技能',
         '2023年龙舟会战新机制：粽子' +
         '<br>①所有角色于游戏开始时获得2个“粽”标记，玩家方随机使用一张装备牌，所有角色每造成1点伤害获得1个“棕”标记，击杀其他角色可获得该角色的所有“棕”标记' +
         '<br>②每一整局龙舟会战会随机进行一个有关“棕”标记的全局效果' +
@@ -47,16 +47,11 @@ const brawl = {
     init() {
         if (!_status.characterlist) lib.skill.pingjian.initList();
         for (var i in lib.skill) {
-            if (lib.skill[i].changeSeat) {
-                lib.skill[i] = { audio: false };
+            if (lib.skill[i].seatRelated === true) {
                 if (lib.translate[i + '_info']) lib.translate[i + '_info'] = '此模式下不可用';
                 if (lib.translate[i + '_info_identity']) lib.translate[i + '_info_identity'] = '此模式下不可用';
                 if (lib.dynamicTranslate[i]) lib.dynamicTranslate[i] = () => '此模式下不可用';
             }
-        }
-        _status.characterlist.removeArray(["sp_jiaxu", 'buzhi', "shen_diaochan", 'shen_dengai', "sp_guanyu", "simashi", "huanghao", 'ol_yuanshu']);
-        for (var name of ["lingju", "zuoci", "xuhuang", "caiwenji", 'daqiao']) {
-            _status.characterlist.removeArray(_status.characterlist.filter(i => i.indexOf(name) != -1));
         }
         lib.configOL.number = 4;
         lib.config.mode_config.identity.change_card = 'disabled';
@@ -861,9 +856,7 @@ const brawl = {
                                     for (var name of _status.characterlist) {
                                         if (lib.character[name][1] == target.identity) listxx.push(name);
                                     }
-                                    var character = listxx.randomGet();
-                                    _status.characterlist.remove(character);
-                                    target.init(character);
+                                    target.init(listxx.randomGet());
                                     if (target.countCards('hejsx')) {
                                         var hs = target.getCards('hejsx')
                                         for (var i = 0; i < hs.length; i++) {
@@ -905,9 +898,7 @@ const brawl = {
                                 for (var name of _status.characterlist) {
                                     if (lib.character[name][1] == identityxx) listx.push(name);
                                 }
-                                var character = listx.randomGet();
-                                _status.characterlist.remove(character);
-                                var target = game.addFellow(tempNum - game.me.getSeatNum(), character);
+                                var target = game.addFellow(tempNum - game.me.getSeatNum(), listx.randomGet());
                                 target.identity = identityxx;
                                 target.setIdentity();
                                 target.identityShown = true;
@@ -1010,11 +1001,9 @@ const brawl = {
                     //第一轮敌人初始化
                     for (var i of game.players) {
                         if (i.identity != game.me.identity) {
-                            var character = _status.characterlist.filter(function (name) {
+                            i.init(_status.characterlist.filter(function (name) {
                                 return lib.character[name][1] == i.identity;
-                            }).randomGet();
-                            _status.characterlist.remove(character);
-                            i.init(character);
+                            }).randomGet());
                             i.addMark('_lz_zong_mark', 2);
                             i.lz_levelNum = ['3', '4'].randomGet();
                             switch (i.lz_levelNum) {
