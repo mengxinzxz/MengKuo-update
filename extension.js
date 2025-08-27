@@ -12,6 +12,7 @@ game.bolShowNewPackx = function () {
 		'修复部分模式因态度判定和敌友判定引发的弹窗bug',
 		'修复昆阳之战刘秀拥有信念标记无法触发休整的bug',
 		'修复部分可选择同名替换武将的模式可替换出未开启武将的bug',
+		'去除div拥有node.seat属性仍赋予座位号昵称的双重显示',
 		'To be continued...',
 	];
 	//加载

@@ -106,7 +106,7 @@ const brawl = {
                 target.setIdentity();
                 target.identityShown = true;
                 target.setSeatNum(game.players.indexOf(target) + 1);
-                target.setNickname(get.cnNumber(game.players.indexOf(target) + 1, true) + '号位');
+                if (!target.node.seat) target.setNickname(get.cnNumber(game.players.indexOf(target) + 1, true) + '号位');
             }
             get.rawAttitude = function (from, to) {
                 if (!from || !to) return 0;
@@ -137,7 +137,7 @@ const brawl = {
                         game.players.sortBySeat(game.zhu);
                         for (var target of game.players.sortBySeat(game.zhu)) {
                             target.setSeatNum(game.players.sortBySeat(game.zhu).indexOf(target) + 1);
-                            target.setNickname(get.cnNumber(game.players.sortBySeat(game.zhu).indexOf(target) + 1, true) + '号位');
+                            if (!target.node.seat) target.setNickname(get.cnNumber(game.players.sortBySeat(game.zhu).indexOf(target) + 1, true) + '号位');
                         }
                         for (var player of game.players) {
                             player.removeSkill('counttrigger');

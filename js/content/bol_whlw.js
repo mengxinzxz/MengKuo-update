@@ -494,7 +494,7 @@ const brawl = {
                 var num = targets.indexOf(current) + 1;
                 if (num == 1) game.zhu = current;
                 current.setSeatNum(num);
-                current.setNickname(get.cnNumber(num, true) + '号位');
+                if (!current.node.seat) current.setNickname(get.cnNumber(num, true) + '号位');
                 for (var i in element) current[i] = element[i];
                 current.identity = 'whlw_identity';
                 current.setIdentity();

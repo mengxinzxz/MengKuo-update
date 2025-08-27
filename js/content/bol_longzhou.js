@@ -751,7 +751,7 @@ const brawl = {
                 for (var i in game.LZelement) current[i] = game.LZelement[i];
                 current.identity = zhenxing[currentSeat];
                 current.setSeatNum(currentSeat + 1);
-                current.setNickname(get.cnNumber(currentSeat + 1, true) + '号位');
+                if (!current.node.seat) current.setNickname(get.cnNumber(currentSeat + 1, true) + '号位');
                 current.setIdentity();
                 current.identityShown = true;
                 current.update();
@@ -860,7 +860,7 @@ const brawl = {
                             else current = fellow.next;
                             while (![game.me, fellow].includes(current)) {
                                 current.setSeatNum(current.previous.getSeatNum() + 1);
-                                current.setNickname(get.cnNumber(current.previous.getSeatNum() + 1, true) + '号位');
+                                if (!current.node.seat) current.setNickname(get.cnNumber(current.previous.getSeatNum() + 1, true) + '号位');
                                 current = current.next;
                             }
                             //新的开始

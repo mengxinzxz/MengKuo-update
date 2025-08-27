@@ -740,7 +740,6 @@ const brawl = {
             lib.element.player.$dieAfter = function () {
                 if (_status.video) return;
                 if (!this.node.dieidentity) {
-                    var str;
                     var node = ui.create.div('.damage.dieidentity', "阵亡", this);
                     ui.refresh(node);
                     node.style.opacity = 1;
@@ -834,7 +833,7 @@ const brawl = {
                 for (var i = 0; i < game.players.length; i++) {
                     game.players[i].cxySeatNumber = seat[i];
                     game.players[i].setSeatNum(game.players[i].cxySeatNumber);
-                    game.players[i].setNickname(get.cnNumber(game.players[i].cxySeatNumber, true) + '号位');
+                    if (!game.players[i].node.seat) game.players[i].setNickname(get.cnNumber(game.players[i].cxySeatNumber, true) + '号位');
                     if (seat[i] == 3 || seat[i] == 4 || seat[i] == 5) {
                         game.cxyAis.push(game.players[i]);
                     }
@@ -854,7 +853,7 @@ const brawl = {
                 for (var i = 0; i < game.players.length; i++) {
                     game.players[i].cxySeatNumber = seat[i];
                     game.players[i].setSeatNum(game.players[i].cxySeatNumber);
-                    game.players[i].setNickname(get.cnNumber(game.players[i].cxySeatNumber, true) + '号位');
+                    if (!game.players[i].node.seat) game.players[i].setNickname(get.cnNumber(game.players[i].cxySeatNumber, true) + '号位');
                     if (seat[i] == 3 || seat[i] == 2 || seat[i] == 4 || seat[i] == 6 || seat[i] == 8 || seat[i] == 7) {
                         game.cxyAis.push(game.players[i]);
                     }
