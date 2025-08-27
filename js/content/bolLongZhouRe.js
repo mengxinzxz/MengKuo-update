@@ -674,7 +674,7 @@ const brawl = {
                 i.setIdentity();
                 i.identityShown = true;
                 i.setSeatNum(game.players.indexOf(i) + 1);
-                if (!i.node.seat) i.setNickname(get.cnNumber(game.players.indexOf(i) + 1, true) + '号位');
+                if (!i.node.seat) i.setNickname(get.cnNumber(i.seatNum, true) + '号位');
                 for (var j in game.RElz) i[j] = game.RElz[j];
             }
             //设置态度值

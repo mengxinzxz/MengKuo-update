@@ -692,9 +692,7 @@ const brawl = {
             },
         };
         game.playerBySeat = function (seat) {
-            return game.filterPlayer(function (current) {
-                return current.cxySeatNumber == seat;
-            })[0];
+            return game.findPlayer(current => current.seatNum == seat);
         };
         game.addCharacterPack(pack.mojunPack, "魔将包");
         game.addCharacterPack(pack.soldierPack, "魔军包");
@@ -831,9 +829,8 @@ const brawl = {
                 game.cxyAis = [];
                 game.cxyJiangLing = null;
                 for (var i = 0; i < game.players.length; i++) {
-                    game.players[i].cxySeatNumber = seat[i];
-                    game.players[i].setSeatNum(game.players[i].cxySeatNumber);
-                    if (!game.players[i].node.seat) game.players[i].setNickname(get.cnNumber(game.players[i].cxySeatNumber, true) + '号位');
+                    game.players[i].setSeatNum(seat[i]);
+                    if (!game.players[i].node.seat) game.players[i].setNickname(get.cnNumber(game.players[i].seatNum, true) + '号位');
                     if (seat[i] == 3 || seat[i] == 4 || seat[i] == 5) {
                         game.cxyAis.push(game.players[i]);
                     }
@@ -851,9 +848,8 @@ const brawl = {
                 game.cxyAis = [];
                 game.cxyJiangLing = null;
                 for (var i = 0; i < game.players.length; i++) {
-                    game.players[i].cxySeatNumber = seat[i];
-                    game.players[i].setSeatNum(game.players[i].cxySeatNumber);
-                    if (!game.players[i].node.seat) game.players[i].setNickname(get.cnNumber(game.players[i].cxySeatNumber, true) + '号位');
+                    game.players[i].setSeatNum(seat[i]);
+                    if (!game.players[i].node.seat) game.players[i].setNickname(get.cnNumber(game.players[i].seatNum, true) + '号位');
                     if (seat[i] == 3 || seat[i] == 2 || seat[i] == 4 || seat[i] == 6 || seat[i] == 8 || seat[i] == 7) {
                         game.cxyAis.push(game.players[i]);
                     }
@@ -974,7 +970,7 @@ const brawl = {
                     };
                     game.me.init(result.links[0]);
                     game.addRecentCharacter(game.me.name, game.me.name2);
-                    var target = game.me.cxySeatNumber == 1 ? game.playerBySeat(2) : game.playerBySeat(1);
+                    var target = game.me.seatNum == 1 ? game.playerBySeat(2) : game.playerBySeat(1);
                     target.init(getCharacter(event.list).randomGet());
                     if (game.cxyJiangLing.name == 'fd_kuangshen04') {
                         game.me.maxHp = game.me.maxHp * 3;
@@ -1029,7 +1025,7 @@ const brawl = {
                     }
                     for (var i = 0; i < game.cxyAis.length; i++) {
                         if (game.cxyAis[i] == game.cxyJiangLing) game.cxyAis[i].init(goon ? 'fd_kuangshen04' : "cxyHuaXiong");
-                        else if (game.cxyAis[i].cxySeatNumber == 3) game.cxyAis[i].init("cxySunJian");
+                        else if (game.cxyAis[i].seatNum == 3) game.cxyAis[i].init("cxySunJian");
                         else game.cxyAis[i].init(suiCongList.shift());
                     }
                     //我选将
@@ -1058,7 +1054,7 @@ const brawl = {
                     };
                     game.me.init(result.links[0]);
                     game.addRecentCharacter(game.me.name, game.me.name2);
-                    var target = game.me.cxySeatNumber == 1 ? game.playerBySeat(5) : game.playerBySeat(1);
+                    var target = game.me.seatNum == 1 ? game.playerBySeat(5) : game.playerBySeat(1);
                     target.init(getCharacter(event.list).randomGet());
                     if (game.cxyJiangLing.name == 'fd_kuangshen04') {
                         game.me.maxHp = game.me.maxHp * 3;

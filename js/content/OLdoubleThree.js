@@ -54,7 +54,7 @@ const brawl = {
             for (var i of game.players.sortBySeat(game.zhu)) {
                 for (var j in game.OLrule) i[j] = game.OLrule[j];
                 i.setSeatNum(game.players.sortBySeat(game.zhu).indexOf(i) + 1);
-                if (!i.node.seat) i.setNickname(get.cnNumber(game.players.sortBySeat(game.zhu).indexOf(i) + 1, true) + '号位');
+                if (!i.node.seat) i.setNickname(get.cnNumber(i.seatNum, true) + '号位');
                 i.identity = (game.players.sortBySeat(game.zhu).indexOf(i) % 2 == 0 ? 'fan' : 'zhong');
                 i.setIdentity();
                 i.identityShown = true;
