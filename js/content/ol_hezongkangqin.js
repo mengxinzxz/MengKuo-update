@@ -2212,7 +2212,10 @@ const brawl = {
                             var index = parseInt(current.name.slice('daqin_alpha'.length));
                             if (index == 1) _status.firstAct2 = current;
                             var name = map[index];
-                            if (name == 'sanguo') name = _status.characterlist.randomRemove(1)[0];
+                            if (name == 'sanguo') {
+                                if (!_status.characterlist) lib.skill.pingjian.initList();
+                                name = _status.characterlist.randomRemove(1)[0];
+                            }
                             else if (name == 'qinchao') name = ['daqin_qibing', 'daqin_bubing', 'daqin_nushou'].randomGet();
                             else {
                                 current.identity = 'zhu';
