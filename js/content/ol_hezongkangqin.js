@@ -2188,6 +2188,7 @@ const brawl = {
                         .forResult();
                     if (!result?.bool || !result.links?.length) game.reload();
                     const choice = result.links[0];
+                    _status.ol_hezongkangqin_name = choice.name;
                     //加载角色
                     let players = choice.players,
                         item = players.filter(i => i.isMe).randomGet();
@@ -2254,7 +2255,6 @@ const brawl = {
                     });
                     //游戏事件
                     let name;
-                    _status.ol_hezongkangqin_name = choice.name;
                     switch (choice.name) {
                         case '变法者': {
                             name = '变法图强';

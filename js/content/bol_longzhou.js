@@ -152,7 +152,7 @@ const brawl = {
                                             tempNum++;
                                             target.removeMark('_lz_zong_mark', target.countMark('_lz_zong_mark'), false);
                                             target.addMark('_lz_zong_mark', 2);
-                                            target.lz_levelNum = ['3', '4', '5'].randomGet();
+                                            target.setLevel(get.rand(3, 5).toString());
                                             switch (target.lz_levelNum) {
                                                 case '3':
                                                     target.directgain(get.cards(1));
@@ -190,7 +190,7 @@ const brawl = {
                                         for (var i in game.LZelement) target[i] = game.LZelement[i];
                                         target.removeMark('_lz_zong_mark', target.countMark('_lz_zong_mark'), false);
                                         target.addMark('_lz_zong_mark', 2);
-                                        target.lz_levelNum = ['3', '4', '5'].randomGet();
+                                        target.setLevel(get.rand(3, 5).toString());
                                         switch (target.lz_levelNum) {
                                             case '3':
                                                 target.directgain(get.cards(1));
@@ -253,7 +253,7 @@ const brawl = {
                             if (i.identity != game.me.identity) {
                                 i.init(_status.characterlist.filter(name => get.character(name).group === i.identity).randomRemove());
                                 i.addMark('_lz_zong_mark', 2);
-                                i.lz_levelNum = ['3', '4'].randomGet();
+                                i.setLevel(get.rand(3, 4).toString());
                                 switch (i.lz_levelNum) {
                                     case '3':
                                         i.directgain(get.cards(1));
@@ -397,8 +397,8 @@ const brawl = {
                                 player._LZ_jiazuAwaken = true;
                                 game.log(player, '已激活家族特殊技能');
                             }
-                            player.lz_levelNum = lib.config.extension_活动萌扩_getLevel;
-                            switch (lib.config.extension_活动萌扩_getLevel) {
+                            player.setLevel(lib.config.extension_活动萌扩_getLevel);
+                            switch (player.lz_levelNum) {
                                 case '2':
                                     player.directgain(get.cards(1));
                                     break;
@@ -440,8 +440,8 @@ const brawl = {
                                     game.log(fellow, '已激活家族特殊技能');
                                 }
                                 fellow.addMark('_lz_zong_mark', 2);
-                                fellow.lz_levelNum = lib.config.extension_活动萌扩_getLevel;
-                                switch (lib.config.extension_活动萌扩_getLevel) {
+                                fellow.setLevel(lib.config.extension_活动萌扩_getLevel);
+                                switch (fellow.lz_levelNum) {
                                     case '2':
                                         fellow.directgain(get.cards(1));
                                         break;
@@ -1125,6 +1125,16 @@ const brawl = {
                     },
                     element: {
                         player: {
+                            setLevel(level = '1') {
+                                const player = this;
+                                player.lz_levelNum = level;
+                                level = Number(level);
+                                if (level == 3) player.node.framebg.dataset.decoration = 'bronze';
+                                else if (level == 4) player.node.framebg.dataset.decoration = 'silver';
+                                else if (level == 5) player.node.framebg.dataset.decoration = 'gold';
+                                else player.node.framebg.dataset.decoration = 'none';
+                                player.node.framebg.dataset.auto = player.node.framebg.dataset.decoration;
+                            },
                             getFriends(func, includeDie, includeOut) {
                                 const player = this, method = includeDie ? "filterPlayer2" : "filterPlayer", identity = player.identity;
                                 var self = false;
