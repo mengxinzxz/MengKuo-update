@@ -150,6 +150,7 @@ const brawl = {
                         }
                         const next = game.createEvent("chooseCharacter", false);
                         next.player = game.me;
+                        next.showConfig = true;
                         next.setContent(async function (event, trigger, player) {
                             ui.arena.classList.add('choose-character');
                             if (!_status.characterlist) lib.skill.pingjian.initList();
@@ -974,8 +975,8 @@ const brawl = {
                                 }
                             },
                             logAi() { },
-                            getFriends(func) {
-                                var player = this;
+                            getFriends(func, includeDie, includeOut) {
+                                const player = this, method = includeDie ? "filterPlayer2" : "filterPlayer";
                                 var targets;
                                 var self = false;
                                 if (func === true) {
@@ -984,42 +985,42 @@ const brawl = {
                                 }
                                 switch (player.identity) {
                                     case 'cxyMengJun':
-                                        targets = game.filterPlayer(function (current) {
+                                        targets = game[method](function (current) {
                                             if (current == player && !self) return false;
                                             return current.identity == 'cxyMengJun';
-                                        });
+                                        }, [], includeOut);
                                         break;
                                     case 'cxyJiangLing': case 'cxySuiCong':
-                                        targets = game.filterPlayer(function (current) {
+                                        targets = game[method](function (current) {
                                             if (current == player && !self) return false;
                                             return current.identity == 'cxyJiangLing' || current.identity == 'cxySuiCong';
-                                        });
+                                        }, [], includeOut);
                                         break;
                                 }
                                 return targets;
                             },
-                            getEnemies(func) {
-                                var player = this;
+                            getEnemies(func, includeDie, includeOut) {
+                                const player = this, method = includeDie ? "filterPlayer2" : "filterPlayer";
                                 var targets;
                                 switch (player.identity) {
                                     case 'cxyMengJun':
-                                        targets = game.filterPlayer(function (current) {
+                                        targets = game[method](function (current) {
                                             return current.identity == 'cxyJiangLing' || current.identity == 'cxySuiCong';
-                                        });
+                                        }, [], includeOut);
                                         break;
                                     case 'cxyJiangLing': case 'cxySuiCong':
-                                        targets = game.filterPlayer(function (current) {
+                                        targets = game[method](function (current) {
                                             return current.identity == 'cxyMengJun';
-                                        });
+                                        }, [], includeOut);
                                         break;
                                 }
                                 return targets;
                             },
-                            isFriendOf(player) {
-                                return this.getFriends(true).includes(player);
+                            isFriendOf(player, includeDie, includeOut) {
+                                return this.getFriends(true, includeDie, includeOut).includes(player);
                             },
-                            isEnemyOf(player) {
-                                return this.getEnemies(true).includes(player);
+                            isEnemyOf(player, includeDie, includeOut) {
+                                return this.getEnemies(true, includeDie, includeOut).includes(player);
                             },
                         },
                     },

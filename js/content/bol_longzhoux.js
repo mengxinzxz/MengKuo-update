@@ -1140,23 +1140,6 @@ const brawl = {
                         }, true);
                     }
                     'step 4'
-                    if (lib.config.singleControl) {
-                        lib.setPopped(ui.create.system('手牌', null, true), function () {
-                            var uiintro = ui.create.dialog('hidden');
-                            var players = game.players.concat(game.dead);
-                            for (var i = 0; i < players.length; i++) {
-                                if (players[i].identity == game.me.identity && players[i] != game.me) {
-                                    uiintro.add(get.translation(players[i]));
-                                    var cards = players[i].getCards('h');
-                                    if (cards.length) {
-                                        uiintro.addSmall(cards, true);
-                                    }
-                                    else uiintro.add('（无）');
-                                }
-                            }
-                            return uiintro;
-                        }, 220);
-                    }
                     setTimeout(function () {
                         ui.arena.classList.remove('choose-character');
                     }, 500);
