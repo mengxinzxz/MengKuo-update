@@ -178,7 +178,7 @@ const brawl = {
                             player.init(result.links[0]);
                             fellow?.init(result.links[1] || (list => {
                                 let listx = [], num = 0;
-                                for (var name of list) {
+                                for (const name of list) {
                                     const numx = get.rank(name, true);
                                     if (numx > num) {
                                         num = numx;

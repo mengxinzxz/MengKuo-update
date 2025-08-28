@@ -59,6 +59,7 @@ const brawl = {
         lib.config.mode_config.identity.change_card = 'disabled';
         lib.config.mode_config.identity.double_character = false;
         lib.config.singleControl = lib.config.extension_活动萌扩_singleControl;
+        if (lib.config.singleControl) lib.config.mode_config.identity.dierestart = false;
     },
     content: {
         submode: 'normal',
@@ -424,7 +425,7 @@ const brawl = {
                             if (fellow) {
                                 fellow.init(result.links[1] || (list => {
                                     let listx = [], num = 0;
-                                    for (var name of list) {
+                                    for (const name of list) {
                                         const numx = get.rank(name, true);
                                         if (numx > num) {
                                             num = numx;

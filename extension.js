@@ -9,11 +9,7 @@ lib.init.css(lib.assetURL + 'extension/活动萌扩', 'extension');
 game.bolShowNewPackx = function () {
 	//更新告示
 	let HuoDong_update = [
-		'对部分模式进行翻新，删除龙舟会战老版本',
-		'修复部分模式因态度判定和敌友判定引发的弹窗bug',
-		'修复昆阳之战刘秀拥有信念标记无法触发休整的bug',
-		'修复部分可选择同名替换武将的模式可替换出未开启武将的bug',
-		'去除div拥有node.seat属性仍赋予座位号昵称的双重显示',
+		'模式翻新，bugfix',
 		'To be continued...',
 	];
 	//加载

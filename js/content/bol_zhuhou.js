@@ -242,7 +242,7 @@ const brawl = {
                             const target = game.me.seatNum == 1 ? game.playerBySeat(2) : game.playerBySeat(1);
                             const name = (() => {
                                 let listx = [], num = 0;
-                                for (var name of list) {
+                                for (const name of list) {
                                     const numx = get.rank(name, true);
                                     if (numx > num) {
                                         num = numx;
