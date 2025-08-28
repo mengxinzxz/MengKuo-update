@@ -93,7 +93,7 @@ const brawl = {
                 game: {
                     //死亡检查胜负情况
                     checkResult() {
-                        if (!game.population(game.me.identity)) game.over(false);
+                        if (!get.population(game.me.identity)) game.over(false);
                         else {
                             var fellow = game.players.concat(game.dead).filter(function (current) {
                                 return current.identity == game.me.identity && current != game.me;
