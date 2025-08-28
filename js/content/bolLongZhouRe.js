@@ -112,7 +112,7 @@ const brawl = {
                                 _status.createControl = ui.cheat2;
                                 ui.cheat = ui.create.control('更换', function () {
                                     if (ui.cheat2 && ui.cheat2.dialog == _status.event.dialog) return;
-                                    let list = _status.characterlist.filter(name => get.character(name).group == player.identity && !aiList.includes(name)).randomGets(list.length);
+                                    let list = _status.characterlist.filter(name => get.character(name).group == player.identity && !aiList.includes(name)).randomGets(12);
                                     const replaceList = zhuanshuCharacter.filter(name => get.character(name).group === game.me.identity && !aiList.includes(name));
                                     if (replaceList.length > 0) {
                                         list.randomRemove(replaceList.length);
@@ -176,7 +176,18 @@ const brawl = {
                             _status.characterlist.removeArray(result.links);
                             game.addRecentCharacter(...result.links);
                             player.init(result.links[0]);
-                            fellow?.init(result.links[1] || aiList.randomGet());
+                            fellow?.init(result.links[1] || (list => {
+                                let listx = [], num = 0;
+                                for (var name of list) {
+                                    const numx = get.rank(name, true);
+                                    if (numx > num) {
+                                        num = numx;
+                                        listx = [name];
+                                    }
+                                    else if (numx == num) listx.push(name);
+                                }
+                                return listx;
+                            })(aiList).randomGet());
                             for (const i of game.players) {
                                 if (!(i === player || i === fellow)) {
                                     i.init(_status.characterlist.filter(name => get.character(name).group == i.identity).randomRemove());
