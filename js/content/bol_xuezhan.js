@@ -127,7 +127,7 @@ const brawl = {
                                     game.me.characterStorage = characters;
                                     const buttons = ui.create.div('.buttons');
                                     const node = _status.event.dialog.buttons[0].parentNode;
-                                    _status.event.dialog.buttons = ui.create.buttons(characters, 'characterx', buttons);
+                                    _status.event.dialog.buttons = ui.create.buttons(characters, 'character', buttons);
                                     _status.event.dialog.content.insertBefore(buttons, node);
                                     buttons.animate('start');
                                     node.remove();
