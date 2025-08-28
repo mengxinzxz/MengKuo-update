@@ -155,7 +155,7 @@ const brawl = {
                         game.resetSkills();
                         var first = game.players[0];
                         _status.paused = false;
-                        _status.event.player = first;
+                        _status.event.player = first.previous;
                         _status.event.step = 0;
                         _status.roundStart = first;
                         game.phaseNumber = 0;

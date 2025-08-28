@@ -47,7 +47,7 @@ const brawl = {
     init() {
         if (!_status.characterlist) lib.skill.pingjian.initList();
         for (var i in lib.skill) {
-            if (lib.skill[i].seatRelated === true) {
+            if (lib.skill[i].seatRelated === 'changeSeat') {
                 if (lib.translate[i + '_info']) lib.translate[i + '_info'] = '此模式下不可用';
                 if (lib.translate[i + '_info_identity']) lib.translate[i + '_info_identity'] = '此模式下不可用';
                 if (lib.dynamicTranslate[i]) lib.dynamicTranslate[i] = () => '此模式下不可用';
@@ -126,6 +126,10 @@ const brawl = {
                                         })[0];
                                         if (target) {
                                             target.revive(null, false);
+                                            if (target.node.dieidentity) {
+                                                target.node.dieidentity.innerHTML = '';
+                                                delete target.node.dieidentity;
+                                            }
                                             target.uninit();
                                             target.identity = groupList[0];
                                             target.setIdentity();
@@ -207,11 +211,6 @@ const brawl = {
                                                 break;
                                         }
                                     }
-                                    //清空技能记录
-                                    for (var player of game.players) {
-                                        player.removeSkill('counttrigger');
-                                        delete player.storage.counttrigger;
-                                    }
                                     //分配座位号
                                     var current;
                                     if (game.me.isAlive()) current = ((fellow && game.me.next == fellow) ? game.me.next.next : game.me.next);
@@ -226,16 +225,10 @@ const brawl = {
                                         _status.event = _status.event.parent;
                                     }
                                     game.resetSkills();
-                                    var first = game.findPlayer(function (current) {
-                                        return current.getSeatNum() && !game.hasPlayer(function (target) {
-                                            if (!target.getSeatNum()) return false;
-                                            return target.getSeatNum() < current.getSeatNum();
-                                        });
-                                    });
                                     _status.paused = false;
-                                    _status.event.player = first;
+                                    _status.event.player = _status.firstAct.previous;
                                     _status.event.step = 0;
-                                    _status.roundStart = first;
+                                    _status.roundStart = _status.firstAct;
                                     game.phaseNumber = 0;
                                     game.roundNumber = 0;
                                     game.updateRoundNumber();
