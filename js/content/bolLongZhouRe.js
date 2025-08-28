@@ -55,7 +55,7 @@ const brawl = {
                     },
                     //选将
                     chooseCharacter() {
-                        var next = game.createEvent('chooseCharacter', false);
+                        const next = game.createEvent('chooseCharacter', false);
                         next.player = game.me;
                         next.showConfig = true;
                         next.setContent(async function (event, trigger, player) {

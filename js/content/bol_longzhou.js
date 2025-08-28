@@ -3,28 +3,27 @@ const brawl = {
     name: '龙舟会战',
     mode: 'identity',
     intro: [
-        '本模式为复刻OL经典模式龙舟会战，单将模式，禁用手气卡',
-        '模式规则：本模式共分三关' +
-        '<br>敌人数目：2/4/6（不同势力之间均为敌对关系，但会优先攻击玩家方）' +
-        '<br>敌人初始手牌数：4/5/5' +
-        '<br>敌人初始体力/体力上限加成：0/1/1' +
+        '本模式为复刻OL龙舟会战2023年版本，单将模式，禁用手气卡',
+        '模式规则：本模式共分两关' +
+        '<br>敌人数目：2/6（不同势力之间均为敌对关系，但会优先攻击玩家方）' +
+        '<br>敌人初始等阶：第一关随机3，4阶，第二关随机3，4，5阶' +
         '<br>三关均通过后游戏胜利。',
-        '牌堆替换：【桃】替换为【粽】，【酒】替换为【雄黄酒】，【五谷丰登】和【桃园结义】替换为【力争上游】，【无中生有】替换为【同舟共济】，【南蛮入侵】和【万箭齐发】替换为【逆水行舟】，【诸葛连弩】替换为【连弩】。',
+        '牌堆替换：【酒】替换为【雄黄酒】，【五谷丰登】和【桃园结义】替换为【力争上游】，【无中生有】替换为【同舟共济】，【南蛮入侵】和【万箭齐发】替换为【逆水行舟】。',
         '关于选将：' +
         '<br>选将框中会随机挑选五张势力相同的武将牌供玩家选择，选将势力可在扩展页面自由选择' +
         '<br>此模式中神武将的势力和玩家选择的势力相同',
         '武将等阶特权（等阶可在扩展页面自由选择）：' +
         '<br>一阶：无特权' +
         '<br>二阶：初始手牌数+1' +
-        '<br>三阶：初始手牌数+1，初始体力/体力上限+1' +
-        '<br>四阶：初始手牌数+2，初始体力/体力上限+1' +
-        '<br>五阶：初始手牌数+2，初始体力/体力上限+2，获得技能【艾叶】（艾叶：限定技，当你处于濒死状态时，你可以弃置所有牌，然后复原你的武将牌，摸两张牌，将体力回复至2点）',
+        '<br>三阶：初始手牌数+1，初始体力/体力上限+1，使用【杀】的额定次数+1' +
+        '<br>四阶：初始手牌数+2，初始体力/体力上限+1，使用【杀】的额定次数+1' +
+        '<br>五阶：初始手牌数+2，初始体力/体力上限+2，使用【杀】的额定次数+1，获得技能【重生】（仅玩家方获得，重生：限定技，当你处于濒死状态时，你可以弃置判定区内的所有牌，然后复原你的武将牌，摸五张牌，将体力回复至体力上限（至多为5））',
         '本模式中所有武将都拥有特殊的家族技能：' +
         '<br>魏·魏业：回合开始时，你可以弃置一张牌并指定一名敌方角色，该角色须弃置一张牌，否则你摸一张牌。' +
-        '<br>蜀·蜀义：你使用【杀】上限+1；出牌阶段结束时，若你于此阶段使用【杀】次数不少于2，摸一张牌。' +
+        '<br>蜀·蜀义：出牌阶段结束时，若你于此阶段使用【杀】次数不少于2，摸一张牌。' +
         '<br>吴·吴耀：回合结束时，若你的手牌数不等于你的体力值，则你摸一张牌。' +
         '<br>群·群心：锁定技，弃牌阶段开始时，若你的手牌数比体力值多2或更多，你本回合手牌上限+1；若你已损失体力值大于1，你手牌上限+1' +
-        '<br>晋·晋势：摸牌阶段结束时，你可以展示你于此阶段内因摸牌而获得的牌。若这些牌的花色均不同，则你摸一张牌。',
+        '<br>晋·晋势：回合开始时，你可以弃置一张牌，从牌堆中随机获得一张与此牌花色相同的牌。',
         '队友死亡后，会激活势力专属城池技能：' +
         '<br>魏·许昌：锁定技，当你受到伤害后，你摸一张牌。' +
         '<br>蜀·成都：锁定技，当你使用【杀】造成伤害后，你摸一张牌。' +
@@ -33,6 +32,17 @@ const brawl = {
         '<br>晋·洛阳：锁定技，结束阶段，若你手牌中的花色数小于3，则你摸一张牌。',
         '击杀奖惩：击杀不同势力的角色和队友各摸一张牌；击杀队友的角色弃置所有牌。',
         '禁用所有换位技能',
+        '2023年龙舟会战新机制：粽子' +
+        '<br>①所有角色于游戏开始时获得2个“粽”标记，玩家方随机使用一张装备牌，所有角色每造成1点伤害获得1个“棕”标记，击杀其他角色可获得该角色的所有“棕”标记' +
+        '<br>②每一整局龙舟会战会随机进行一个有关“棕”标记的全局效果' +
+        '<br>·大快朵颐：使用锦囊牌时失去2个“棕”标记，摸一张牌。' +
+        '<br>·五味俱全：造成伤害时失去4个“棕”标记，令此伤害+1。' +
+        '<br>·回味无穷：使用【杀】造成伤害后失去2个“棕”标记，摸一张牌。' +
+        '<br>·珠翠之珍：使用装备牌时失去1个“棕”标记，摸一张牌。' +
+        '<br>·津津有味：使用【桃】回复体力后失去4个“棕”标记，回复1点体力。' +
+        '<br>·珍馐美馔：摸牌阶段开始时失去所有“棕”标记，摸X张牌（X为移去的“棕”标记数的一半，向下取整）。' +
+        '<br>·垂涎欲滴：结束阶段失去所有“棕”标记，摸X张牌（X为移去的“棕”标记数的一半，向下取整）。' +
+        '<br>·酒足饭饱：①若你的“棕”标记数：不小于2，摸牌阶段多摸一张牌；不小于4，使用牌无距离限制；不小于6，使用【杀】的额定次数+1。②结束阶段，你失去X个“棕”标记（X为你的“棕”标记数，向下取整）',
     ],
     init() {
         if (!_status.characterlist) lib.skill.pingjian.initList();
@@ -50,41 +60,6 @@ const brawl = {
         var pack = {
             character: {},
             card: {
-                zong: {
-                    image: 'ext:活动萌扩/image/zong.png',
-                    fullimage: true,
-                    type: 'basic',
-                    cardcolor: 'red',
-                    enable(card, player) {
-                        return game.hasPlayer(function (target) {
-                            return player.identity == target.identity && target.isDamaged();
-                        });
-                    },
-                    filterTarget(card, player, target) {
-                        return player.identity == target.identity && target.isDamaged();
-                    },
-                    content() {
-                        target.recover();
-                    },
-                    ai: {
-                        basic: {
-                            order(card, player) {
-                                if (player.hasSkillTag('pretao')) return 5;
-                                return 2;
-                            },
-                            useful: [8, 6.5, 5, 4],
-                            value: [8, 6.5, 5, 4],
-                        },
-                        result: {
-                            player(player, target) {
-                                return get.recoverEffect(target, player, player);
-                            },
-                        },
-                        tag: {
-                            recover: 1,
-                        },
-                    },
-                },
                 xionghuangjiu: {
                     image: 'ext:活动萌扩/image/xionghuangjiu.png',
                     fullimage: true,
@@ -281,45 +256,6 @@ const brawl = {
                         },
                     },
                 },
-                liannu: {
-                    image: 'ext:活动萌扩/image/liannu.png',
-                    fullimage: true,
-                    type: 'equip',
-                    subtype: 'equip1',
-                    ai: {
-                        order() {
-                            return get.order({ name: 'sha' }) - 0.1;
-                        },
-                        equipValue(card, player) {
-                            if (player._liannu_temp) return 1;
-                            player._liannu_temp = true;
-                            var result = function () {
-                                if (!game.hasPlayer(function (current) {
-                                    return get.distance(player, current) <= 1 && player.canUse('sha', current) && get.effect(current, { name: 'sha' }, player, player) > 0;
-                                })) {
-                                    return 1;
-                                }
-                                if (player.hasSha() && _status.currentPhase == player) {
-                                    if (player.getEquip('liannu') && player.countUsed('sha') || player.getCardUsable('sha') == 0) {
-                                        return 10;
-                                    }
-                                }
-                                var num = player.countCards('h', 'sha');
-                                if (num > 1) return 6 + num;
-                                return 3 + num;
-                            }();
-                            delete player._liannu_temp;
-                            return result;
-                        },
-                        basic: {
-                            equipValue: 5
-                        },
-                        tag: {
-                            valueswap: 1
-                        },
-                    },
-                    skills: ['liannu_skill'],
-                },
             },
             skill: {
                 //非同身份不能救助
@@ -368,11 +304,6 @@ const brawl = {
                     },
                 },
                 _LZ_jiazu_shu: {
-                    mod: {
-                        cardUsable(card, player, num) {
-                            if (card.name == 'sha' && player.identity == 'shu') return num + 1;
-                        },
-                    },
                     trigger: { player: 'phaseUseEnd' },
                     forced: true,
                     filter(event, player) {
@@ -409,16 +340,10 @@ const brawl = {
                     },
                 },
                 _LZ_jiazu_jin: {
-                    trigger: { player: 'phaseDrawEnd' },
+                    trigger: { player: 'phaseBegin' },
                     filter(event, player) {
                         var hs = player.getCards('h');
-                        return player.identity == 'jin' && hs.length > 0 && player.getHistory('gain', function (evt) {
-                            if (evt.getParent().name != 'draw' || evt.getParent('phaseDraw') != event) return false;
-                            for (var i of evt.cards) {
-                                if (hs.includes(i)) return true;
-                            }
-                            return false;
-                        }).length > 0;
+                        return player.identity == 'jin' && player.countCards('he');
                     },
                     check(event, player) {
                         var hs = player.getCards('h'), cards = [], suits = [];
@@ -433,19 +358,23 @@ const brawl = {
                         });
                         return cards.length == suits.length;
                     },
+                    direct: true,
                     content() {
-                        var hs = player.getCards('h'), cards = [], suits = [];
-                        player.getHistory('gain', function (evt) {
-                            if (evt.getParent().name != 'draw' || evt.getParent('phaseDraw') != trigger) return false;
-                            for (var i of evt.cards) {
-                                if (hs.includes(i)) {
-                                    cards.add(i);
-                                    suits.add(get.suit(i, player));
-                                }
-                            }
-                        });
-                        player.showCards(cards, get.translation(player) + '发动了【晋势】');
-                        if (cards.length == suits.length) player.draw();
+                        'step 0'
+                        player.chooseToDiscard('he', get.prompt2('_LZ_jiazu_jin')).set('ai', function (card) {
+                            if (!get.cardPile2(function (cardx) {
+                                return get.suit(cardx, false) == get.suit(card, player);
+                            })) return -1;
+                            return lib.skill.zhiheng.check(card);
+                        }).logSkill = '_LZ_jiazu_jin';
+                        'step 1'
+                        if (result.bool) {
+                            var suit = get.suit(result.cards[0], player);
+                            var card = get.cardPile2(function (card) {
+                                return get.suit(card, false) == suit;
+                            });
+                            if (card) player.gain(card, 'gain2');
+                        }
                     },
                 },
                 LZqunxin_temp: {
@@ -536,28 +465,15 @@ const brawl = {
                         player.draw();
                     },
                 },
-                //觉醒二段技能
-                _LZ_jiazu_awaken: {
-                    trigger: { global: 'die' },
-                    forced: true,
-                    filter(event, player) {
-                        return !player._LZ_jiazuAwaken && event.player.identity == player.identity;
-                    },
-                    content() {
-                        player._LZ_jiazuAwaken = true;
-                        var name = '_LZ_jiazu_awaken_' + player.identity;
-                        if (lib.skill[name]) player.markSkill(name);
-                    },
-                },
-                //艾叶
-                LZ_aiye: {
+                //重生
+                LZ_chongsheng: {
                     charlotte: true,
                     unique: true,
                     enable: 'chooseToUse',
                     mark: true,
                     limited: true,
                     skillAnimation: true,
-                    animationColor: 'wood',
+                    animationColor: 'orange',
                     filter(event, player) {
                         if (event.type == 'dying') {
                             if (player != event.dying) return false;
@@ -567,59 +483,184 @@ const brawl = {
                     },
                     content() {
                         'step 0'
-                        player.awakenSkill('LZ_aiye');
-                        player.discard(player.getCards('he'));
+                        player.awakenSkill('LZ_chongsheng');
+                        player.discard(player.getCards('j'));
                         'step 1'
                         player.link(false);
                         player.turnOver(false);
                         'step 2'
-                        player.draw(2);
-                        if (player.hp < 2) player.recover(2 - player.hp);
+                        player.draw(5);
+                        if (player.hp < 5) player.recover(5 - player.hp);
                     },
                     ai: {
-                        order: 0.1,
+                        order: 10,
                         save: true,
                         skillTagFilter(player, arg, target) {
-                            return target == player;
+                            if (player != target) return false;
                         },
                         result: { player: 1 },
                     },
                 },
-                liannu_skill: {
-                    equipSkill: true,
-                    audio: 'zhuge',
-                    firstDo: true,
-                    trigger: { player: 'useCard1' },
-                    forced: true,
-                    filter(event, player) {
-                        return !event.audioed && event.card.name == 'sha' && player.countUsed('sha', true) > 1 && event.getParent().type == 'phase';
-                    },
-                    content() {
-                        trigger.audioed = true;
-                    },
+                //2023年新机制粽子
+                //粽+全局效果
+                _lz_zong_mark: {
                     mod: {
                         cardUsable(card, player, num) {
-                            var cardx = player.getEquip('liannu');
-                            if (card.name == 'sha' && (!cardx || player.hasSkill('liannu_skill', null, false) || (!_status.liannu_temp && !ui.selected.cards.includes(cardx)))) {
-                                return num + 3;
-                            }
+                            if (card.name == 'sha' && player.lz_levelNum && parseInt(player.lz_levelNum) >= 3) return num + 1;
                         },
-                        cardEnabled2(card, player) {
-                            if (!_status.event.addCount_extra || player.hasSkill('liannu_skill', null, false)) return;
-                            if (card && card == player.getEquip('liannu')) {
-                                try {
-                                    var cardz = get.card();
-                                }
-                                catch (e) {
-                                    return;
-                                }
-                                if (!cardz || cardz.name != 'sha') return;
-                                _status.liannu_temp = true;
-                                var bool = lib.filter.cardUsable(get.autoViewAs({ name: 'sha' }, ui.selected.cards.concat([card])), player);
-                                delete _status.liannu_temp;
-                                if (!bool) return false;
-                            }
+                    },
+                    marktext: '粽',
+                    intro: { name2: '棕', content: 'mark' },
+                    charlotte: true,
+                    trigger: { source: ['damageBegin4', 'dieBegin'] },
+                    filter(event, player) {
+                        return event.name == 'damage' || event.player.countMark('_lz_zong_mark');
+                    },
+                    direct: true,
+                    priority: 2023,
+                    content() {
+                        player.addMark('_lz_zong_mark', trigger.name == 'damage' ? trigger.num : trigger.player.countMark('_lz_zong_mark'));
+                        if (trigger.name == 'die') trigger.player.unmarkSkill('_lz_zong_mark');
+                    },
+                },
+                _lz_equip: {
+                    charlotte: true,
+                    trigger: { global: 'phaseBefore' },
+                    filter(event, player) {
+                        /*
+                        var bool=false;
+                        for(var i=1;i<=5;i++){
+                        if(player.isEmpty(i)){
+                        bool=true;
+                        break;
+                        }
+                        }
+                        */
+                        return game.phaseNumber == 0 && player.identity == game.me.identity/*&&bool*/;
+                    },
+                    direct: true,
+                    priority: 2023,
+                    content() {
+                        /*
+                        var equips=[];
+                        for(var i=1;i<=5;i++){
+                        if(player.isEmpty(i)) equips.push('equip'+i);
+                        }
+                        */
+                        var card = get.cardPile(function (card) {
+                            return get.type(card) == 'equip'/*&&equips.includes(get.subtype(card))*/;
+                        });
+                        if (card) player.chooseUseTarget(card, 'nopopup', 'noanimate', true);
+                    },
+                },
+                lz_dakuaiduoyi: {
+                    charlotte: true,
+                    trigger: { player: 'useCard' },
+                    filter(event, player) {
+                        return get.type2(event.card) == 'trick' && player.countMark('_lz_zong_mark') >= 2;
+                    },
+                    forced: true,
+                    content() {
+                        player.removeMark('_lz_zong_mark', 2);
+                        player.draw();
+                    },
+                },
+                lz_wuweijuquan: {
+                    charlotte: true,
+                    trigger: { source: 'damageBegin1' },
+                    filter(event, player) {
+                        return player.countMark('_lz_zong_mark') >= 4;
+                    },
+                    forced: true,
+                    content() {
+                        player.removeMark('_lz_zong_mark', 4);
+                        trigger.num++;
+                    },
+                },
+                lz_huiweuwuqiong: {
+                    charlotte: true,
+                    trigger: { source: 'damageSource' },
+                    filter(event, player) {
+                        return event.card && event.card.name == 'sha' && player.countMark('_lz_zong_mark') >= 2;
+                    },
+                    forced: true,
+                    content() {
+                        player.removeMark('_lz_zong_mark', 2);
+                        player.draw();
+                    },
+                },
+                lz_zhucuizhizhen: {
+                    charlotte: true,
+                    trigger: { player: 'useCard' },
+                    filter(event, player) {
+                        return get.type2(event.card) == 'equip' && player.countMark('_lz_zong_mark');
+                    },
+                    forced: true,
+                    content() {
+                        player.removeMark('_lz_zong_mark', 1);
+                        player.draw();
+                    },
+                },
+                lz_jinjinyouwei: {
+                    charlotte: true,
+                    trigger: { player: 'recoverEnd' },
+                    filter(event, player) {
+                        return event.card && event.card.name == 'tao' && player.countMark('_lz_zong_mark') >= 4;
+                    },
+                    forced: true,
+                    content() {
+                        player.removeMark('_lz_zong_mark', 4);
+                        player.recover();
+                    },
+                },
+                lz_zhenxiumeizhuan: {
+                    charlotte: true,
+                    trigger: { player: 'phaseDrawBegin' },
+                    filter(event, player) {
+                        return player.countMark('_lz_zong_mark');
+                    },
+                    forced: true,
+                    content() {
+                        var num = player.countMark('_lz_zong_mark');
+                        player.removeMark('_lz_zong_mark', num);
+                        player.draw(Math.floor(num / 2));
+                    },
+                },
+                lz_chuixianyudi: {
+                    charlotte: true,
+                    trigger: { player: 'phaseJieshuBegin' },
+                    filter(event, player) {
+                        return player.countMark('_lz_zong_mark');
+                    },
+                    forced: true,
+                    content() {
+                        var num = player.countMark('_lz_zong_mark');
+                        player.removeMark('_lz_zong_mark', num);
+                        player.draw(Math.floor(num / 2));
+                    },
+                },
+                lz_jiuzufanbao: {
+                    mod: {
+                        cardUsable(card, player, num) {
+                            if (card.name == 'sha' && player.countMark('_lz_zong_mark') >= 6) return num + 1;
                         },
+                        targetInRange(card, player) {
+                            if (player.countMark('_lz_zong_mark') >= 4) return true;
+                        },
+                    },
+                    charlotte: true,
+                    trigger: { player: ['phaseDrawBegin2', 'phaseJieshuBegin'] },
+                    filter(event, player) {
+                        if (player.countMark('_lz_zong_mark') < 2) return false;
+                        return event.name == 'phaseJieshu' || !event.numFixed;
+                    },
+                    forced: true,
+                    content() {
+                        if (trigger.name == 'phaseJieshu') {
+                            var num = player.countMark('_lz_zong_mark');
+                            player.removeMark('_lz_zong_mark', Math.floor(num / 2));
+                        }
+                        else trigger.num++;
                     },
                 },
             },
@@ -627,13 +668,13 @@ const brawl = {
                 _LZ_jiazu_wei: '魏业',
                 _LZ_jiazu_wei_info: '回合开始时，你可以弃置一张牌并指定一名敌方角色，该角色选择一项：①弃置一张牌；②你摸一张牌。',
                 _LZ_jiazu_shu: '蜀义',
-                _LZ_jiazu_shu_info: '你使用【杀】上限+1；出牌阶段结束时，若你于此阶段使用【杀】的次数不少于2，摸一张牌。',
+                _LZ_jiazu_shu_info: '出牌阶段结束时，若你于此阶段使用【杀】的次数不少于2，摸一张牌。',
                 _LZ_jiazu_wu: '吴耀',
                 _LZ_jiazu_wu_info: '回合结束时，若你的手牌数不等于你的体力值，则你摸一张牌。',
                 _LZ_jiazu_qun: '群心',
                 _LZ_jiazu_qun_info: '锁定技，弃牌阶段开始时，若你的手牌数比体力值多2或更多，你本回合手牌上限+1；若你已损失体力值大于1，你手牌上限+1',
                 _LZ_jiazu_jin: '晋势',
-                _LZ_jiazu_jin_info: '摸牌阶段结束时，你可以展示你于此阶段内因摸牌而获得的牌。若这些牌的花色均不同，则你摸一张牌。',
+                _LZ_jiazu_jin_info: '回合开始时，你可以弃置一张牌，从牌堆中随机获得一张与此牌花色相同的牌。',
                 _LZ_jiazu_awaken_wei: '许昌',
                 _LZ_jiazu_awaken_wei_info: '锁定技，当你受到伤害后，你摸一张牌。',
                 _LZ_jiazu_awaken_shu: '成都',
@@ -644,8 +685,6 @@ const brawl = {
                 _LZ_jiazu_awaken_qun_info: '锁定技，当你使用锦囊牌指定其他角色为目标后，你摸一张牌。',
                 _LZ_jiazu_awaken_jin: '洛阳',
                 _LZ_jiazu_awaken_jin_info: '锁定技，结束阶段，若你手牌中的花色数小于3，则你摸一张牌。',
-                zong: '粽',
-                zong_info: '出牌阶段，对自己或队友使用，目标角色回复1点体力。',
                 xionghuangjiu: '雄黄酒',
                 xionghuangjiu_info: '①出牌阶段对自己使用，本回合使用的下一张【杀】伤害+1；②当你处于濒死状态时，对自己使用，你回复1点体力。',
                 tongzhougongji: '同舟共济',
@@ -654,12 +693,17 @@ const brawl = {
                 lizhengshangyou_info: '出牌阶段，对所有角色使用，你和与你势力相同的角色各摸x张牌，其他角色摸一张牌（x为当前场上势力数）。',
                 nishuixingzhou: '逆水行舟',
                 nishuixingzhou_info: '出牌阶段，对一名与你势力不同的角色使用，对其和与其势力相同的角色各造成1点伤害。',
-                LZ_aiye: '艾叶',
-                LZ_aiye_info: '限定技，当你处于濒死状态时，你可以弃置所有牌，然后复原你的武将牌，摸两张牌，将体力回复至2点。',
-                liannu: '连弩',
-                liannu_skill: '连弩',
-                liannu_info: '锁定技，出牌阶段，你使用【杀】的次数上限+3。',
-                liannu_skill_info: '锁定技，出牌阶段，你使用【杀】的次数上限+3。',
+                LZ_chongsheng: '重生',
+                LZ_chongsheng_info: '限定技，当你处于濒死状态时，你可以弃置判定区内的所有牌，然后复原你的武将牌，摸五张牌，将体力回复至体力上限（至多为5）。',
+                _lz_zong_mark: '粽',
+                lz_dakuaiduoyi: '大快朵颐',
+                lz_wuweijuquan: '五味俱全',
+                lz_huiweuwuqiong: '回味无穷',
+                lz_zhucuizhizhen: '珠翠之珍',
+                lz_jinjinyouwei: '津津有味',
+                lz_zhenxiumeizhuan: '珍馐美馔',
+                lz_chuixianyudi: '垂涎欲滴',
+                lz_jiuzufanbao: '酒足饭饱',
             },
         };
         game.bolLoadPack(pack);
@@ -670,10 +714,8 @@ const brawl = {
         cardPile() {
             for (var i = 0; i < lib.card.list.length; i++) {
                 switch (lib.card.list[i][2]) {
-                    case 'tao': lib.card.list[i][2] = 'zong'; break;
                     case 'jiu': lib.card.list[i][2] = 'xionghuangjiu'; break;
                     case 'wuzhong': lib.card.list[i][2] = 'tongzhougongji'; break;
-                    case 'zhuge': lib.card.list[i][2] = 'liannu'; break;
                     case 'wugu': case 'taoyuan': lib.card.list[i][2] = 'lizhengshangyou'; break;
                     case 'nanman': case 'wanjian': lib.card.list[i][2] = 'nishuixingzhou'; break;
                     case 'bingliang': case 'lebu': case 'shandian': lib.card.list.splice(i--, 1); break;
@@ -684,7 +726,6 @@ const brawl = {
         //更改游戏配置
         chooseCharacterBefore() {
             //游戏初始阵型
-            game.statusNum = 1;
             if (!lib.config.extension_活动萌扩_chooseGroup) lib.config.extension_活动萌扩_chooseGroup = 'wei';
             if (!lib.config.extension_活动萌扩_getLevel) lib.config.extension_活动萌扩_getLevel = '1';
             var choice = lib.config.extension_活动萌扩_chooseGroup;
@@ -732,16 +773,18 @@ const brawl = {
                     return false;
                 },
                 dieAfter(source) {
-                    if (source) {
-                        if (source.identity != this.identity) {
-                            var fellow = game.findPlayer(function (current) {
-                                return current != source && current.identity == source.identity;
-                            })
-                            if (fellow) fellow.draw('nodelay');
-                            source.draw();
-                        }
-                        else source.discard(source.getCards('he'));
+                    /*
+                    if(source){
+                    if(source.identity!=this.identity){
+                    var fellow=game.findPlayer(function(current){
+                    return current!=source&&current.identity==source.identity;
+                    })
+                    if(fellow) fellow.draw('nodelay');
+                    source.draw();
                     }
+                    else source.discard(source.getCards('he'));
+                    }
+                    */
                     game.checkResult();
                 },
             };
@@ -761,8 +804,8 @@ const brawl = {
             }
             //设置态度值
             get.rawAttitude = function (from, to) {
-                var identity = game.me.identity;
                 if (!from || !to) return 0;
+                var identity = game.me.identity;
                 if (from.identity == to.identity) return 10;
                 if (from != to && (from.identity == identity || to.identity == identity)) return -10;
                 return -7.5;
@@ -774,7 +817,7 @@ const brawl = {
                     return current.identity == game.me.identity;
                 })) game.over(false);
                 else {
-                    var fellow = game.players.filter(function (current) {
+                    var fellow = game.players.concat(game.dead).filter(function (current) {
                         return current.identity == game.me.identity && current != game.me;
                     })[0];
                     if (!fellow || !fellow.isAlive()) {
@@ -786,17 +829,17 @@ const brawl = {
                     var list = [];
                     for (var i of game.players) if (!list.includes(i.identity)) list.push(i.identity);
                     if (list.length == 1) {
-                        if (game.statusNum == 3) game.over(true);
+                        if (game.RElongzhou) game.over(true);
                         else {
-                            game.statusNum++;
-                            game.broadcastAll(function () {
-                                if (ui.LongZhouInfo) ui.LongZhouInfo.innerHTML = '龙舟会战：第' + get.cnNumber(game.statusNum, true) + '回合';
-                            });
-                            ui.arena.setNumber(game.statusNum * 2 + 2);
+                            game.RElongzhou = true;
+                            ui.arena.setNumber(8);
                             var groupList = ['wei', 'shu', 'wu', 'qun', 'jin'].remove(game.me.identity);
-                            groupList = groupList.randomGets(game.statusNum);
+                            groupList = groupList.randomGets(3);
+                            groupList.randomSort();
                             var tempNum = 3;
-                            if (fellow && game.me.getSeatNum() > fellow.getSeatNum()) fellow.dataset.position = game.statusNum * 2 + 1;
+                            if (game.me.isIn()) game.me.directgain(get.cards(2));
+                            if (fellow && fellow.isIn()) fellow.directgain(get.cards(2));
+                            if (fellow && game.me.getSeatNum() > fellow.getSeatNum()) fellow.dataset.position = 7;
                             while (game.dead.filter(function (target) {
                                 return target.identity != game.me.identity;
                             }).length) {
@@ -806,9 +849,7 @@ const brawl = {
                                 if (target) {
                                     target.revive(null, false);
                                     target.uninit();
-                                    target.identity = groupList[game.players.addArray(game.filterPlayer2(function (current) {
-                                        return current.identity == game.me.identity && !current.isAlive();
-                                    })).length - 1 < 4 ? 0 : 1];
+                                    target.identity = groupList[0];
                                     target.setIdentity();
                                     target.identityShown = true;
                                     var listxx = [];
@@ -816,9 +857,6 @@ const brawl = {
                                         if (lib.character[name][1] == target.identity) listxx.push(name);
                                     }
                                     target.init(listxx.randomGet());
-                                    target.maxHp = target.maxHp + 1;
-                                    target.hp = target.hp + 1;
-                                    target.update();
                                     if (target.countCards('hejsx')) {
                                         var hs = target.getCards('hejsx')
                                         for (var i = 0; i < hs.length; i++) {
@@ -828,26 +866,68 @@ const brawl = {
                                     target.directgain(get.cards(5));
                                     for (var i in game.LZelement) target[i] = game.LZelement[i];
                                     target.dataset.position = tempNum - game.me.getSeatNum();
-                                    if (target._LZ_jiazuAwaken) delete target._LZ_jiazuAwaken;
                                     tempNum++;
+                                    target.removeMark('_lz_zong_mark', target.countMark('_lz_zong_mark'), false);
+                                    target.addMark('_lz_zong_mark', 2);
+                                    target.lz_levelNum = ['3', '4', '5'].randomGet();
+                                    switch (target.lz_levelNum) {
+                                        case '3':
+                                            target.directgain(get.cards(1));
+                                            target.maxHp = target.maxHp + 1;
+                                            target.hp = target.hp + 1;
+                                            target.update();
+                                            break;
+                                        case '4':
+                                            target.directgain(get.cards(2));
+                                            target.maxHp = target.maxHp + 1;
+                                            target.hp = target.hp + 1;
+                                            target.update();
+                                            break;
+                                        case '5':
+                                            target.directgain(get.cards(2));
+                                            target.maxHp = target.maxHp + 2;
+                                            target.hp = target.hp + 2;
+                                            target.update();
+                                            break;
+                                    }
                                 }
                                 else break;
                             }
-                            for (var num = 1; num <= 2; num++) {
-                                var listx = [];
+                            for (var num = 1; num <= 4; num++) {
+                                var listx = [], identityxx = groupList[num <= 2 ? 1 : 2];
                                 for (var name of _status.characterlist) {
-                                    if (lib.character[name][1] == groupList[game.statusNum - 1]) listx.push(name);
+                                    if (lib.character[name][1] == identityxx) listx.push(name);
                                 }
                                 var target = game.addFellow(tempNum - game.me.getSeatNum(), listx.randomGet());
-                                target.identity = groupList[game.statusNum - 1];
+                                target.identity = identityxx;
                                 target.setIdentity();
                                 target.identityShown = true;
-                                target.maxHp = target.maxHp + 1;
-                                target.hp = target.hp + 1;
-                                target.update();
                                 tempNum++;
                                 target.directgain(get.cards(5));
                                 for (var i in game.LZelement) target[i] = game.LZelement[i];
+                                target.removeMark('_lz_zong_mark', target.countMark('_lz_zong_mark'), false);
+                                target.addMark('_lz_zong_mark', 2);
+                                target.lz_levelNum = ['3', '4', '5'].randomGet();
+                                switch (target.lz_levelNum) {
+                                    case '3':
+                                        target.directgain(get.cards(1));
+                                        target.maxHp = target.maxHp + 1;
+                                        target.hp = target.hp + 1;
+                                        target.update();
+                                        break;
+                                    case '4':
+                                        target.directgain(get.cards(2));
+                                        target.maxHp = target.maxHp + 1;
+                                        target.hp = target.hp + 1;
+                                        target.update();
+                                        break;
+                                    case '5':
+                                        target.directgain(get.cards(2));
+                                        target.maxHp = target.maxHp + 2;
+                                        target.hp = target.hp + 2;
+                                        target.update();
+                                        break;
+                                }
                             }
                             //清空技能记录
                             for (var player of game.players) {
@@ -894,6 +974,25 @@ const brawl = {
                 };
                 next.setContent(function () {
                     'step 0'
+                    var evt = ['lz_dakuaiduoyi', 'lz_wuweijuquan', 'lz_huiweuwuqiong', 'lz_zhucuizhizhen', 'lz_jinjinyouwei', 'lz_zhenxiumeizhuan', 'lz_chuixianyudi', 'lz_jiuzufanbao'].randomGet();
+                    game.addGlobalSkill(evt);
+                    game.broadcastAll(function (evt) {
+                        if (get.is.phoneLayout()) ui.guanduInfoxx = ui.create.div('.touchinfo.left', ui.window);
+                        else ui.guanduInfoxx = ui.create.div(ui.gameinfo);
+                        ui.guanduInfoxx.innerHTML = '本局事件：' + get.translation(evt);
+                    }, evt);
+                    var list = [
+                        '使用锦囊牌时失去2个“棕”标记，摸一张牌。',
+                        '造成伤害时失去4个“棕”标记，令此伤害+1。',
+                        '使用【杀】造成伤害后失去2个“棕”标记，摸一张牌。',
+                        '使用装备牌时失去1个“棕”标记，摸一张牌。',
+                        '使用【桃】回复体力后失去4个“棕”标记，回复1点体力。',
+                        '摸牌阶段开始时失去所有“棕”标记，摸X张牌（X为移去的“棕”标记数的一半，向下取整）。',
+                        '结束阶段失去所有“棕”标记，摸X张牌（X为移去的“棕”标记数的一半，向下取整）。',
+                        '①若你的“棕”标记数：不小于2，摸牌阶段多摸一张牌；不小于4，使用牌无距离限制；不小于6，使用【杀】的额定次数+1。②结束阶段，你失去X个“棕”标记（X为你的“棕”标记数，向下取整）',
+                    ];
+                    game.me.chooseControl('ok').set('prompt', '###本局特殊事件：' + get.translation(evt) + '###' + list[['lz_dakuaiduoyi', 'lz_wuweijuquan', 'lz_huiweuwuqiong', 'lz_zhucuizhizhen', 'lz_jinjinyouwei', 'lz_zhenxiumeizhuan', 'lz_chuixianyudi', 'lz_jiuzufanbao'].indexOf(evt)]);
+                    'step 1'
                     //神势力角色势力变更为玩家方势力
                     for (var name of _status.characterlist) {
                         if (lib.character[name][1] == 'shen') lib.character[name][1] = game.me.identity;
@@ -905,14 +1004,25 @@ const brawl = {
                             i.init(_status.characterlist.filter(function (name) {
                                 return lib.character[name][1] == i.identity;
                             }).randomGet());
+                            i.addMark('_lz_zong_mark', 2);
+                            i.lz_levelNum = ['3', '4'].randomGet();
+                            switch (i.lz_levelNum) {
+                                case '3':
+                                    i.directgain(get.cards(1));
+                                    i.maxHp = i.maxHp + 1;
+                                    i.hp = i.hp + 1;
+                                    i.update();
+                                    break;
+                                case '4':
+                                    i.directgain(get.cards(2));
+                                    i.maxHp = i.maxHp + 1;
+                                    i.hp = i.hp + 1;
+                                    i.update();
+                                    break;
+                            }
                         }
                     }
-                    game.broadcastAll(function () {
-                        if (get.is.phoneLayout()) ui.LongZhouInfo = ui.create.div('.touchinfo.left', ui.window);
-                        else ui.LongZhouInfo = ui.create.div(ui.gameinfo);
-                        ui.LongZhouInfo.innerHTML = '龙舟会战：第' + get.cnNumber(game.statusNum, true) + '回合';
-                    });
-                    'step 1'
+                    'step 2'
                     //玩家方选将
                     var list = [];
                     for (var name of _status.characterlist) {
@@ -941,7 +1051,7 @@ const brawl = {
                     }).set('ai', button => {
                         return get.rank(button.link, true);
                     }).set('list', list).set('listx', aiList);
-                    'step 2'
+                    'step 3'
                     //玩家方初始化
                     var getCharacter = function (list) {
                         var listx = [], num = 0;
@@ -956,6 +1066,12 @@ const brawl = {
                         return listx;
                     };
                     game.me.init(result.links[0]);
+                    game.me.addMark('_lz_zong_mark', 2);
+                    if (lib.config.extension_活动萌扩_JiaZhuAwaken) {
+                        game.me._LZ_jiazuAwaken = true;
+                        game.log(game.me, '已激活家族特殊技能');
+                    }
+                    game.me.lz_levelNum = lib.config.extension_活动萌扩_getLevel;
                     switch (lib.config.extension_活动萌扩_getLevel) {
                         case '2':
                             game.me.directgain(get.cards(1));
@@ -973,7 +1089,7 @@ const brawl = {
                             game.me.update();
                             break;
                         case '5':
-                            game.me.addSkill('LZ_aiye');
+                            game.me.addSkill('LZ_chongsheng');
                             game.me.directgain(get.cards(2));
                             game.me.maxHp = game.me.maxHp + 2;
                             game.me.hp = game.me.hp + 2;
@@ -986,6 +1102,12 @@ const brawl = {
                     if (fellow) {
                         if (lib.config.singleControl) fellow.init(result.links[1]);
                         else fellow.init(getCharacter(event.aiList).randomGet());
+                        if (lib.config.extension_活动萌扩_JiaZhuAwaken) {
+                            fellow._LZ_jiazuAwaken = true;
+                            game.log(fellow, '已激活家族特殊技能');
+                        }
+                        fellow.addMark('_lz_zong_mark', 2);
+                        fellow.lz_levelNum = lib.config.extension_活动萌扩_getLevel;
                         switch (lib.config.extension_活动萌扩_getLevel) {
                             case '2':
                                 fellow.directgain(get.cards(1));
@@ -1003,7 +1125,7 @@ const brawl = {
                                 fellow.update();
                                 break;
                             case '5':
-                                fellow.addSkill('LZ_aiye');
+                                fellow.addSkill('LZ_chongsheng');
                                 fellow.directgain(get.cards(2));
                                 fellow.maxHp = fellow.maxHp + 2;
                                 fellow.hp = fellow.hp + 2;
@@ -1017,7 +1139,7 @@ const brawl = {
                             game.over(false);
                         }, true);
                     }
-                    'step 3'
+                    'step 4'
                     setTimeout(function () {
                         ui.arena.classList.remove('choose-character');
                     }, 500);
