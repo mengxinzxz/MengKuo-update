@@ -360,7 +360,7 @@ const brawl = {
                                 };
                                 for (const name in character) {
                                     character[name][4] ??= [];
-                                    character[name][4].addArray(['forbidal', `ext:活动萌扩/image/${name}.jpg`]);
+                                    character[name][4].addArray(['forbidai', `ext:活动萌扩/image/${name}.jpg`]);
                                 }
                                 return character;
                             })(),
@@ -2325,7 +2325,7 @@ const brawl = {
                     game.setEvent(name);
                     //抗秦角色技能选择
                     let skills = [];
-                    for (const name in lib.character) {
+                    for (const name of _status.characterlist) {
                         if (lib.filter.characterDisabled2(name) || lib.filter.characterDisabled(name)) continue;
                         const skillsx = get.character(name).skills.slice();
                         const list = skillsx.slice(0);
@@ -2342,7 +2342,7 @@ const brawl = {
                             if (skills.includes(list[j]) || !lib.skill[list[j]]) continue;
                             if (!Object.keys(list[j]).some(i => !i.startsWith('audio') && i !== '_priority' && i !== 'sub')) continue;
                             var info = get.info(list[j]);
-                            if (!info || info.charlotte || info.zhuSkill || info.nopop || info.hiddenSkill || info.changeSeat || info.ai?.combo) continue;
+                            if (!info || info.charlotte || info.zhuSkill || info.nopop || info.hiddenSkill || info.ai?.combo) continue;
                             skills.push(list[j]);
                             lib.card['skillCard_' + list[j]] = {
                                 fullimage: true,

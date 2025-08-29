@@ -46,10 +46,13 @@ const brawl = {
     ],
     init() {
         if (!_status.characterlist) lib.skill.pingjian.initList();
-        for (var i in lib.skill) {
-            if (lib.skill[i].seatRelated === 'changeSeat') {
+        for (let i in lib.skill) {
+            let skill = lib.skill[i].inherit || i;
+            if (lib.skill[skill].seatRelated === 'changeSeat') {
+                lib.skill[i] = {};
                 if (lib.translate[i + '_info']) lib.translate[i + '_info'] = '此模式下不可用';
                 if (lib.translate[i + '_info_identity']) lib.translate[i + '_info_identity'] = '此模式下不可用';
+                if (lib.translate[i + '_info_identity_normal']) lib.translate[i + '_info_identity_normal'] = '此模式下不可用';
                 if (lib.dynamicTranslate[i]) lib.dynamicTranslate[i] = () => '此模式下不可用';
             }
         }

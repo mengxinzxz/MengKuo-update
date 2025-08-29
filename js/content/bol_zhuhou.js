@@ -285,7 +285,7 @@ const brawl = {
                         };
                         for (const name in character) {
                             character[name][4] ??= [];
-                            character[name][4].addArray(['forbidal', `ext:活动萌扩/image/${name}.jpg`]);
+                            character[name][4].addArray(['forbidai', `ext:活动萌扩/image/${name}.jpg`]);
                         }
                         return character;
                     })(),
