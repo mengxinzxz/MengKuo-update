@@ -1117,6 +1117,7 @@ const brawl = {
                     },
                     element: {
                         player: {
+                            logAi() { },
                             setLevel(level = '1') {
                                 const player = this;
                                 player.lz_levelNum = level;
@@ -1151,8 +1152,7 @@ const brawl = {
                             isEnemyOf(player, includeDie, includeOut) {
                                 return this.getEnemies(true, includeDie, includeOut).includes(player);
                             },
-                            logAi() { },
-                            dieAfter(source) {
+                            dieAfter() {
                                 game.checkResult();
                             },
                         },

@@ -183,6 +183,7 @@ const brawl = {
                     },
                     element: {
                         player: {
+                            logAi() { },
                             dieAfter() {
                                 this.$dieAfter();
                                 game.checkResult();

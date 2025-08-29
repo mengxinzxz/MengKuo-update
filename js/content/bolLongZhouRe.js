@@ -790,6 +790,7 @@ const brawl = {
                     },
                     element: {
                         player: {
+                            logAi() { },
                             getFriends(func, includeDie, includeOut) {
                                 const player = this, method = includeDie ? "filterPlayer2" : "filterPlayer";
                                 var self = false;
@@ -814,7 +815,6 @@ const brawl = {
                             isEnemyOf(player, includeDie, includeOut) {
                                 return this.getEnemies(true, includeDie, includeOut).includes(player);
                             },
-                            logAi() { },
                             dieAfter() { },
                         },
                     },
@@ -842,7 +842,6 @@ const brawl = {
                 i.identityShown = true;
             }
             game.showIdentity(true);
-            _status.identityShown = true;
         },
     },
 };

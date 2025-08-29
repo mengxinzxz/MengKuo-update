@@ -933,6 +933,7 @@ const brawl = {
                     },
                     element: {
                         player: {
+                            logAi() { },
                             $dieAfter() {
                                 if (_status.video) return;
                                 if (!this.node.dieidentity) {
@@ -962,7 +963,6 @@ const brawl = {
                                     }
                                 }
                             },
-                            logAi() { },
                             getFriends(func, includeDie, includeOut) {
                                 const player = this, method = includeDie ? "filterPlayer2" : "filterPlayer";
                                 var targets;

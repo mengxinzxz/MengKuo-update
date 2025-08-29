@@ -211,6 +211,7 @@ const brawl = {
                     },
                     element: {
                         player: {
+                            logAi() { },
                             dieAfter() {
                                 game.checkResult();
                             },
@@ -291,7 +292,6 @@ const brawl = {
                 Object.assign(target, changeFunction.lib.element.player);
             });
             game.showIdentity(true);
-            _status.identityShown = true;
         },
     },
 };

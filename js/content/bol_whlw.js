@@ -550,6 +550,7 @@ const brawl = {
                     },
                     element: {
                         player: {
+                            logAi() { },
                             getFriends(func, includeDie, includeOut) {
                                 const player = this, method = includeDie ? "filterPlayer2" : "filterPlayer";
                                 return game[method](function (current) {
@@ -567,7 +568,6 @@ const brawl = {
                             isEnemyOf(player, includeDie, includeOut) {
                                 return this.getEnemies(true, includeDie, includeOut).includes(player);
                             },
-                            logAi() { },
                             dieAfter() {
                                 this.$dieAfter();
                                 game.checkResult();

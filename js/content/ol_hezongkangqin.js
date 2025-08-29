@@ -1958,6 +1958,7 @@ const brawl = {
                             },
                             element: {
                                 player: {
+                                    logAi() { },
                                     getLevel() {
                                         const player = this;
                                         if (player == game.me) return parseInt(get.hzkq_config.characterLevel);

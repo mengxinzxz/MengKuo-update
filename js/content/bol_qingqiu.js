@@ -314,7 +314,6 @@ const brawl = {
                 return -10;
             };
             game.showIdentity(true);
-            _status.identityShown = true;
             //死亡检查胜负情况
             game.checkResult = function () {
                 if (!game.players.some(function (current) {
