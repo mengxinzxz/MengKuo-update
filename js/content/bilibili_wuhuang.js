@@ -179,7 +179,7 @@ const brawl = {
                                                 else game.bolSay(`失败乃成功之母，祝你下次好运`);
                                             });
                                             _status.source = names[1], names = names[0];
-                                            const color = target.node.identity.dataset.color;
+                                            const target = event.target, color = target.node.identity.dataset.color;
                                             game.broadcastAll(function (player, names, color) {
                                                 player.revive(null, false);
                                                 player.uninit();
