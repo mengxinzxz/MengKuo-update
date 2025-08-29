@@ -942,25 +942,25 @@ const brawl = {
                                     node.style.opacity = 1;
                                     this.node.dieidentity = node;
                                 }
-                                if (!ui.giveupSystem && game.me.isAlive() && get.population(game.me.identity) === 1) {
-                                    ui.giveupSystem = ui.create.system('投降', function () {
-                                        game.log(game.me, '投降');
-                                        game.over(false);
-                                    }, true);
+                            },
+                            dieAfter() {
+                                const player = this;
+                                player.$dieAfter();
+                                if (player.identity == "cxyJiangLing") game.over(true);
+                                if (player.identity == "cxyMengJun") {
+                                    if (get.population("cxyMengJun") === 0) game.over(false);
+                                    if (!ui.giveupSystem && get.population("cxyMengJun") === 1 && game.players.includes(game.me)) {
+                                        ui.giveupSystem = ui.create.system('投降', function () {
+                                            game.log(game.me, '投降');
+                                            game.over(false);
+                                        }, true);
+                                    }
                                 }
                             },
-                            dieAfter(source) {
-                                this.$dieAfter();
-                                if (this.identity == "cxyJiangLing") game.over(true);
-                                if (this.identity == "cxyMengJun") {
-                                    if (get.population("cxyMengJun") == 0) game.over(false);
-                                    if (source.identity != "cxyMengJun") {
-                                        var targets = game.filterPlayer(function (current) {
-                                            return current.identity == "cxyMengJun";
-                                        });
-                                        targets.sort(lib.sort.seat);
-                                        game.asyncDraw(targets, 3);
-                                    }
+                            dieAfter2(source) {
+                                if (source && source.identity !== "cxyMengJun") {
+                                    const targets = game.filterPlayer(current => current.identity == "cxyMengJun");
+                                    if (targets.length > 0) game.asyncDraw(targets, 3);
                                 }
                             },
                             getFriends(func, includeDie, includeOut) {
