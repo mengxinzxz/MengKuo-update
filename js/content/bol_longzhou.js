@@ -102,7 +102,7 @@ const brawl = {
                         next.num = function (player) {
                             if (game.RElongzhou && player.identity === game.me.identity) return 2;
                             const num = Number(player.lz_levelNum || '1');
-                            return 4 + game.RElongzhou + (num > 1) + (num > 3);
+                            return (game.RElongzhou ? 5 : 4) + (num > 1) + (num > 3);
                         };
                         next.setContent("gameDraw");
                         return next;
