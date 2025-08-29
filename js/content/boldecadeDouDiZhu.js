@@ -235,13 +235,8 @@ const brawl = {
                 },
                 dieAfter() {
                     game.checkResult();
-                },
-                dieAfter2() {
-                    if (this.identity != 'fan') return;
-                    var player = this, target = game.findPlayer(function (current) {
-                        return current != player && current.identity == 'fan';
-                    });
-                    if (target && target == game.me) {
+                    const player = this;
+                    if (player.identity === 'fan' && game.me.identity === 'fan' && game.me !== player) {
                         ui.create.system('投降', function () {
                             game.log(game.me, '投降');
                             game.over(false);

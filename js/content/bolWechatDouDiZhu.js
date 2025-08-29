@@ -148,21 +148,18 @@ const brawl = {
                 },
                 dieAfter() {
                     game.checkResult();
+                    const player = this;
+                    if (player.identity === 'fan' && game.me.identity === 'fan' && game.me !== player) {
+                        ui.create.system('投降', function () {
+                            game.log(game.me, '投降');
+                            game.over(false);
+                        }, true);
+                    }
                 },
                 dieAfter2() {
                     if (this.identity != 'fan') return;
-                    var player = this, target = game.findPlayer(function (current) {
-                        return current != player && current.identity == 'fan';
-                    });
-                    if (target) {
-                        if (target == game.me) {
-                            ui.create.system('投降', function () {
-                                game.log(game.me, '投降');
-                                game.over(false);
-                            }, true);
-                        }
-                        target.chooseDrawRecover(2);
-                    }
+                    const player = this, target = game.findPlayer(current => current !== player && current.identity == 'fan');
+                    if (target) target.chooseDrawRecover(2);
                 },
             };
             for (var i in game.decadeDouDiZhu) lib.element.player[i] = game.decadeDouDiZhu[i];

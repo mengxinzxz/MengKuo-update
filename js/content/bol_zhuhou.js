@@ -29,6 +29,7 @@ const brawl = {
         //确定模式和游戏人数
         _status.cxyCPState = [...Array.from({ length: 2 }).map(() => 'normal'), 'special'].randomGet();
         lib.configOL.number = _status.cxyCPState === 'normal' ? 5 : 8;
+        lib.config.mode_config.identity.change_card = 'once';
     },
     content: {
         submode: 'normal',
@@ -71,25 +72,14 @@ const brawl = {
                         ["cxyLiJue", "cxyFeiXiongJunZuo", "cxyFeiXiongJunYou"],
                         ["cxyGuoSi", "cxyFeiXiongJunYou", "cxyFeiXiongJunZuo"],
                     ],
-                    gameDraw(begin) {
-                        const next = game.createEvent('gameDraw');
-                        next.begin = begin;
-                        next.setContent(async function (event, trigger, player) {
-                            let target = event.begin;
-                            while (true) {
-                                const num = target.identity == "cxyMengJun" ? 5 : 4;
-                                target.directgain(get.cards(num));
-                                target = target.next;
-                                if (target === event.begin) break;
-                            }
-                            const result = await game.me.chooseBool("可以更换一次手牌，是否更换？").forResult();
-                            if (result?.bool) {
-                                const hs = game.me.getCards('h');
-                                game.addVideo('lose', game.me, [get.cardsInfo(hs), [], []]);
-                                hs.forEach(card => card.discard(false));
-                                game.me.directgain(get.cards(hs.length));
-                            }
-                        });
+                    gameDraw(player) {
+                        const next = game.createEvent("gameDraw");
+                        next.player = player || game.me;
+                        next.num = function (target) {
+                            return target.identity == "cxyMengJun" ? 5 : 4;
+                        };
+                        next.setContent("gameDraw");
+                        return next;
                     },
                     chooseCharacter() {
                         if (_status.cxyCPState === 'normal') {
@@ -951,8 +941,8 @@ const brawl = {
                                     node.style.opacity = 1;
                                     this.node.dieidentity = node;
                                 }
-                                if (game.me.isAlive() && get.population(game.me.identity) === 1) {
-                                    ui.create.system('投降', function () {
+                                if (!ui.giveupSystem && game.me.isAlive() && get.population(game.me.identity) === 1) {
+                                    ui.giveupSystem = ui.create.system('投降', function () {
                                         game.log(game.me, '投降');
                                         game.over(false);
                                     }, true);

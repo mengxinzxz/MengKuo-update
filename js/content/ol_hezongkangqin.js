@@ -20,6 +20,7 @@ const brawl = {
                 next.player = game.me;
                 next.setContent(async function (event, trigger, player) {
                     game.zhu = player;
+                    if (!_status.characterlist) lib.skill.pingjian.initList();
                     ui.arena.classList.add('choose-character');
                     //机制加载
                     const changeFunction = {
@@ -148,6 +149,15 @@ const brawl = {
                             },
                         },
                         game: {
+                            gameDraw(player) {
+                                const next = game.createEvent("gameDraw");
+                                next.player = player || game.me;
+                                next.num = function (player) {
+                                    return [4, 4, 5, 5, 6, 6][player._kangqinLevel || 1];
+                                };
+                                next.setContent("gameDraw");
+                                return next;
+                            },
                             checkResult() {
                                 if (!game.players.some(i => i.identity == 'zhu')) game.over(true);
                                 else if (!game.players.some(i => i.identity == 'fan')) game.over(false);
@@ -1998,21 +2008,6 @@ const brawl = {
                                         }
                                     },
                                 },
-                                content: {
-                                    gameDraw() {
-                                        var end = player;
-                                        var num = function (player) {
-                                            return [4, 4, 5, 5, 6, 6][player._kangqinLevel || 1];
-                                        };
-                                        do {
-                                            if (typeof num == 'function') {
-                                                numx = num(player);
-                                            }
-                                            player.directgain(get.cards(numx));
-                                            player = player.next;
-                                        } while (player != end);
-                                    },
-                                },
                             },
                         },
                     };
@@ -2212,10 +2207,7 @@ const brawl = {
                             var index = parseInt(current.name.slice('daqin_alpha'.length));
                             if (index == 1) _status.firstAct2 = current;
                             var name = map[index];
-                            if (name == 'sanguo') {
-                                if (!_status.characterlist) lib.skill.pingjian.initList();
-                                name = _status.characterlist.randomRemove(1)[0];
-                            }
+                            if (name == 'sanguo') name = _status.characterlist.randomRemove(1)[0];
                             else if (name == 'qinchao') name = ['daqin_qibing', 'daqin_bubing', 'daqin_nushou'].randomGet();
                             else {
                                 current.identity = 'zhu';

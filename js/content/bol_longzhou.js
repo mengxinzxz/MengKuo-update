@@ -95,6 +95,18 @@ const brawl = {
                     },
                 },
                 game: {
+                    //初始手牌数
+                    gameDraw(player) {
+                        const next = game.createEvent("gameDraw");
+                        next.player = player || game.me;
+                        next.num = function (player) {
+                            if (game.RElongzhou && player.identity === game.me.identity) return 2;
+                            const num = Number(player.lz_levelNum || '1');
+                            return 4 + game.RElongzhou + (num > 1) + (num > 3);
+                        };
+                        next.setContent("gameDraw");
+                        return next;
+                    },
                     //死亡检查胜负情况
                     checkResult() {
                         if (!get.population(game.me.identity)) game.over(false);
@@ -102,8 +114,8 @@ const brawl = {
                             var fellow = game.players.concat(game.dead).filter(function (current) {
                                 return current.identity == game.me.identity && current != game.me;
                             })[0];
-                            if (!fellow?.isAlive() || lib.config.singleControl) {
-                                ui.create.system('投降', function () {
+                            if (!ui.giveupSystem && (!fellow?.isAlive() || lib.config.singleControl)) {
+                                ui.giveupSystem = ui.create.system('投降', function () {
                                     game.log(game.me, '投降');
                                     game.over(false);
                                 }, true);
@@ -119,8 +131,6 @@ const brawl = {
                                     groupList = groupList.randomGets(3);
                                     groupList.randomSort();
                                     var tempNum = 3;
-                                    if (game.me.isIn()) game.me.directgain(get.cards(2));
-                                    if (fellow && fellow.isIn()) fellow.directgain(get.cards(2));
                                     if (fellow && game.me.getSeatNum() > fellow.getSeatNum()) fellow.dataset.position = 7;
                                     while (game.dead.filter(function (target) {
                                         return target.identity != game.me.identity;
@@ -149,7 +159,6 @@ const brawl = {
                                                     hs[i].discard(false);
                                                 }
                                             }
-                                            target.directgain(get.cards(5));
                                             for (var i in game.LZelement) target[i] = game.LZelement[i];
                                             target.dataset.position = tempNum - game.me.getSeatNum();
                                             tempNum++;
@@ -158,19 +167,16 @@ const brawl = {
                                             target.setLevel(get.rand(3, 5).toString());
                                             switch (target.lz_levelNum) {
                                                 case '3':
-                                                    target.directgain(get.cards(1));
                                                     target.maxHp = target.maxHp + 1;
                                                     target.hp = target.hp + 1;
                                                     target.update();
                                                     break;
                                                 case '4':
-                                                    target.directgain(get.cards(2));
                                                     target.maxHp = target.maxHp + 1;
                                                     target.hp = target.hp + 1;
                                                     target.update();
                                                     break;
                                                 case '5':
-                                                    target.directgain(get.cards(2));
                                                     target.maxHp = target.maxHp + 2;
                                                     target.hp = target.hp + 2;
                                                     target.update();
@@ -189,26 +195,22 @@ const brawl = {
                                         target.setIdentity();
                                         target.identityShown = true;
                                         tempNum++;
-                                        target.directgain(get.cards(5));
                                         for (var i in game.LZelement) target[i] = game.LZelement[i];
                                         target.removeMark('_lz_zong_mark', target.countMark('_lz_zong_mark'), false);
                                         target.addMark('_lz_zong_mark', 2);
                                         target.setLevel(get.rand(3, 5).toString());
                                         switch (target.lz_levelNum) {
                                             case '3':
-                                                target.directgain(get.cards(1));
                                                 target.maxHp = target.maxHp + 1;
                                                 target.hp = target.hp + 1;
                                                 target.update();
                                                 break;
                                             case '4':
-                                                target.directgain(get.cards(2));
                                                 target.maxHp = target.maxHp + 1;
                                                 target.hp = target.hp + 1;
                                                 target.update();
                                                 break;
                                             case '5':
-                                                target.directgain(get.cards(2));
                                                 target.maxHp = target.maxHp + 2;
                                                 target.hp = target.hp + 2;
                                                 target.update();
@@ -236,6 +238,7 @@ const brawl = {
                                     game.phaseNumber = 0;
                                     game.roundNumber = 0;
                                     game.updateRoundNumber();
+                                    game.gameDraw();
                                 }
                             }
                         }
@@ -259,13 +262,11 @@ const brawl = {
                                 i.setLevel(get.rand(3, 4).toString());
                                 switch (i.lz_levelNum) {
                                     case '3':
-                                        i.directgain(get.cards(1));
                                         i.maxHp = i.maxHp + 1;
                                         i.hp = i.hp + 1;
                                         i.update();
                                         break;
                                     case '4':
-                                        i.directgain(get.cards(2));
                                         i.maxHp = i.maxHp + 1;
                                         i.hp = i.hp + 1;
                                         i.update();
@@ -402,24 +403,18 @@ const brawl = {
                             }
                             player.setLevel(lib.config.extension_活动萌扩_getLevel);
                             switch (player.lz_levelNum) {
-                                case '2':
-                                    player.directgain(get.cards(1));
-                                    break;
                                 case '3':
-                                    player.directgain(get.cards(1));
                                     player.maxHp = player.maxHp + 1;
                                     player.hp = player.hp + 1;
                                     player.update();
                                     break;
                                 case '4':
-                                    player.directgain(get.cards(2));
                                     player.maxHp = player.maxHp + 1;
                                     player.hp = player.hp + 1;
                                     player.update();
                                     break;
                                 case '5':
                                     player.addSkill('LZ_chongsheng');
-                                    player.directgain(get.cards(2));
                                     player.maxHp = player.maxHp + 2;
                                     player.hp = player.hp + 2;
                                     player.update();
@@ -445,32 +440,26 @@ const brawl = {
                                 fellow.addMark('_lz_zong_mark', 2);
                                 fellow.setLevel(lib.config.extension_活动萌扩_getLevel);
                                 switch (fellow.lz_levelNum) {
-                                    case '2':
-                                        fellow.directgain(get.cards(1));
-                                        break;
                                     case '3':
-                                        fellow.directgain(get.cards(1));
                                         fellow.maxHp = fellow.maxHp + 1;
                                         fellow.hp = fellow.hp + 1;
                                         fellow.update();
                                         break;
                                     case '4':
-                                        fellow.directgain(get.cards(2));
                                         fellow.maxHp = fellow.maxHp + 1;
                                         fellow.hp = fellow.hp + 1;
                                         fellow.update();
                                         break;
                                     case '5':
                                         fellow.addSkill('LZ_chongsheng');
-                                        fellow.directgain(get.cards(2));
                                         fellow.maxHp = fellow.maxHp + 2;
                                         fellow.hp = fellow.hp + 2;
                                         fellow.update();
                                         break;
                                 }
                             }
-                            if (!fellow || lib.config.singleControl) {
-                                ui.create.system('投降', function () {
+                            if (!ui.giveupSystem && (!fellow || lib.config.singleControl)) {
+                                ui.giveupSystem = ui.create.system('投降', function () {
                                     game.log(game.me, '投降');
                                     game.over(false);
                                 }, true);

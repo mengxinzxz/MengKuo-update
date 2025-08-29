@@ -311,7 +311,7 @@ const brawl = {
                 dieAfter() {
                     var that = this;
                     if (that.identity == 'zhu') target.chat('我焯，挂');
-                    if (that.identity != 'zhong') game.checkResult();
+                    if (that.identity !== 'zhong') game.checkResult();
                 },
                 dieAfter2(source) {
                     var that = this;

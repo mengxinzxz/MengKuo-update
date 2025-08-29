@@ -34,13 +34,12 @@ const brawl = {
                 game: {
                     fanzhongNum: [0, 0],
                     gameDraw(player, num) {
-                        var next = game.createEvent('gameDraw');
+                        const next = game.createEvent("gameDraw");
                         next.player = player || game.me;
-                        if (num == undefined) next.num = 4;
-                        else next.num = num;
-                        next.setContent(function () {
-                            for (var i of game.players) i.directgain(get.cards(game.players.indexOf(i) + 1 == game.players.length ? 5 : 4));
-                        });
+                        next.num = function (player) {
+                            return game.players[game.players.length - 1] === target ? 5 : 4;
+                        };
+                        next.setContent("gameDraw");
                         return next;
                     },
                     checkResult() {
