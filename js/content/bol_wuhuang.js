@@ -173,10 +173,10 @@ const brawl = {
                                             lib.onover.push(() => {
                                                 const num = _status.source;
                                                 if (!game.players.includes(game.me.enemy)) {
-                                                    game.bolSay(`恭喜击败强敌${get.translation(game.me.enemy.name1)}/${get.translation(game.me.enemy.name2)}，获得${num}萌币`);
+                                                    game.bol_say(`恭喜击败强敌${get.translation(game.me.enemy.name1)}/${get.translation(game.me.enemy.name2)}，获得${num}萌币`);
                                                     game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin + num);
                                                 }
-                                                else game.bolSay(`失败乃成功之母，祝你下次好运`);
+                                                else game.bol_say(`失败乃成功之母，祝你下次好运`);
                                             });
                                             _status.source = names[1], names = names[0];
                                             const target = event.target, color = target.node.identity.dataset.color;

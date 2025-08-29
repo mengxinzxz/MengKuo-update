@@ -121,7 +121,7 @@ const brawl = {
                                 lib.onover.push(bool => {
                                     if (bool) {
                                         const num = 114514;
-                                        game.bolSay('恭喜击败bug制造者牢狂，获得' + num + '萌币，祝无名杀在新的一年蒸蒸日上');
+                                        game.bol_say('恭喜击败bug制造者牢狂，获得' + num + '萌币，祝无名杀在新的一年蒸蒸日上');
                                         game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin + num);
                                     }
                                 });

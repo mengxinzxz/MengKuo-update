@@ -5,14 +5,14 @@ export function precontent(bilibilicharacter) {
         return '<span class=\'texiaotext\' style=\'color:' + color + '\'>' + str + '</span>';
     };
     //提示框--摘自扩展OL
-    game.bolSay = function (str, num) {
+    game.bol_say = function (str, num) {
         const showFunction = function () {
-            if (game.game_bolSayDialog_height == undefined) game.game_bolSayDialog_height = -45;
-            if (game.game_bolSayDialog_num == undefined) game.game_bolSayDialog_num = 0;
-            game.game_bolSayDialog_num++;
+            if (game.game_bol_sayDialog_height == undefined) game.game_bol_sayDialog_height = -45;
+            if (game.game_bol_sayDialog_num == undefined) game.game_bol_sayDialog_num = 0;
+            game.game_bol_sayDialog_num++;
             var func = function () {
-                game.game_bolSayDialog_onOpened = true;
-                game.game_bolSayDialog_height += 45;
+                game.game_bol_sayDialog_onOpened = true;
+                game.game_bol_sayDialog_height += 45;
                 var dialog = ui.create.dialog('hidden');
                 dialog.classList.add('static');
                 dialog.add('' + str + '');
@@ -30,23 +30,23 @@ export function precontent(bilibilicharacter) {
                 });
                 if (dialog._mod_height) dialog.content.firstChild.style.padding = 0;
                 dialog.style.left = 'calc(50% - ' + (width + 16) / 2 + 'px' + ')';
-                dialog.style.top = 'calc(5% + ' + game.game_bolSayDialog_height + 'px)';
+                dialog.style.top = 'calc(5% + ' + game.game_bol_sayDialog_height + 'px)';
                 dialog.style['z-index'] = 999999;
                 setTimeout(function () {
                     dialog.delete();
-                    if (game.game_bolSayDialog_height > ui.window.offsetHeight * 0.95 - dialog.offsetHeight * 2) game.game_bolSayDialog_height = -45;
+                    if (game.game_bol_sayDialog_height > ui.window.offsetHeight * 0.95 - dialog.offsetHeight * 2) game.game_bol_sayDialog_height = -45;
                     setTimeout(function () {
-                        if (game.game_bolSayDialog_num <= 0) game.game_bolSayDialog_height = -45;
+                        if (game.game_bol_sayDialog_num <= 0) game.game_bol_sayDialog_height = -45;
                     }, 250);
                 }, 1500);
                 setTimeout(function () {
-                    delete game.game_bolSayDialog_onOpened;
+                    delete game.game_bol_sayDialog_onOpened;
                 }, 500);
             };
             var interval = setInterval(function () {
-                if (game.game_bolSayDialog_onOpened == undefined) {
+                if (game.game_bol_sayDialog_onOpened == undefined) {
                     func();
-                    game.game_bolSayDialog_num--;
+                    game.game_bol_sayDialog_num--;
                     clearInterval(interval);
                 };
             }, 100);
@@ -63,7 +63,7 @@ export function precontent(bilibilicharacter) {
         return time.year == 2024 && time.month == 2 && time.day >= 10 && time.day <= 24;
     };
     //加载
-    game.bolLoadPack = function (pack) {
+    game.bol_loadPack = function (pack) {
         for (var i in pack) {
             for (var j in pack[i]) {
                 lib[i][j] = pack[i][j];
@@ -72,24 +72,24 @@ export function precontent(bilibilicharacter) {
         }
     };
     //武将
-    game.bolLoadCharacter = function (pack) {
+    game.bol_loadCharacter = function (pack) {
         for (var i in pack) lib.character[i] = pack[i];
     };
     //卡牌
-    game.bolLoadCard = function (pack) {
+    game.bol_loadCard = function (pack) {
         for (var i in pack) lib.card[i] = pack[i];
     };
     //技能
-    game.bolLoadSkill = function (pack) {
+    game.bol_loadSkill = function (pack) {
         for (var i in pack) lib.skill[i] = pack[i];
         game.finishSkill(i);
     };
     //翻译(动态)
-    game.bolLoadDyTrans = function (pack) {
+    game.bol_loadDyTrans = function (pack) {
         for (var i in pack) lib.dynamicTranslate[i] = pack[i];
     };
     //翻译
-    game.bolLoadTrans = function (pack) {
+    game.bol_loadTrans = function (pack) {
         for (var i in pack) lib.translate[i] = pack[i];
     };
     //点击显示

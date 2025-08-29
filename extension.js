@@ -6,7 +6,7 @@ import { content } from './js/content/index.js';
 import { help } from './js/help.js';
 lib.init.css(lib.assetURL + 'extension/活动萌扩', 'extension');
 //更新公告
-game.bolShowNewPackx = function () {
+game.bol_showNewPackx = function () {
 	//更新告示
 	let HuoDong_update = [
 		'模式翻新，bugfix',

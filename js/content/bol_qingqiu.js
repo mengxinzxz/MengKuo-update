@@ -241,7 +241,7 @@ const brawl = {
                 HuNv_duanwei_info: '判定阶段开始时，若你的判定区有牌，则你可以弃置两张手牌，然后弃置你判定区的一张牌。',
             },
         };
-        game.bolLoadPack(pack);
+        game.bol_loadPack(pack);
     },
     content: {
         submode: 'normal',

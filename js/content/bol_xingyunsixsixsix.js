@@ -20,7 +20,7 @@ const brawl = {
         xysix.style.width = '628px';
         xysix.style.left = 'calc(50% - 314px)';
         xysix.style.top = '-70px';
-        xysix.setBackgroundImage('extension/活动萌扩/image/bolxingyunsixsixsix.png');
+        xysix.setBackgroundImage('extension/活动萌扩/image/bol_xingyunsixsixsix.png');
         this.appendChild(xysix);
     },
     init() {
@@ -33,7 +33,7 @@ const brawl = {
         lib.translate.bolxingyun_zhuanyun_info = '弃置任意张牌并摸等量的牌';
         lib.translate.bolxingyun_tianqian = '天谴';
         lib.translate.bolxingyun_tianqian_info = '将其武将牌翻转至背面朝上';
-        lib.skill._bolxingyunsixsixsix = {
+        lib.skill._bol_xingyunsixsixsix = {
             charlotte: true,
             trigger: { player: ['useCard', 'respond'] },
             filter(event, player) {

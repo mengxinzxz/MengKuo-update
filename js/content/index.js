@@ -1,30 +1,30 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
-import bolbingjingliangzu from './bolbingjingliangzu.js';
-import bolxingyunsixsixsix from './bolxingyunsixsixsix.js';
-import boldecadeDouDiZhu from './boldecadeDouDiZhu.js';
-import boldecadeDouDiZhu2 from './boldecadeDouDiZhu2.js';
-import OLdoubleThree from './OLdoubleThree.js';
+import bol_bingjingliangzu from './bol_bingjingliangzu.js';
+import bol_xingyunsixsixsix from './bol_xingyunsixsixsix.js';
+import bol_decadeDouDiZhu from './bol_decadeDouDiZhu.js';
+import bol_decadeDouDiZhu2 from './bol_decadeDouDiZhu2.js';
+import bol_doubleThree from './bol_doubleThree.js';
 import bol_qingqiu from './bol_qingqiu.js';
 import bol_whlw from './bol_whlw.js';
 import bol_zhuhou from './bol_zhuhou.js';
 import bol_zhugongsha from './bol_zhugongsha.js';
 import bol_xuezhan from './bol_xuezhan.js';
-import bolPVZ from './bolPVZ.js';
-import bolLongZhouRe from './bolLongZhouRe.js';
-import bolWechatDouDiZhu from './bolWechatDouDiZhu.js';
-import bolWechatDouDiZhu2 from './bolWechatDouDiZhu2.js';
+import bol_PVZ from './bol_PVZ.js';
+import bol_longzhouold from './bol_longzhouold.js';
+import bol_WechatDouDiZhu from './bol_WechatDouDiZhu.js';
+import bol_WechatDouDiZhu2 from './bol_WechatDouDiZhu2.js';
 import bol_longzhou from './bol_longzhou.js';
-import bilibili_wuhuang from './bilibili_wuhuang.js';
+import bol_wuhuang from './bol_wuhuang.js';
 import bol_kunyangzhizhan from './bol_kunyangzhizhan.js';
-import ol_characterTest from './ol_characterTest.js';
-import ol_hezongkangqin from './ol_hezongkangqin.js';
+import bol_characterTest from './bol_characterTest.js';
+import bol_hezongkangqin from './bol_hezongkangqin.js';
 export function content(config, pack) {
 	//更新公告
 	var version = lib.config.extension_活动萌扩_HDversion;
 	if (!version || version != lib.extensionPack.活动萌扩.version) {
 		lib.game.showChangeLog = function () {
 			game.saveConfig('extension_活动萌扩_HDversion', lib.extensionPack.活动萌扩.version);
-			game.bolShowNewPackx();
+			game.bol_showNewPackx();
 			lib.init.onfree();
 		};
 	}
@@ -38,7 +38,7 @@ export function content(config, pack) {
 			day: date.getDate(),
 		};
 		game.saveConfig('extension_活动萌扩_decade_Coin_Time', time);
-		game.bolSay('非常感谢对《活动萌扩》扩展的支持，安装本扩展后第一次进入无名杀获得1000萌币');
+		game.bol_say('非常感谢对《活动萌扩》扩展的支持，安装本扩展后第一次进入无名杀获得1000萌币');
 	}
 	else {
 		var date = new Date();
@@ -51,7 +51,7 @@ export function content(config, pack) {
 		if (!timex || time.year != timex.year || time.month != timex.month || time.day != timex.day) {
 			game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin + 300);
 			game.saveConfig('extension_活动萌扩_decade_Coin_Time', time);
-			game.bolSay('每日进入无名杀获得300萌币');
+			game.bol_say('每日进入无名杀获得300萌币');
 		}
 	}
 	//init/uninit对武将牌堆的修改
@@ -73,20 +73,20 @@ export function content(config, pack) {
 	//载入模式
 	if (!lib.brawl) return;
 	//斗地主
-	lib.brawl.boldecadeDouDiZhu = boldecadeDouDiZhu;
-	lib.brawl.boldecadeDouDiZhu2 = boldecadeDouDiZhu2;
-	lib.brawl.bolWechatDouDiZhu = bolWechatDouDiZhu;
-	lib.brawl.bolWechatDouDiZhu2 = bolWechatDouDiZhu2;
+	lib.brawl.bol_decadeDouDiZhu = bol_decadeDouDiZhu;
+	lib.brawl.bol_decadeDouDiZhu2 = bol_decadeDouDiZhu2;
+	lib.brawl.bol_WechatDouDiZhu = bol_WechatDouDiZhu;
+	lib.brawl.bol_WechatDouDiZhu2 = bol_WechatDouDiZhu2;
 	//OL活动场
 	lib.brawl.bol_zhuhou = bol_zhuhou;
-	lib.brawl.ol_hezongkangqin = ol_hezongkangqin;
+	lib.brawl.bol_hezongkangqin = bol_hezongkangqin;
+	lib.brawl.bol_longzhouold = bol_longzhouold;
 	lib.brawl.bol_longzhou = bol_longzhou;
-	lib.brawl.bolLongZhouRe = bolLongZhouRe;
 	lib.brawl.bol_zhugongsha = bol_zhugongsha;
-	lib.brawl.OLdoubleThree = OLdoubleThree;
-	lib.brawl.bolbingjingliangzu = bolbingjingliangzu;
-	lib.brawl.bolxingyunsixsixsix = bolxingyunsixsixsix;
-	lib.brawl.ol_characterTest = ol_characterTest;
+	lib.brawl.bol_doubleThree = bol_doubleThree;
+	lib.brawl.bol_bingjingliangzu = bol_bingjingliangzu;
+	lib.brawl.bol_xingyunsixsixsix = bol_xingyunsixsixsix;
+	lib.brawl.bol_characterTest = bol_characterTest;
 	//十周年活动场
 	lib.brawl.bol_whlw = bol_whlw;
 	lib.brawl.bol_xuezhan = bol_xuezhan;
@@ -94,6 +94,6 @@ export function content(config, pack) {
 	lib.brawl.bol_qingqiu = bol_qingqiu;
 	lib.brawl.bol_kunyangzhizhan = bol_kunyangzhizhan;
 	//其他活动场
-	lib.brawl.bolPVZ = bolPVZ;
-	lib.brawl.bilibili_wuhuang = bilibili_wuhuang;
+	lib.brawl.bol_PVZ = bol_PVZ;
+	lib.brawl.bol_wuhuang = bol_wuhuang;
 }

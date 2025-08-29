@@ -1963,8 +1963,8 @@ const brawl = {
                                         const player = this;
                                         if (player == game.me) return parseInt(get.hzkq_config.characterLevel);
                                         if (player._isKangqinPlayer) return [3, 3, 3, 4, 4, 5].randomGet();
-                                        if (_status.ol_hezongkangqin_name) {
-                                            var name = _status.ol_hezongkangqin_name;
+                                        if (_status.bol_hezongkangqin_name) {
+                                            var name = _status.bol_hezongkangqin_name;
                                             if (player.group != 'daqin') {
                                                 if (name == '匹配模式' || name == '变法者') return 3;
                                                 else if (['帝国先驱', '中流砥柱', '乱！', '璀璨星河'].includes(name)) return 5;
@@ -2184,7 +2184,7 @@ const brawl = {
                         .forResult();
                     if (!result?.bool || !result.links?.length) game.reload();
                     const choice = result.links[0];
-                    _status.ol_hezongkangqin_name = choice.name;
+                    _status.bol_hezongkangqin_name = choice.name;
                     //加载角色
                     let players = choice.players,
                         item = players.filter(i => i.isMe).randomGet();

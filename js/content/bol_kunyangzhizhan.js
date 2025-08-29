@@ -261,7 +261,7 @@ const brawl = {
                 gw_jianqu_info: '锁定技。①你受到的伤害-1。②当你进入濒死状态时，你将体力回复至1点。',
             },
         };
-        game.bolLoadPack(pack);
+        game.bol_loadPack(pack);
     },
     content: {
         submode: 'normal',
@@ -283,7 +283,7 @@ const brawl = {
                 i.identityShown = true;
             });
             //阵亡修改
-            game.bilibili_gw = {
+            game.bol_gw = {
                 getFriends(func) {
                     var self = false;
                     var player = this;
@@ -329,9 +329,9 @@ const brawl = {
                     }
                 },
             };
-            for (var i in game.bilibili_gw) lib.element.player[i] = game.bilibili_gw[i];
+            for (var i in game.bol_gw) lib.element.player[i] = game.bol_gw[i];
             for (var i of game.players) {
-                for (var j in game.bilibili_gw) i[j] = game.bilibili_gw[j];
+                for (var j in game.bol_gw) i[j] = game.bol_gw[j];
             }
             game.checkResult = function () {
                 if (game.me.identity == 'zhong') game.over(game.players.some(target => target.identity == 'zhu'));

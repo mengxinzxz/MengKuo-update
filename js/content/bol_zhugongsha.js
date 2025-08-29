@@ -82,14 +82,14 @@ const brawl = {
                 },
             },
         };
-        game.bolLoadSkill(skills);
+        game.bol_loadSkill(skills);
         var translate = {
             bol_mingcha: '明察',
             bol_mingcha_info: '游戏开始时，你可知晓一名其他角色的身份是否为反贼（其他角色可见）。',
             bol_fenzhan: '奋战',
             bol_fenzhan_info: '锁定技。①结束阶段，若你本回合造成过伤害，你获得1枚“战”标记（你至多3枚“战”标记），否则你移除1枚“战”标记；②准备阶段，你摸等同“战”标记数量的牌。',
         };
-        game.bolLoadTrans(translate);
+        game.bol_loadTrans(translate);
     },
     content: {
         gameStart() {

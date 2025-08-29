@@ -14,7 +14,7 @@ const brawl = {
         bjlz.style.width = '500px';
         bjlz.style.left = 'calc(50% - 250px)';
         bjlz.style.top = '45px';
-        bjlz.setBackgroundImage('extension/活动萌扩/image/bolbingjingliangzu.png');
+        bjlz.setBackgroundImage('extension/活动萌扩/image/bol_bingjingliangzu.png');
         this.appendChild(bjlz);
     },
     init() {

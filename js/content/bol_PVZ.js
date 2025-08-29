@@ -229,7 +229,7 @@ const brawl = {
                 },
             },
         };
-        game.bolLoadSkill(skills);
+        game.bol_loadSkill(skills);
         var translate = {
             _huzhu: '互助',
             _huzhu_info: '出牌阶段限一次，你可以弃置一张【桃】，令一名距离为1以内的其他主公或忠臣回复1点体力',
@@ -245,12 +245,12 @@ const brawl = {
             neiZomble_shishi_info: '锁定技，当你令一名角色尸变或杀死一名角色后，你加1点体力上限并回复1点体力。',
             _zhu_tuizhi: '退治',
         };
-        game.bolLoadTrans(translate);
+        game.bol_loadTrans(translate);
     },
     content: {
         submode: 'normal',
         chooseCharacterBefore() {
-            game.bilibili_wuhuang = {
+            game.bol_wuhuang = {
                 dieAfter() {
                     var player = this;
                     if (player.identity == 'fan' || player.identity == 'nei') player.$fullscreenpop('僵尸灭亡', 'thunder');
@@ -307,9 +307,9 @@ const brawl = {
                     }
                 },
             };
-            for (var i in game.bilibili_wuhuang) lib.element.player[i] = game.bilibili_wuhuang[i];
+            for (var i in game.bol_wuhuang) lib.element.player[i] = game.bol_wuhuang[i];
             for (var i of game.players) {
-                for (var j in game.bilibili_wuhuang) i[j] = game.bilibili_wuhuang[j];
+                for (var j in game.bol_wuhuang) i[j] = game.bol_wuhuang[j];
             }
         },
     },

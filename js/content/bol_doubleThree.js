@@ -166,7 +166,7 @@ const brawl = {
                 },
                 lib: {
                     skill: {
-                        _OLdoubleThree_view: {
+                        _bol_doubleThree_view: {
                             ai: {
                                 viewHandcard: true,
                                 skillTagFilter(player, arg, target) {

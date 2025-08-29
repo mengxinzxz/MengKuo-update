@@ -4,7 +4,7 @@ export let config = {
 		name: '<span style="font-family: xingkai">点击查看更新公告</span>',
 		clear: true,
 		onclick() {
-			try { game.bolShowNewPackx() }
+			try { game.bol_showNewPackx() }
 			catch (e) { alert('打开更新公告时出问题了，请凭此截图找萌新转型中反馈此bug') }
 		},
 	},
