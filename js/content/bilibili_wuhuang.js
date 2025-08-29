@@ -157,7 +157,7 @@ const brawl = {
                                         const result = await player.chooseBool('武皇：是否挑战强敌？', '若不挑战，则以游戏胜利结束本局游戏；若挑战，即使挑战失败，亦判定玩家游戏胜利').set('includeOut', true).forResult();
                                         if (result?.bool) {
                                             game.wuhuangED = true;
-                                            let source, names = [
+                                            let names = [
                                                 [['re_guojia', 're_huatuo'], 250],
                                                 [['re_zhenji', 're_zhangjiao'], 250],
                                                 [['jin_simashi', 're_huanggai'], 500],
@@ -170,14 +170,15 @@ const brawl = {
                                             ].filter(list => {
                                                 return list[0].every(i => _status.characterlist.includes(i));
                                             }).randomGet();
-                                            lib.onover.push((num => {
+                                            lib.onover.push(() => {
+                                                const num = _status.source;
                                                 if (!game.players.includes(game.me.enemy)) {
-                                                    game.bolSay(`恭喜击败强敌，获得${num}萌币`);
+                                                    game.bolSay(`恭喜击败强敌${get.translation(game.me.enemy.name1)}/${get.translation(game.me.enemy.name2)}，获得${num}萌币`);
                                                     game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin + num);
                                                 }
                                                 else game.bolSay(`失败乃成功之母，祝你下次好运`);
-                                            })(source));
-                                            source = names[1], names = names[0];
+                                            });
+                                            _status.source = names[1], names = names[0];
                                             const color = target.node.identity.dataset.color;
                                             game.broadcastAll(function (player, names, color) {
                                                 player.revive(null, false);
