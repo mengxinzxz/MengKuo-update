@@ -124,12 +124,6 @@ const brawl = {
                             game.playerBySeat(7).identity = "cxyJiangLing";
                             game.playerBySeat(8).identity = "cxySuiCong";
                             game.showIdentity(true);
-                            game.players.forEach(i => {
-                                if (i.identity === 'cxySuiCong') {
-                                    i.inits ??= [];
-                                    i.inits.push(player => player.maxHp--);
-                                }
-                            });
                             game.zhu = _status.firstAct = game.playerBySeat(1);
                             //Ai选将
                             const goon = (Math.random() < 0.35 && game.isInSpringFestival());
@@ -145,7 +139,11 @@ const brawl = {
                             for (var i = 0; i < game.cxyAis.length; i++) {
                                 if (game.cxyAis[i] == game.cxyJiangLing) game.cxyAis[i].init(goon ? 'fd_kuangshen04' : "cxyHuaXiong");
                                 else if (game.cxyAis[i].seatNum == 3) game.cxyAis[i].init("cxySunJian");
-                                else game.cxyAis[i].init(suiCongList.shift());
+                                else {
+                                    game.cxyAis[i].init(suiCongList.shift());
+                                    game.cxyAis[i].maxHp--;
+                                    game.cxyAis[i].update();
+                                }
                             }
                         }
                         const next = game.createEvent("chooseCharacter", false);
