@@ -33,11 +33,11 @@ const brawl = {
                 },
                 game: {
                     fanzhongNum: [0, 0],
-                    gameDraw(player, num) {
-                        const next = game.createEvent("gameDraw");
+                    gameDraw(player) {
+                        const next = game.createEvent("gameDraw", true, _status.event?.getParent("phaseLoop", true));
                         next.player = player || game.me;
                         next.num = function (player) {
-                            return game.players[game.players.length - 1] === target ? 5 : 4;
+                            return game.players[game.players.length - 1] === player ? 5 : 4;
                         };
                         next.setContent("gameDraw");
                         return next;
@@ -91,6 +91,7 @@ const brawl = {
                                         evtx = evtx.getParent();
                                     }
                                     evtx.player = first.previous;
+                                    evtx.step = 0;
                                 }
                                 _status.roundStart = first;
                                 game.phaseNumber = 0;
@@ -103,7 +104,7 @@ const brawl = {
                     },
                     //选将
                     chooseCharacter() {
-                        const next = game.createEvent('chooseCharacter', false);
+                        const next = game.createEvent('chooseCharacter', false, _status.event?.getParent("phaseLoop", true));
                         next.showConfig = true;
                         next.player = game.me;
                         next.setContent(async function (event, trigger, player) {

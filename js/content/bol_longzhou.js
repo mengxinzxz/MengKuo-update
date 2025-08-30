@@ -97,7 +97,7 @@ const brawl = {
                 game: {
                     //初始手牌数
                     gameDraw(player) {
-                        const next = game.createEvent("gameDraw");
+                        const next = game.createEvent("gameDraw", true, _status.event?.getParent("phaseLoop", true));
                         next.player = player || game.me;
                         next.num = function (player) {
                             if (game.RElongzhou && player.identity === game.me.identity) return 2;
@@ -130,12 +130,8 @@ const brawl = {
                                     groupList.randomSort();
                                     var tempNum = 3;
                                     if (fellow && game.me.getSeatNum() > fellow.getSeatNum()) fellow.dataset.position = 7;
-                                    while (game.dead.filter(function (target) {
-                                        return target.identity != game.me.identity;
-                                    }).length) {
-                                        var target = game.dead.filter(function (target) {
-                                            return target.identity != game.me.identity;
-                                        })[0];
+                                    while (game.dead.some(target => target.identity !== game.me.identity)) {
+                                        var target = game.dead.find(target => target.identity !== game.me.identity);
                                         if (target) {
                                             target.revive(null, false);
                                             if (target.node.dieidentity) {
@@ -157,7 +153,6 @@ const brawl = {
                                                     hs[i].discard(false);
                                                 }
                                             }
-                                            for (var i in game.LZelement) target[i] = game.LZelement[i];
                                             target.dataset.position = tempNum - game.me.getSeatNum();
                                             tempNum++;
                                             target.removeMark('_lz_zong_mark', target.countMark('_lz_zong_mark'), false);
@@ -193,7 +188,6 @@ const brawl = {
                                         target.setIdentity();
                                         target.identityShown = true;
                                         tempNum++;
-                                        for (var i in game.LZelement) target[i] = game.LZelement[i];
                                         target.removeMark('_lz_zong_mark', target.countMark('_lz_zong_mark'), false);
                                         target.addMark('_lz_zong_mark', 2);
                                         target.setLevel(get.rand(3, 5).toString());
@@ -242,6 +236,7 @@ const brawl = {
                                             evtx = evtx.getParent();
                                         }
                                         evtx.player = _status.firstAct.previous;
+                                        evtx.step = 0;
                                     }
                                     _status.roundStart = _status.firstAct;
                                     game.phaseNumber = 0;
