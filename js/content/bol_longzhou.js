@@ -1170,6 +1170,8 @@ const brawl = {
             Object.assign(game, changeFunction.game);
             Object.assign(lib.translate, changeFunction.lib.translate);
             Object.assign(lib.character, changeFunction.lib.character);
+            Object.assign(lib.card, changeFunction.lib.card);
+            for (const i in changeFunction.lib.card) game.finishCard(i);
             Object.assign(lib.skill, changeFunction.lib.skill);
             for (const i in changeFunction.lib.skill) game.finishSkill(i);
             Object.assign(lib.element.player, changeFunction.lib.element.player);
