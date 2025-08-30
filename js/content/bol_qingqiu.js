@@ -70,7 +70,7 @@ const brawl = {
                                 lib.character[name][2] = 4;
                                 lib.character[name][3] = [];
                                 lib.character[name][4]?.remove('hiddenSkill');
-                                if (skills.length && Math.abs(['junk', 'rare', 'epic', 'legend'].indexOf(game.getRarity(name))) >= lib.config.levelSkills) {
+                                if (skills.length && Math.abs(['junk', 'common', 'rare', 'epic', 'legend'].indexOf(game.getRarity(name))) >= lib.config.levelSkills) {
                                     for (const skill of skills) {
                                         if (['huashen', 'rehuashen', 'xinsheng', 'rexinsheng', 'duanchang', 'pingjian', 'dunshi', 'mbdanggu', 'mbmowang'].includes(skill)) continue;
                                         const info = get.info(skill);
@@ -374,9 +374,9 @@ const brawl = {
             for (const i in changeFunction.lib.skill) game.finishSkill(i);
             Object.assign(lib.element.player, changeFunction.lib.element.player);
             //定义阵容
-            const target = game.HuNv = game.players.filter(current => current !== game.me).randomGet();
+            const target = game.HuNv = lib.config.singleControlx ? game.me.previous : game.players.filter(current => current !== game.me).randomGet();
             game.players.sortBySeat(target.next);
-            game.zhu = _status.roundStart = target.next;
+            game.zhu = _status.firstAct2 = target.next;
             game.players.forEach((i, index) => {
                 i.identity = (target == i ? 'HuNv' : 'cai');
                 i.setIdentity();

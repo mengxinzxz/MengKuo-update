@@ -92,7 +92,7 @@ const brawl = {
                             game.playerBySeat(4).identity = "cxyJiangLing";
                             game.playerBySeat(5).identity = "cxySuiCong";
                             game.showIdentity(true);
-                            game.zhu = _status.firstAct = game.playerBySeat(1);
+                            game.zhu = _status.firstAct2 = game.playerBySeat(1);
                             //Ai选将
                             for (var i = 0; i < game.cxyAis.length; i++) {
                                 if (game.cxyAis[i] == game.cxyJiangLing) game.cxyAis[i].init(cxyJiangLing);
@@ -114,7 +114,7 @@ const brawl = {
                             game.playerBySeat(7).identity = "cxyJiangLing";
                             game.playerBySeat(8).identity = "cxySuiCong";
                             game.showIdentity(true);
-                            game.zhu = _status.firstAct = game.playerBySeat(1);
+                            game.zhu = _status.firstAct2 = game.playerBySeat(1);
                             //Ai选将
                             const goon = (Math.random() < 0.35 && game.isInSpringFestival());
                             if (goon) {

@@ -204,7 +204,7 @@ const brawl = {
             for (const i in changeFunction.lib.skill) game.finishSkill(i);
             Object.assign(lib.element.player, changeFunction.lib.element.player);
             //位置载入
-            game.zhu = game.players.randomGet();
+            game.zhu = _status.firstAct2 = game.players.randomGet();
             game.players.sortBySeat(game.zhu);
             game.players.forEach((i, index) => {
                 i.setSeatNum(index + 1);

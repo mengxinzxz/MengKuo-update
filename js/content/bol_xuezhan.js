@@ -288,9 +288,8 @@ const brawl = {
                 else ui.xuezhanInfo = ui.create.div(ui.gameinfo);
                 ui.xuezhanInfo.innerHTML = '龙虎比分：' + game.fanzhongNum[0] + '/' + game.fanzhongNum[1];
             });
-            const first = game.players.randomGet();
-            game.players.sortBySeat(first);
-            _status.roundStart = game.zhu = first;
+            game.zhu = _status.firstAct2 = game.players.randomGet();
+            game.players.sortBySeat(game.zhu);
             game.players.forEach((target, index) => {
                 if (!_status.characterlist) lib.skill.pingjian.initList();
                 target.usedStorage = [];

@@ -7,7 +7,8 @@ const brawl = {
         '模式规则：本模式共分两关' +
         '<br>敌人数目：2/6（不同势力之间均为敌对关系，但会优先攻击玩家方）' +
         '<br>敌人初始等阶：第一关随机3，4阶，第二关随机3，4，5阶' +
-        '<br>三关均通过后游戏胜利。',
+        '<br>胜利条件：玩家阵营获得两场战斗的游戏胜利' +
+        '<br>失败条件：玩家阵营在任意战斗中全部阵亡',
         '牌堆替换：【酒】替换为【雄黄酒】，【五谷丰登】和【桃园结义】替换为【力争上游】，【无中生有】替换为【同舟共济】，【南蛮入侵】和【万箭齐发】替换为【逆水行舟】。',
         '关于选将：' +
         '<br>选将框中会随机挑选五张势力相同的武将牌供玩家选择，选将势力可在扩展页面自由选择' +
@@ -235,10 +236,10 @@ const brawl = {
                                             evtx.untrigger(true);
                                             evtx = evtx.getParent();
                                         }
-                                        evtx.player = _status.firstAct.previous;
+                                        evtx.player = _status.firstAct2.previous;
                                         evtx.step = 0;
                                     }
-                                    _status.roundStart = _status.firstAct;
+                                    _status.roundStart = _status.firstAct2;
                                     game.phaseNumber = 0;
                                     game.roundNumber = 0;
                                     game.updateRoundNumber();
@@ -1173,31 +1174,27 @@ const brawl = {
             for (const i in changeFunction.lib.skill) game.finishSkill(i);
             Object.assign(lib.element.player, changeFunction.lib.element.player);
             //游戏初始阵型
-            var choice = lib.config.extension_活动萌扩_chooseGroup;
-            var list = [];
-            var groupList = ['wei', 'shu', 'wu', 'qun', 'jin'].randomSort();
+            let choice = lib.config.extension_活动萌扩_chooseGroup;
+            let list = [],groupList = ['wei', 'shu', 'wu', 'qun', 'jin'].randomSort();
             groupList.remove(choice);
             groupList = groupList.randomGets(1);
-            for (var i of [choice].addArray(groupList)) {
-                for (var j = 1; j <= 2; j++) list.push(i);
+            for (let i of [choice].addArray(groupList)) {
+                for (let j = 1; j <= 2; j++) list.push(i);
             }
-            var zhenxing = list;
-            game.players = game.players.sortBySeat([game.me, game.me[game.players.indexOf(game.me) % 2 == 0 ? 'previous' : 'pnext']].randomGet());
-            _status.firstAct = game.zhu = game.players[0];
-            var current = _status.firstAct, currentSeat = 0;
+            game.zhu = _status.firstAct2 = (() => {
+                if (lib.config.singleControl) return game.me;
+                return [game.me, game.me[game.players.indexOf(game.me) % 2 == 0 ? 'previous' : 'pnext']].randomGet();
+            })();
+            game.players.sortBySeat(game.zhu);
             //定义座位号和座位号显示
-            while (true) {
-                Object.assign(current, changeFunction.lib.element.player);
-                current.identity = zhenxing[currentSeat];
-                current.setSeatNum(currentSeat + 1);
+            game.players.forEach((current, index) => {
+                current.setSeatNum(index + 1);
                 if (!current.node.seat) current.setNickname(get.cnNumber(current.seatNum, true) + '号位');
+                current.identity = list[index];
                 current.setIdentity();
                 current.identityShown = true;
-                current.update();
-                currentSeat++;
-                current = current.next;
-                if (current == _status.firstAct) break;
-            }
+                Object.assign(current, changeFunction.lib.element.player);
+            });
             game.showIdentity(true);
         },
     },

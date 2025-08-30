@@ -831,7 +831,7 @@ const brawl = {
             Object.assign(lib.element.player, changeFunction.lib.element.player);
             //定义阵容
             let target = game.players.randomGet(), list = ['wei', 'shu', 'wu', 'qun', 'wei', 'shu', 'wu', 'qun'];
-            game.zhu = _status.firstAct = target;
+            game.zhu = _status.firstAct2 = target;
             game.players.sortBySeat(target);
             for (const i of game.players) {
                 i.identity = list.randomRemove();
