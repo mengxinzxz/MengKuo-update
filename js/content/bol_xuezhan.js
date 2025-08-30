@@ -73,14 +73,25 @@ const brawl = {
                                     game.addVideo('lose', i, [get.cardsInfo(hs), [], [], []]);
                                     for (var j of hs) j.discard(false);
                                 }
-                                while (_status.event.name != 'phaseLoop') {
-                                    _status.event = _status.event.parent;
+                                let first = game.players[0];
+                                let cards = Array.from(ui.ordering.childNodes);
+                                if (cards.length > 0) {
+                                    while (cards.length) {
+                                        cards.shift().discard();
+                                    }
                                 }
                                 game.resetSkills();
-                                var first = game.players[0];
                                 _status.paused = false;
-                                _status.event.player = first.previous;
-                                _status.event.step = 0;
+                                let evt = _status.event.getParent("phaseLoop", true);
+                                if (evt) {
+                                    let evtx = _status.event;
+                                    while (evtx !== evt) {
+                                        evtx.finish();
+                                        evtx.untrigger(true);
+                                        evtx = evtx.getParent();
+                                    }
+                                    evtx.player = first.previous;
+                                }
                                 _status.roundStart = first;
                                 game.phaseNumber = 0;
                                 game.roundNumber = 0;
