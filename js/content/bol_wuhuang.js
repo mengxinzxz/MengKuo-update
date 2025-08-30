@@ -13,6 +13,7 @@ const brawl = {
         lib.configOL.number = 2;
         lib.config.mode_config.identity.double_hp = 'hejiansan';
         lib.config.mode_config.identity.double_character = false;
+        lib.config.mode_config.identity.dierestart = false;
     },
     content: {
         submode: 'normal',

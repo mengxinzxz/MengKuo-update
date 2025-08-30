@@ -53,10 +53,8 @@ const brawl = {
                             else if (game.fanzhongNum[1] >= 2) game.over(game.me.identity == 'zhong');
                             else {
                                 delete game.zhu;
-                                for (var i of game.dead.slice(0)) i.revive(null, false);
-                                game.players.sort(function (a, b) {
-                                    return a.getSeatNum() - b.getSeatNum();
-                                });
+                                for (var i of game.dead.slice()) i.revive(null, false);
+                                game.players.sort((a, b) => a.getSeatNum() - b.getSeatNum());
                                 game.zhu = game.players[2];
                                 game.players.sortBySeat(game.zhu);
                                 for (var target of game.players.sortBySeat(game.zhu)) {
