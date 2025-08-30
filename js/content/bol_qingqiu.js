@@ -374,8 +374,9 @@ const brawl = {
             for (const i in changeFunction.lib.skill) game.finishSkill(i);
             Object.assign(lib.element.player, changeFunction.lib.element.player);
             //定义阵容
-            const target = game.HuNv = game.zhu = _status.roundStart = game.players.filter(current => current !== game.me).randomGet();
+            const target = game.HuNv = game.players.filter(current => current !== game.me).randomGet();
             game.players.sortBySeat(target.next);
+            game.zhu = _status.roundStart = target.next;
             game.players.forEach((i, index) => {
                 i.identity = (target == i ? 'HuNv' : 'cai');
                 i.setIdentity();
