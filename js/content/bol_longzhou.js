@@ -227,10 +227,16 @@ const brawl = {
                                         current = current.next;
                                     }
                                     //新的开始
+                                    let cards = Array.from(ui.ordering.childNodes);
+                                    if (cards.length > 0) {
+                                        while (cards.length) {
+                                            cards.shift().discard();
+                                        }
+                                    }
+                                    game.resetSkills();
+                                    _status.paused = false;
                                     let evt = _status.event.getParent("phaseLoop", true);
                                     if (evt) {
-                                        game.resetSkills();
-                                        _status.paused = false;
                                         let evtx = _status.event;
                                         while (evtx !== evt) {
                                             evtx.finish();
@@ -238,12 +244,11 @@ const brawl = {
                                             evtx = evtx.getParent();
                                         }
                                         evtx.player = _status.firstAct.previous;
-                                        evtx.step = 0;
-                                        _status.roundStart = _status.firstAct;
-                                        game.phaseNumber = 0;
-                                        game.roundNumber = 0;
-                                        game.updateRoundNumber();
                                     }
+                                    _status.roundStart = _status.firstAct;
+                                    game.phaseNumber = 0;
+                                    game.roundNumber = 0;
+                                    game.updateRoundNumber();
                                     game.gameDraw();
                                 }
                             }
