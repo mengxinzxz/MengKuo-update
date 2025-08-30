@@ -79,7 +79,7 @@ const brawl = {
                             const createDialog = event.dialog = ui.create.dialog(lib.config.singleControly ? '请选择你和队友的武将' : '请选择你的武将', "hidden");
                             if (!lib.config.singleControly) createDialog.add('<div class="text center">玩家武将</div>');
                             createDialog.add([list, 'character']);
-                            const fellow = game.findPlayer(current => current != player && current.identity == player.identity);
+                            const fellow = game.players.find(current => current != player && current.identity == player.identity);
                             if (fellow) {
                                 if (lib.config.singleControly) {
                                     game.addGlobalSkill('autoswap');

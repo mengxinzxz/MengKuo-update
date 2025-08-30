@@ -6,3 +6,7 @@
 .player .identity[data-color="cxyJiangLing"] {
 	text-shadow: rgba(255, 10, 10, 1) 0 0 2px, rgba(255, 10, 10, 1) 0 0 5px, rgba(255, 10, 10, 1) 0 0 10px, rgba(255, 10, 10, 1) 0 0 10px, rgba(255, 10, 10, 1) 0 0 20px, rgba(255, 10, 10, 1) 0 0 20px, black 0 0 1px;
 }
+/*青丘弄琴*/
+.player .identity[data-color="HuNv"] {
+	text-shadow: rgba(20, 20, 200, 1) 0 0 2px, rgba(20, 20, 200, 1) 0 0 5px, rgba(57, 123, 4, 1) 0 0 5px, rgba(20, 20, 200, 1) 0 0 5px, black 0 0 1px;
+}

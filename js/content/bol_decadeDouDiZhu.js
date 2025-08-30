@@ -390,7 +390,7 @@ const brawl = {
                         return !_status.event.list.includes(button.link);
                     }).set('ai', button => {
                         return getCharacter(_status.event.listx).includes(button.link) ? get.rank(button.link, true) : -1;
-                    }).set('list', fellow ? fellow.characterlist : []).set('listx', game.me.characterlist).forResult();
+                    }).set('list', fellow?.characterlist ?? []).set('listx', game.me.characterlist).forResult();
                     game.me.init(result2.links[0]);
                     for (var i of game.players) {
                         if (i != game.me) i.init(getCharacter(i.characterlist).randomGet());

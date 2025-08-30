@@ -111,10 +111,8 @@ const brawl = {
                     checkResult() {
                         if (!get.population(game.me.identity)) game.over(false);
                         else {
-                            var fellow = game.players.concat(game.dead).filter(function (current) {
-                                return current.identity == game.me.identity && current != game.me;
-                            })[0];
-                            if (!ui.giveupSystem && (!fellow?.isAlive() || lib.config.singleControl)) {
+                            const fellow = game.me.fellow;
+                            if (!ui.giveupSystem && (!game.players.includes(fellow) || lib.config.singleControl)) {
                                 ui.giveupSystem = ui.create.system('投降', function () {
                                     game.log(game.me, '投降');
                                     game.over(false);
@@ -315,8 +313,10 @@ const brawl = {
                             const createDialog = event.dialog = [lib.config.singleControl ? '请选择你和队友的武将' : '请选择你的武将'];
                             if (!lib.config.singleControl) createDialog.add('<div class="text center">玩家武将</div>');
                             createDialog.add([list, 'character']);
-                            const fellow = game.findPlayer(current => current != player && current.identity == player.identity);
+                            const fellow = game.players.find(current => current != player && current.identity == player.identity);
                             if (fellow) {
+                                fellow.fellow = player;
+                                player.fellow = fellow;
                                 if (lib.config.singleControl) {
                                     game.addGlobalSkill('autoswap');
                                     fellow._trueMe = player;
