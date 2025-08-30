@@ -8,7 +8,7 @@ const brawl = {
         '所有人摸牌阶段多摸一张牌，出牌阶段可以额外使用一张杀',
         '所有涉及“受到伤害后”的技能均改为按次数发动'
     ],
-    showcase(init) {
+    showcase() {
         var bjlz = ui.create.div();
         bjlz.style.height = '267px';
         bjlz.style.width = '500px';

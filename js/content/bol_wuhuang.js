@@ -77,7 +77,7 @@ const brawl = {
                                 if (result?.bool && result.links?.length) {
                                     _status.characterMap[turn.identity].addArray(result.links);
                                     characters.removeArray(result.links);
-                                    game.broadcastAll((links, first, id) => {
+                                    game.broadcastAll((links, first, id, start) => {
                                         const dialog = get.idDialog(id);
                                         if (dialog) {
                                             let choice = [];
@@ -89,12 +89,13 @@ const brawl = {
                                                     node.classList.add(first ? 'selectedx' : 'glow');
                                                 }
                                             }
-                                            dialog.content.firstChild.innerHTML = (!first ? '你' : '对手') + '选择了' + choice.join('、');
+                                            dialog.content.firstChild.innerHTML = start ? '游戏即将开始...' : `${(!first ? '你' : '对手')}选择了${choice.join('、') }`;
                                         }
-                                    }, result.links, turn !== player, videoId);
+                                    }, result.links, turn !== player, videoId, !characters.length);
                                     turn = turn.enemy;
                                 }
                             }
+                            await game.delay(3);
                             game.broadcastAll('closeDialog', videoId);
                             for (const current of [player, target]) {
                                 const result = await current.chooseButton(true, ['请选择出场武将', [_status.characterMap[current.identity], 'character']], [1, 2]).set('ai', () => -0.5 + Math.random()).forResult();
