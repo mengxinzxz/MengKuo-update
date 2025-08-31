@@ -69,7 +69,7 @@ const brawl = {
             card: {
                 xionghuangjiu: {
                     image: 'ext:活动萌扩/image/xionghuangjiu.png',
-                    fullimage: true,
+                    fullskin: true,
                     type: "basic",
                     enable(event, player) {
                         return !player.hasSkill('jiu');
@@ -181,7 +181,7 @@ const brawl = {
                 },
                 tongzhougongji: {
                     image: 'ext:活动萌扩/image/tongzhougongji.png',
-                    fullimage: true,
+                    fullskin: true,
                     enable: true,
                     type: 'trick',
                     selectTarget: -1,
@@ -208,7 +208,7 @@ const brawl = {
                 },
                 lizhengshangyou: {
                     image: 'ext:活动萌扩/image/lizhengshangyou.png',
-                    fullimage: true,
+                    fullskin: true,
                     type: 'trick',
                     enable: true,
                     selectTarget: -1,
@@ -235,7 +235,7 @@ const brawl = {
                 },
                 nishuixingzhou: {
                     image: 'ext:活动萌扩/image/nishuixingzhou.png',
-                    fullimage: true,
+                    fullskin: true,
                     enable: true,
                     type: 'trick',
                     filterTarget(card, player, target) {
