@@ -13,6 +13,242 @@ const brawl = {
         lib.configOL.number = 8;
         lib.config.mode_config.identity.auto_mark_identity = false;
         lib.config.mode_config.identity.double_character = false;
+        //牌堆替换
+        const changeFunction = {
+            card: {
+                whlw_lidaitaojiang: {
+                    image: 'ext:活动萌扩/image/whlw_lidaitaojiang.png',
+                    audio: true,
+                    type: 'trick',
+                    enable: true,
+                    selectTarget: 1,
+                    filterTarget(card, player, target) {
+                        if (player == target) return false;
+                        return target.countCards('h') + target.countCards('h') > 1;
+                    },
+                    content() {
+                        var cards = player.getCards('h').concat(target.getCards('h'));
+                        var list1 = [];
+                        var list2 = [];
+                        var list = [list1, list2];
+                        for (var i = 0; i < cards.length; i++) {
+                            list.randomGet().push(cards[i]);
+                        }
+                        if (list1.length) {
+                            player.$draw(list1.length);
+                            player.gain(list1);
+                        }
+                        if (list2.length) {
+                            target.$draw(list2.length);
+                            target.gain(list2);
+                        }
+                    },
+                    ai: {
+                        basic: {
+                            order: 1,
+                            useful: 1,
+                            value: 5,
+                        },
+                        result: {
+                            target(player, target) {
+                                var ph = player.countCards('h') - 1;
+                                var th = target.countCards('h');
+                                return ph - th;
+                            },
+                        },
+                    },
+                    fullskin: true,
+                },
+                wenheluanwu_card: {
+                    image: 'ext:活动萌扩/image/wenheluanwu_card.png',
+                    audio: true,
+                    type: 'trick',
+                    enable: true,
+                    selectTarget: -1,
+                    toself: true,
+                    filterTarget(card, player, target) {
+                        return target == player;
+                    },
+                    modTarget: true,
+                    content() {
+                        'step 0'
+                        event.current = player.next;
+                        'step 1'
+                        event.current.chooseToUse('乱武：使用一张杀或流失一点体力', { name: 'sha' }, function (card, player, target) {
+                            if (player == target) return false;
+                            if (!player.canUse('sha', target)) return false;
+                            if (get.distance(player, target) <= 1) return true;
+                            if (game.hasPlayer(function (current) {
+                                return current != player && get.distance(player, current) < get.distance(player, target);
+                            })) {
+                                return false;
+                            }
+                            return true;
+                        });
+                        'step 2'
+                        if (result.bool == false) event.current.loseHp();
+                        if (player.classList.contains('dead') == false && event.current.next != player) {
+                            event.current = event.current.next;
+                            game.delay(0.5);
+                            event.goto(1);
+                        }
+                    },
+                    ai: {
+                        basic: {
+                            order: 1,
+                            useful: 4.5,
+                            value: 9.2,
+                        },
+                        result: {
+                            player(player) {
+                                var num = 0;
+                                var players = game.filterPlayer();
+                                for (var i = 0; i < players.length; i++) {
+                                    var att = get.attitude(player, players[i]);
+                                    if (att > 0) att = 1;
+                                    if (att < 0) att = -1;
+                                    if (players[i] != player && players[i].hp <= 3) {
+                                        if (players[i].countCards('h') == 0) num += att / players[i].hp;
+                                        else if (players[i].countCards('h') == 1) num += att / 2 / players[i].hp;
+                                        else if (players[i].countCards('h') == 2) num += att / 4 / players[i].hp;
+                                    }
+                                    if (players[i].hp == 1) num += att * 1.5;
+                                }
+                                if (player.hp == 1) {
+                                    return -num;
+                                }
+                                if (player.hp == 2) {
+                                    return -game.players.length / 4 - num;
+                                }
+                                return -game.players.length / 3 - num;
+                            },
+                        },
+                    },
+                    fullskin: true,
+                },
+                whlw_toulianghuanzhu: {
+                    image: 'ext:活动萌扩/image/whlw_toulianghuanzhu.png',
+                    audio: true,
+                    type: 'trick',
+                    enable: true,
+                    selectTarget: -1,
+                    toself: true,
+                    filterTarget(card, player, target) {
+                        return target == player;
+                    },
+                    modTarget: true,
+                    content() {
+                        var equiplist = [];
+                        for (var i = 0; i < game.players.length; i++) {
+                            equiplist = equiplist.concat(game.players[i].getCards('e'));
+                        }
+                        game.delay();
+                        for (var i = 0; i < equiplist.length; i++) {
+                            game.players.randomGet().equip(equiplist[i]);
+                        }
+                    },
+                    ai: {
+                        basic: {
+                            order: 7.2,
+                            useful: 4.5,
+                            value: 5,
+                        },
+                        result: {
+                            target(player, target) {
+                                var num = game.countPlayer(function (current) {
+                                    return current.countCards('e');
+                                });
+                                return num * 2 / game.players.length - player.countCards('e');
+                            },
+                        },
+                    },
+                    fullskin: true,
+                },
+                douzhuanxingyi: {
+                    image: 'ext:活动萌扩/image/douzhuanxingyi.png',
+                    audio: true,
+                    type: 'trick',
+                    enable: true,
+                    selectTarget: 1,
+                    filterTarget(card, player, target) {
+                        return player != target;
+                    },
+                    content() {
+                        'step 0'
+                        event.num = player.hp + target.hp - 2;
+                        event.num1 = 1;
+                        event.num2 = 1;
+                        'step 1'
+                        var add = [1, 2].randomGet();
+                        if (event.num > 0) {
+                            if (player.maxHp > event.num1 && target.maxHp > event.num2) {
+                                if (add != 1) event.num1++;
+                                else event.num2++;
+                                event.num--;
+                            }
+                            else if (player.maxHp == event.num1) {
+                                event.num2 = event.num2 + event.num;
+                                event.num = 0;
+                            }
+                            else if (target.maxHp == event.num2) {
+                                event.num1 = event.num1 + event.num;
+                                event.num = 0;
+                            }
+                        }
+                        'step 2'
+                        if (event.num > 0) event.goto(1);
+                        else {
+                            var num;
+                            if (player.hp > event.num1) {
+                                num = player.hp - event.num1;
+                                player.loseHp(num);
+                                target.recover(num);
+                            }
+                            else if (player.hp < event.num1) {
+                                num = event.num1 - player.hp;
+                                player.recover(num);
+                                target.loseHp(num);
+                            }
+                        }
+                    },
+                    ai: {
+                        basic: {
+                            order: 1,
+                            useful: 1,
+                            value: 5,
+                        },
+                        result: {
+                            target(player, target) {
+                                var ph = player.hp;
+                                var pm = player.maxHp;
+                                var th = target.hp;
+                                var tm = target.maxHp;
+                                if (ph == pm && th == tm) return 0;
+                                if (th == tm) return ph - pm;
+                                if (ph == pm) return tm - th;
+                                if (ph == 1) return ph - th;
+                                if (th == 1) return ph - th;
+                                return ph - th;
+                            },
+                        },
+                    },
+                    fullskin: true,
+                },
+            },
+            translate: {
+                whlw_lidaitaojiang: '李代桃僵',
+                whlw_lidaitaojiang_info: '出牌阶段，对一名其他角色使用。随机分配你们的手牌。',
+                wenheluanwu_card: '文和乱武',
+                wenheluanwu_card_info: '出牌阶段，对你自己使用。视为你发动了一次【乱武】。',
+                whlw_toulianghuanzhu: '偷梁换柱',
+                whlw_toulianghuanzhu_info: '出牌阶段，对你自己使用。随机分配场上所有的装备牌。',
+                douzhuanxingyi: '斗转星移',
+                douzhuanxingyi_info: '出牌阶段，对一名其他角色使用。随机分配你与其的体力。（至少为1，至多不能超出上限）',
+            },
+        };
+        Object.assign(lib.card, changeFunction.card);
+        Object.assign(lib.translate, changeFunction.translate);
+        for (const i in changeFunction.card) game.finishCard(i);
     },
     content: {
         submode: 'normal',
@@ -143,226 +379,6 @@ const brawl = {
                     },
                 },
                 lib: {
-                    card: {
-                        whlw_lidaitaojiang: {
-                            image: 'ext:活动萌扩/image/whlw_lidaitaojiang.png',
-                            audio: true,
-                            type: 'trick',
-                            enable: true,
-                            selectTarget: 1,
-                            filterTarget(card, player, target) {
-                                if (player == target) return false;
-                                return target.countCards('h') + target.countCards('h') > 1;
-                            },
-                            content() {
-                                var cards = player.getCards('h').concat(target.getCards('h'));
-                                var list1 = [];
-                                var list2 = [];
-                                var list = [list1, list2];
-                                for (var i = 0; i < cards.length; i++) {
-                                    list.randomGet().push(cards[i]);
-                                }
-                                if (list1.length) {
-                                    player.$draw(list1.length);
-                                    player.gain(list1);
-                                }
-                                if (list2.length) {
-                                    target.$draw(list2.length);
-                                    target.gain(list2);
-                                }
-                            },
-                            ai: {
-                                basic: {
-                                    order: 1,
-                                    useful: 1,
-                                    value: 5,
-                                },
-                                result: {
-                                    target(player, target) {
-                                        var ph = player.countCards('h') - 1;
-                                        var th = target.countCards('h');
-                                        return ph - th;
-                                    },
-                                },
-                            },
-                            fullskin: true,
-                        },
-                        wenheluanwu_card: {
-                            image: 'ext:活动萌扩/image/wenheluanwu_card.png',
-                            audio: true,
-                            type: 'trick',
-                            enable: true,
-                            selectTarget: -1,
-                            toself: true,
-                            filterTarget(card, player, target) {
-                                return target == player;
-                            },
-                            modTarget: true,
-                            content() {
-                                'step 0'
-                                event.current = player.next;
-                                'step 1'
-                                event.current.chooseToUse('乱武：使用一张杀或流失一点体力', { name: 'sha' }, function (card, player, target) {
-                                    if (player == target) return false;
-                                    if (!player.canUse('sha', target)) return false;
-                                    if (get.distance(player, target) <= 1) return true;
-                                    if (game.hasPlayer(function (current) {
-                                        return current != player && get.distance(player, current) < get.distance(player, target);
-                                    })) {
-                                        return false;
-                                    }
-                                    return true;
-                                });
-                                'step 2'
-                                if (result.bool == false) event.current.loseHp();
-                                if (player.classList.contains('dead') == false && event.current.next != player) {
-                                    event.current = event.current.next;
-                                    game.delay(0.5);
-                                    event.goto(1);
-                                }
-                            },
-                            ai: {
-                                basic: {
-                                    order: 1,
-                                    useful: 4.5,
-                                    value: 9.2,
-                                },
-                                result: {
-                                    player(player) {
-                                        var num = 0;
-                                        var players = game.filterPlayer();
-                                        for (var i = 0; i < players.length; i++) {
-                                            var att = get.attitude(player, players[i]);
-                                            if (att > 0) att = 1;
-                                            if (att < 0) att = -1;
-                                            if (players[i] != player && players[i].hp <= 3) {
-                                                if (players[i].countCards('h') == 0) num += att / players[i].hp;
-                                                else if (players[i].countCards('h') == 1) num += att / 2 / players[i].hp;
-                                                else if (players[i].countCards('h') == 2) num += att / 4 / players[i].hp;
-                                            }
-                                            if (players[i].hp == 1) num += att * 1.5;
-                                        }
-                                        if (player.hp == 1) {
-                                            return -num;
-                                        }
-                                        if (player.hp == 2) {
-                                            return -game.players.length / 4 - num;
-                                        }
-                                        return -game.players.length / 3 - num;
-                                    },
-                                },
-                            },
-                            fullskin: true,
-                        },
-                        whlw_toulianghuanzhu: {
-                            image: 'ext:活动萌扩/image/whlw_toulianghuanzhu.png',
-                            audio: true,
-                            type: 'trick',
-                            enable: true,
-                            selectTarget: -1,
-                            toself: true,
-                            filterTarget(card, player, target) {
-                                return target == player;
-                            },
-                            modTarget: true,
-                            content() {
-                                var equiplist = [];
-                                for (var i = 0; i < game.players.length; i++) {
-                                    equiplist = equiplist.concat(game.players[i].getCards('e'));
-                                }
-                                game.delay();
-                                for (var i = 0; i < equiplist.length; i++) {
-                                    game.players.randomGet().equip(equiplist[i]);
-                                }
-                            },
-                            ai: {
-                                basic: {
-                                    order: 7.2,
-                                    useful: 4.5,
-                                    value: 5,
-                                },
-                                result: {
-                                    target(player, target) {
-                                        var num = game.countPlayer(function (current) {
-                                            return current.countCards('e');
-                                        });
-                                        return num * 2 / game.players.length - player.countCards('e');
-                                    },
-                                },
-                            },
-                            fullskin: true,
-                        },
-                        douzhuanxingyi: {
-                            image: 'ext:活动萌扩/image/douzhuanxingyi.png',
-                            audio: true,
-                            type: 'trick',
-                            enable: true,
-                            selectTarget: 1,
-                            filterTarget(card, player, target) {
-                                return player != target;
-                            },
-                            content() {
-                                'step 0'
-                                event.num = player.hp + target.hp - 2;
-                                event.num1 = 1;
-                                event.num2 = 1;
-                                'step 1'
-                                var add = [1, 2].randomGet();
-                                if (event.num > 0) {
-                                    if (player.maxHp > event.num1 && target.maxHp > event.num2) {
-                                        if (add != 1) event.num1++;
-                                        else event.num2++;
-                                        event.num--;
-                                    }
-                                    else if (player.maxHp == event.num1) {
-                                        event.num2 = event.num2 + event.num;
-                                        event.num = 0;
-                                    }
-                                    else if (target.maxHp == event.num2) {
-                                        event.num1 = event.num1 + event.num;
-                                        event.num = 0;
-                                    }
-                                }
-                                'step 2'
-                                if (event.num > 0) event.goto(1);
-                                else {
-                                    var num;
-                                    if (player.hp > event.num1) {
-                                        num = player.hp - event.num1;
-                                        player.loseHp(num);
-                                        target.recover(num);
-                                    }
-                                    else if (player.hp < event.num1) {
-                                        num = event.num1 - player.hp;
-                                        player.recover(num);
-                                        target.loseHp(num);
-                                    }
-                                }
-                            },
-                            ai: {
-                                basic: {
-                                    order: 1,
-                                    useful: 1,
-                                    value: 5,
-                                },
-                                result: {
-                                    target(player, target) {
-                                        var ph = player.hp;
-                                        var pm = player.maxHp;
-                                        var th = target.hp;
-                                        var tm = target.maxHp;
-                                        if (ph == pm && th == tm) return 0;
-                                        if (th == tm) return ph - pm;
-                                        if (ph == pm) return tm - th;
-                                        if (ph == 1) return ph - th;
-                                        if (th == 1) return ph - th;
-                                        return ph - th;
-                                    },
-                                },
-                            },
-                            fullskin: true,
-                        },
-                    },
                     skill: {
                         //全局规则机制
                         _wenheluanwu_skill: {
@@ -539,14 +555,6 @@ const brawl = {
                         luanwu6_info: '本轮结束时，所有手牌最少的角色失去当前轮数-1的体力值。',
                         luanwu7: '宴安鸠毒',
                         luanwu7_info: '本轮中，所有的【桃】均视为【毒】。',
-                        whlw_lidaitaojiang: '李代桃僵',
-                        whlw_lidaitaojiang_info: '出牌阶段，对一名其他角色使用。随机分配你们的手牌。',
-                        wenheluanwu_card: '文和乱武',
-                        wenheluanwu_card_info: '出牌阶段，对你自己使用。视为你发动了一次【乱武】。',
-                        whlw_toulianghuanzhu: '偷梁换柱',
-                        whlw_toulianghuanzhu_info: '出牌阶段，对你自己使用。随机分配场上所有的装备牌。',
-                        douzhuanxingyi: '斗转星移',
-                        douzhuanxingyi_info: '出牌阶段，对一名其他角色使用。随机分配你与其的体力。（至少为1，至多不能超出上限）',
                     },
                     element: {
                         player: {
@@ -610,8 +618,6 @@ const brawl = {
             Object.assign(get, changeFunction.get);
             Object.assign(game, changeFunction.game);
             Object.assign(lib.translate, changeFunction.lib.translate);
-            Object.assign(lib.card, changeFunction.lib.card);
-            for (const i in changeFunction.lib.card) game.finishCard(i);
             Object.assign(lib.skill, changeFunction.lib.skill);
             for (const i in changeFunction.lib.skill) game.finishSkill(i);
             Object.assign(lib.element.player, changeFunction.lib.element.player);

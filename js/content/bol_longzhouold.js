@@ -14,6 +14,283 @@ const brawl = {
         lib.config.singleControly = lib.config.extension_活动萌扩_singleControly;
         lib.config.mode_config.identity.change_card = 'disabled';
         lib.config.mode_config.identity.double_character = false;
+        //牌堆替换
+        const changeFunction = {
+            card: {
+                zong: {
+                    image: 'ext:活动萌扩/image/zong.png',
+                    fullimage: true,
+                    type: 'basic',
+                    cardcolor: 'red',
+                    enable(card, player) {
+                        return game.hasPlayer(function (target) {
+                            return player.identity == target.identity && target.isDamaged();
+                        });
+                    },
+                    filterTarget(card, player, target) {
+                        return player.identity == target.identity && target.isDamaged();
+                    },
+                    content() {
+                        target.recover();
+                    },
+                    ai: {
+                        basic: {
+                            order(card, player) {
+                                if (player.hasSkillTag('pretao')) return 5;
+                                return 2;
+                            },
+                            useful: [8, 6.5, 5, 4],
+                            value: [8, 6.5, 5, 4],
+                        },
+                        result: {
+                            player(player, target) {
+                                return get.recoverEffect(target, player, player);
+                            },
+                        },
+                        tag: {
+                            recover: 1,
+                        },
+                    },
+                },
+                xionghuangjiu: {
+                    image: 'ext:活动萌扩/image/xionghuangjiu.png',
+                    fullimage: true,
+                    type: "basic",
+                    enable(event, player) {
+                        return !player.hasSkill('jiu');
+                    },
+                    lianheng: true,
+                    logv: false,
+                    usable: 1,
+                    selectTarget: -1,
+                    modTarget: true,
+                    filterTarget(card, player, target) {
+                        return target == player;
+                    },
+                    content() {
+                        if (cards && cards.length) card = cards[0];
+                        game.broadcastAll(function (target, card, gain2) {
+                            if (!target.storage.jiu) target.storage.jiu = 0;
+                            target.storage.jiu++;
+                            target.addSkill('jiu');
+                            game.addVideo('jiuNode', target, true);
+                            if (!target.node.jiu && lib.config.jiu_effect) {
+                                target.node.jiu = ui.create.div('.playerjiu', target.node.avatar);
+                                target.node.jiu2 = ui.create.div('.playerjiu', target.node.avatar2);
+                            }
+                            if (gain2 && card.clone && (card.clone.parentNode == target.parentNode || card.clone.parentNode == ui.arena)) {
+                                card.clone.moveDelete(target);
+                            }
+                        }, target, card, target == targets[0]);
+                        if (target == targets[0]) {
+                            if (card.clone && (card.clone.parentNode == target.parentNode || card.clone.parentNode == ui.arena)) {
+                                game.addVideo('gain2', target, get.cardsInfo([card]));
+                            }
+                        }
+                    },
+                    ai: {
+                        basic: {
+                            useful(card, i) {
+                                if (_status.event.player.hp > 1) {
+                                    if (i == 0) return 5;
+                                    return 1;
+                                }
+                                if (i == 0) return 7.3;
+                                return 3;
+                            },
+                            value(card, player, i) {
+                                if (player.hp > 1) {
+                                    if (i == 0) return 5;
+                                    return 1;
+                                }
+                                if (i == 0) return 7.3;
+                                return 3;
+                            },
+                        },
+                        order() {
+                            return get.order({ name: 'sha' }) + 0.2;
+                        },
+                        result: {
+                            target(player, target) {
+                                if (lib.config.mode == 'stone' && !player.isMin()) {
+                                    if (player.getActCount() + 1 >= player.actcount) return 0;
+                                }
+                                var shas = player.getCards('h', 'sha');
+                                if (shas.length > 1 && player.getCardUsable('sha') > 1) {
+                                    return 0;
+                                }
+                                var card;
+                                if (shas.length) {
+                                    for (var i = 0; i < shas.length; i++) {
+                                        if (lib.filter.filterCard(shas[i], target)) {
+                                            card = shas[i]; break;
+                                        }
+                                    }
+                                }
+                                else if (player.hasSha() && player.needsToDiscard()) {
+                                    if (player.countCards('h', 'hufu') != 1) {
+                                        card = { name: 'sha' };
+                                    }
+                                }
+                                if (card) {
+                                    if (game.hasPlayer(function (current) {
+                                        return (get.attitude(target, current) < 0 &&
+                                            target.canUse(card, current, true, true) &&
+                                            !current.getEquip('baiyin') &&
+                                            get.effect(current, card, target) > 0);
+                                    })) {
+                                        return 1;
+                                    }
+                                }
+                                return 0;
+                            },
+                        },
+                    },
+                },
+                tongzhougongji: {
+                    image: 'ext:活动萌扩/image/tongzhougongji.png',
+                    fullimage: true,
+                    enable: true,
+                    type: 'trick',
+                    selectTarget: -1,
+                    filterTarget(card, player, target) {
+                        return player.identity == target.identity;
+                    },
+                    content() {
+                        target.draw('nodelay');
+                    },
+                    ai: {
+                        basic: {
+                            order: 9,
+                            useful: 3,
+                            value: 4,
+                        },
+                        result: {
+                            target: 1,
+                        },
+                        tag: {
+                            draw: 1,
+                            multitarget: 1,
+                        },
+                    },
+                },
+                lizhengshangyou: {
+                    image: 'ext:活动萌扩/image/lizhengshangyou.png',
+                    fullimage: true,
+                    type: 'trick',
+                    enable: true,
+                    selectTarget: -1,
+                    filterTarget: true,
+                    content() {
+                        target.draw(player.identity == target.identity ? game.countGroup() : 1, 'nodelay');
+                    },
+                    ai: {
+                        basic: {
+                            order: 7,
+                            useful: 5,
+                            value: 7,
+                        },
+                        result: {
+                            target(player, target) {
+                                return player.identity == target.identity ? 100 : 1;
+                            },
+                        },
+                        tag: {
+                            draw: 3,
+                            multitarget: 1,
+                        },
+                    },
+                },
+                nishuixingzhou: {
+                    image: 'ext:活动萌扩/image/nishuixingzhou.png',
+                    fullimage: true,
+                    enable: true,
+                    type: 'trick',
+                    filterTarget(card, player, target) {
+                        return player.identity != target.identity;
+                    },
+                    content() {
+                        for (var i of game.filterPlayer(function (current) {
+                            return target.identity == current.identity;
+                        })) {
+                            player.line(i);
+                            i.damage();
+                        }
+                    },
+                    ai: {
+                        basic: {
+                            order: 7.2,
+                            useful: 7,
+                            value: 7.5,
+                        },
+                        result: {
+                            target: -1,
+                        },
+                        tag: {
+                            damage: 1
+                        },
+                    },
+                },
+                liannu: {
+                    image: 'ext:活动萌扩/image/liannu.png',
+                    fullimage: true,
+                    type: 'equip',
+                    subtype: 'equip1',
+                    ai: {
+                        order() {
+                            return get.order({ name: 'sha' }) - 0.1;
+                        },
+                        equipValue(card, player) {
+                            if (player._liannu_temp) return 1;
+                            player._liannu_temp = true;
+                            var result = function () {
+                                if (!game.hasPlayer(function (current) {
+                                    return get.distance(player, current) <= 1 && player.canUse('sha', current) && get.effect(current, { name: 'sha' }, player, player) > 0;
+                                })) {
+                                    return 1;
+                                }
+                                if (player.hasSha() && _status.currentPhase == player) {
+                                    if (player.getEquip('liannu') && player.countUsed('sha') || player.getCardUsable('sha') == 0) {
+                                        return 10;
+                                    }
+                                }
+                                var num = player.countCards('h', 'sha');
+                                if (num > 1) return 6 + num;
+                                return 3 + num;
+                            }();
+                            delete player._liannu_temp;
+                            return result;
+                        },
+                        basic: {
+                            equipValue: 5
+                        },
+                        tag: {
+                            valueswap: 1
+                        },
+                    },
+                    skills: ['liannu_skill'],
+                },
+            },
+            translate: {
+                zong: '粽',
+                zong_info: '出牌阶段，对自己或队友使用，目标角色回复1点体力。',
+                xionghuangjiu: '雄黄酒',
+                xionghuangjiu_info: '出牌阶段对自己使用，本回合使用的下一张【杀】伤害+1。',
+                tongzhougongji: '同舟共济',
+                tongzhougongji_info: '出牌阶段，对自己和队友使用，目标角色各摸一张牌。',
+                lizhengshangyou: '力争上游',
+                lizhengshangyou_info: '出牌阶段，对所有角色使用，你和与你势力相同的角色各摸x张牌，其他角色摸一张牌（x为当前场上势力数）。',
+                nishuixingzhou: '逆水行舟',
+                nishuixingzhou_info: '出牌阶段，对一名与你势力不同的角色使用，对其和与其势力相同的角色各造成1点伤害。',
+                liannu: '连弩',
+                liannu_skill: '连弩',
+                liannu_info: '锁定技，出牌阶段，你使用【杀】的次数上限+3。',
+                liannu_skill_info: '锁定技，出牌阶段，你使用【杀】的次数上限+3。',
+            },
+        };
+        Object.assign(lib.card, changeFunction.card);
+        Object.assign(lib.translate, changeFunction.translate);
+        for (const i in changeFunction.card) game.finishCard(i);
     },
     content: {
         submode: 'normal',
@@ -199,261 +476,6 @@ const brawl = {
                     },
                 },
                 lib: {
-                    card: {
-                        zong: {
-                            image: 'ext:活动萌扩/image/zong.png',
-                            fullimage: true,
-                            type: 'basic',
-                            cardcolor: 'red',
-                            enable(card, player) {
-                                return game.hasPlayer(function (target) {
-                                    return player.identity == target.identity && target.isDamaged();
-                                });
-                            },
-                            filterTarget(card, player, target) {
-                                return player.identity == target.identity && target.isDamaged();
-                            },
-                            content() {
-                                target.recover();
-                            },
-                            ai: {
-                                basic: {
-                                    order(card, player) {
-                                        if (player.hasSkillTag('pretao')) return 5;
-                                        return 2;
-                                    },
-                                    useful: [8, 6.5, 5, 4],
-                                    value: [8, 6.5, 5, 4],
-                                },
-                                result: {
-                                    player(player, target) {
-                                        return get.recoverEffect(target, player, player);
-                                    },
-                                },
-                                tag: {
-                                    recover: 1,
-                                },
-                            },
-                        },
-                        xionghuangjiu: {
-                            image: 'ext:活动萌扩/image/xionghuangjiu.png',
-                            fullimage: true,
-                            type: "basic",
-                            enable(event, player) {
-                                return !player.hasSkill('jiu');
-                            },
-                            lianheng: true,
-                            logv: false,
-                            usable: 1,
-                            selectTarget: -1,
-                            modTarget: true,
-                            filterTarget(card, player, target) {
-                                return target == player;
-                            },
-                            content() {
-                                if (cards && cards.length) card = cards[0];
-                                game.broadcastAll(function (target, card, gain2) {
-                                    if (!target.storage.jiu) target.storage.jiu = 0;
-                                    target.storage.jiu++;
-                                    target.addSkill('jiu');
-                                    game.addVideo('jiuNode', target, true);
-                                    if (!target.node.jiu && lib.config.jiu_effect) {
-                                        target.node.jiu = ui.create.div('.playerjiu', target.node.avatar);
-                                        target.node.jiu2 = ui.create.div('.playerjiu', target.node.avatar2);
-                                    }
-                                    if (gain2 && card.clone && (card.clone.parentNode == target.parentNode || card.clone.parentNode == ui.arena)) {
-                                        card.clone.moveDelete(target);
-                                    }
-                                }, target, card, target == targets[0]);
-                                if (target == targets[0]) {
-                                    if (card.clone && (card.clone.parentNode == target.parentNode || card.clone.parentNode == ui.arena)) {
-                                        game.addVideo('gain2', target, get.cardsInfo([card]));
-                                    }
-                                }
-                            },
-                            ai: {
-                                basic: {
-                                    useful(card, i) {
-                                        if (_status.event.player.hp > 1) {
-                                            if (i == 0) return 5;
-                                            return 1;
-                                        }
-                                        if (i == 0) return 7.3;
-                                        return 3;
-                                    },
-                                    value(card, player, i) {
-                                        if (player.hp > 1) {
-                                            if (i == 0) return 5;
-                                            return 1;
-                                        }
-                                        if (i == 0) return 7.3;
-                                        return 3;
-                                    },
-                                },
-                                order() {
-                                    return get.order({ name: 'sha' }) + 0.2;
-                                },
-                                result: {
-                                    target(player, target) {
-                                        if (lib.config.mode == 'stone' && !player.isMin()) {
-                                            if (player.getActCount() + 1 >= player.actcount) return 0;
-                                        }
-                                        var shas = player.getCards('h', 'sha');
-                                        if (shas.length > 1 && player.getCardUsable('sha') > 1) {
-                                            return 0;
-                                        }
-                                        var card;
-                                        if (shas.length) {
-                                            for (var i = 0; i < shas.length; i++) {
-                                                if (lib.filter.filterCard(shas[i], target)) {
-                                                    card = shas[i]; break;
-                                                }
-                                            }
-                                        }
-                                        else if (player.hasSha() && player.needsToDiscard()) {
-                                            if (player.countCards('h', 'hufu') != 1) {
-                                                card = { name: 'sha' };
-                                            }
-                                        }
-                                        if (card) {
-                                            if (game.hasPlayer(function (current) {
-                                                return (get.attitude(target, current) < 0 &&
-                                                    target.canUse(card, current, true, true) &&
-                                                    !current.getEquip('baiyin') &&
-                                                    get.effect(current, card, target) > 0);
-                                            })) {
-                                                return 1;
-                                            }
-                                        }
-                                        return 0;
-                                    },
-                                },
-                            },
-                        },
-                        tongzhougongji: {
-                            image: 'ext:活动萌扩/image/tongzhougongji.png',
-                            fullimage: true,
-                            enable: true,
-                            type: 'trick',
-                            selectTarget: -1,
-                            filterTarget(card, player, target) {
-                                return player.identity == target.identity;
-                            },
-                            content() {
-                                target.draw('nodelay');
-                            },
-                            ai: {
-                                basic: {
-                                    order: 9,
-                                    useful: 3,
-                                    value: 4,
-                                },
-                                result: {
-                                    target: 1,
-                                },
-                                tag: {
-                                    draw: 1,
-                                    multitarget: 1,
-                                },
-                            },
-                        },
-                        lizhengshangyou: {
-                            image: 'ext:活动萌扩/image/lizhengshangyou.png',
-                            fullimage: true,
-                            type: 'trick',
-                            enable: true,
-                            selectTarget: -1,
-                            filterTarget: true,
-                            content() {
-                                target.draw(player.identity == target.identity ? game.countGroup() : 1, 'nodelay');
-                            },
-                            ai: {
-                                basic: {
-                                    order: 7,
-                                    useful: 5,
-                                    value: 7,
-                                },
-                                result: {
-                                    target(player, target) {
-                                        return player.identity == target.identity ? 100 : 1;
-                                    },
-                                },
-                                tag: {
-                                    draw: 3,
-                                    multitarget: 1,
-                                },
-                            },
-                        },
-                        nishuixingzhou: {
-                            image: 'ext:活动萌扩/image/nishuixingzhou.png',
-                            fullimage: true,
-                            enable: true,
-                            type: 'trick',
-                            filterTarget(card, player, target) {
-                                return player.identity != target.identity;
-                            },
-                            content() {
-                                for (var i of game.filterPlayer(function (current) {
-                                    return target.identity == current.identity;
-                                })) {
-                                    player.line(i);
-                                    i.damage();
-                                }
-                            },
-                            ai: {
-                                basic: {
-                                    order: 7.2,
-                                    useful: 7,
-                                    value: 7.5,
-                                },
-                                result: {
-                                    target: -1,
-                                },
-                                tag: {
-                                    damage: 1
-                                },
-                            },
-                        },
-                        liannu: {
-                            image: 'ext:活动萌扩/image/liannu.png',
-                            fullimage: true,
-                            type: 'equip',
-                            subtype: 'equip1',
-                            ai: {
-                                order() {
-                                    return get.order({ name: 'sha' }) - 0.1;
-                                },
-                                equipValue(card, player) {
-                                    if (player._liannu_temp) return 1;
-                                    player._liannu_temp = true;
-                                    var result = function () {
-                                        if (!game.hasPlayer(function (current) {
-                                            return get.distance(player, current) <= 1 && player.canUse('sha', current) && get.effect(current, { name: 'sha' }, player, player) > 0;
-                                        })) {
-                                            return 1;
-                                        }
-                                        if (player.hasSha() && _status.currentPhase == player) {
-                                            if (player.getEquip('liannu') && player.countUsed('sha') || player.getCardUsable('sha') == 0) {
-                                                return 10;
-                                            }
-                                        }
-                                        var num = player.countCards('h', 'sha');
-                                        if (num > 1) return 6 + num;
-                                        return 3 + num;
-                                    }();
-                                    delete player._liannu_temp;
-                                    return result;
-                                },
-                                basic: {
-                                    equipValue: 5
-                                },
-                                tag: {
-                                    valueswap: 1
-                                },
-                            },
-                            skills: ['liannu_skill'],
-                        },
-                    },
                     character: {
                         sp_liuqi: ['male', ['shu', 'qun'].randomGet(), 3, ['RElzwenji', 'RElztunjiang'], []],
                         xf_tangzi: ['male', ['wei', 'wu'].randomGet(), 4, ['RElzxingzhao'], []],
@@ -760,20 +782,6 @@ const brawl = {
                         },
                     },
                     translate: {
-                        zong: '粽',
-                        zong_info: '出牌阶段，对自己或队友使用，目标角色回复1点体力。',
-                        xionghuangjiu: '雄黄酒',
-                        xionghuangjiu_info: '出牌阶段对自己使用，本回合使用的下一张【杀】伤害+1。',
-                        tongzhougongji: '同舟共济',
-                        tongzhougongji_info: '出牌阶段，对自己和队友使用，目标角色各摸一张牌。',
-                        lizhengshangyou: '力争上游',
-                        lizhengshangyou_info: '出牌阶段，对所有角色使用，你和与你势力相同的角色各摸x张牌，其他角色摸一张牌（x为当前场上势力数）。',
-                        nishuixingzhou: '逆水行舟',
-                        nishuixingzhou_info: '出牌阶段，对一名与你势力不同的角色使用，对其和与其势力相同的角色各造成1点伤害。',
-                        liannu: '连弩',
-                        liannu_skill: '连弩',
-                        liannu_info: '锁定技，出牌阶段，你使用【杀】的次数上限+3。',
-                        liannu_skill_info: '锁定技，出牌阶段，你使用【杀】的次数上限+3。',
                         _REaiye: '艾叶',
                         RElzwenji: '问计',
                         RElzwenji_info: '出牌阶段开始时，你可以令队友交给你一张牌。你于本回合内使用与该牌名称相同的牌时不能被其他角色响应。',
@@ -824,8 +832,6 @@ const brawl = {
             Object.assign(game, changeFunction.game);
             Object.assign(lib.translate, changeFunction.lib.translate);
             Object.assign(lib.character, changeFunction.lib.character);
-            Object.assign(lib.card, changeFunction.lib.card);
-            for (const i in changeFunction.lib.card) game.finishCard(i);
             Object.assign(lib.skill, changeFunction.lib.skill);
             for (const i in changeFunction.lib.skill) game.finishSkill(i);
             Object.assign(lib.element.player, changeFunction.lib.element.player);
