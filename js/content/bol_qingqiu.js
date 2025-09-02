@@ -191,7 +191,7 @@ const brawl = {
                                         if ((player.additionalSkills?.['HuNv_sixie'] ?? []).length === 3) return 'cancel2';
                                         return skills.randomGet();
                                     }).set('dialog', getSkillDialog(skills, '选择获得一个技能')).forResult();
-                                    if (result?.control) {
+                                    if (result?.control && result.control !== 'cancel2') {
                                         player.logSkill('HuNv_sixie');
                                         await player.addAdditionalSkills('HuNv_sixie', result.control, true);
                                         if ((player.additionalSkills?.['HuNv_sixie'] ?? []).length > 3) {
