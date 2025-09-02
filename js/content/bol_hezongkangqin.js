@@ -21,7 +21,6 @@ const brawl = {
                 next.setContent(async function (event, trigger, player) {
                     game.zhu = player;
                     if (!_status.characterlist) lib.skill.pingjian.initList();
-                    ui.arena.classList.add('choose-character');
                     //机制加载
                     const changeFunction = {
                         get: {
@@ -2345,6 +2344,7 @@ const brawl = {
                             lib.translate['skillCard_' + list[j] + '_info'] = lib.translate[list[j] + '_info'];
                         }
                     }
+                    ui.arena.classList.add('choose-character');
                     if (kangqinList.length > 0) {
                         for (const current of kangqinList) {
                             const result2 = await current

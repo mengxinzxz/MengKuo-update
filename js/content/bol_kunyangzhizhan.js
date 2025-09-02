@@ -374,15 +374,9 @@ const brawl = {
                 var next = game.createEvent('chooseCharacter', false);
                 next.showConfig = true;
                 next.setContent(function () {
-                    'step 0'
-                    ui.arena.classList.add('choose-character');
-                    'step 1'
                     var map = { cai: 'gw_liuxiu', zhu: 'gw_wangmang', zhong: 'gw_shibing' };
                     game.players.forEach(i => i.init(map[i.identity]));
-                    'step 2'
                     game.me.chooseControl('ok').set('prompt', '###游戏目标###击败王莽<span class=\'texiaotext\' style=\'color:#FF0000\'>（能做得到就试试吧）</span>，或在王莽的攻势下存活七轮');
-                    'step 3'
-                    setTimeout(() => ui.arena.classList.remove('choose-character'), 500);
                 });
             };
         },
