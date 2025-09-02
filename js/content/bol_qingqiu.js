@@ -65,7 +65,6 @@ const brawl = {
                             //技能池
                             if (!_status.characterlist) lib.skill.pingjian.initList();
                             for (const name of _status.characterlist) {
-                                if (lib.character[name][1] == 'shen') continue;
                                 const skills = lib.character[name][3];
                                 lib.character[name][2] = 4;
                                 lib.character[name][3] = [];
