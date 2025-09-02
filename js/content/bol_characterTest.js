@@ -104,7 +104,7 @@ const brawl = {
                             }
                         });
                         if (lib.onfree) ui.cheat2.classList.add('disabled');
-                    }
+                    };
                     if (!_status.brawl || !_status.brawl.chooseCharacterFixed) {
                         if (!ui.cheat && get.config('change_choice'))
                             ui.create.cheat();

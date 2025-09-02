@@ -123,7 +123,7 @@ const brawl = {
                                     }
                                 });
                                 if (lib.onfree) ui.cheat2.classList.add('disabled');
-                            }
+                            };
                             if (!ui.cheat && get.config('change_choice')) ui.create.cheat();
                             if (!ui.cheat2 && get.config('free_choose')) ui.create.cheat2();
                             const result = await player.chooseButton(dialog, true).set('onfree', true).set('ai', button => get.rank(button.link, true)).forResult();

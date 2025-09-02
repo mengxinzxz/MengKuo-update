@@ -2334,8 +2334,8 @@ const brawl = {
                         for (let j = 0; j < list.length; j++) {
                             if (skills.includes(list[j]) || !lib.skill[list[j]]) continue;
                             if (!Object.keys(list[j]).some(i => !i.startsWith('audio') && i !== '_priority' && i !== 'sub')) continue;
-                            var info = get.info(list[j]);
-                            if (!info || info.charlotte || info.zhuSkill || info.nopop || info.hiddenSkill || info.ai?.combo) continue;
+                            let info = lib.skill[list[j]];
+                            if (!info || info.charlotte || info.zhuSkill || info.nopop || info.hiddenSkill || info.ai?.combo || info.ai?.neg) continue;
                             skills.push(list[j]);
                             lib.card['skillCard_' + list[j]] = {
                                 fullimage: true,

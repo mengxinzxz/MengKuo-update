@@ -434,7 +434,7 @@ const brawl = {
                                     }
                                 });
                                 if (lib.onfree) ui.cheat2.classList.add('disabled');
-                            }
+                            };
                             if (!ui.cheat) ui.create.cheat();
                             if (!ui.cheat2) ui.create.cheat2();
                             const result = await player.chooseButton(createDialog, (lib.config.singleControly ? 2 : 1), true).set('filterButton', button => {
