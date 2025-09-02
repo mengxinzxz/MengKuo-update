@@ -1,7 +1,6 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 import bol_bingjingliangzu from './bol_bingjingliangzu.js';
 import bol_xingyunsixsixsix from './bol_xingyunsixsixsix.js';
-import bol_decadeDouDiZhu from './bol_decadeDouDiZhu.js';
 import bol_decadeDouDiZhu2 from './bol_decadeDouDiZhu2.js';
 import bol_doubleThree from './bol_doubleThree.js';
 import bol_qingqiu from './bol_qingqiu.js';
@@ -29,7 +28,7 @@ export function content(config, pack) {
 		};
 	}
 	//萌币初加载
-	if (!lib.config.extension_活动萌扩_decade_Coin || lib.config.extension_活动萌扩_decade_Coin == 'NaN') {
+	if (lib.config.extension_活动萌扩_decade_Coin === undefined || lib.config.extension_活动萌扩_decade_Coin == 'NaN') {
 		game.saveConfig('extension_活动萌扩_decade_Coin', 1000);
 		var date = new Date();
 		var time = {
@@ -73,7 +72,6 @@ export function content(config, pack) {
 	//载入模式
 	if (!lib.brawl) return;
 	//斗地主
-	lib.brawl.bol_decadeDouDiZhu = bol_decadeDouDiZhu;
 	lib.brawl.bol_decadeDouDiZhu2 = bol_decadeDouDiZhu2;
 	lib.brawl.bol_WechatDouDiZhu = bol_WechatDouDiZhu;
 	lib.brawl.bol_WechatDouDiZhu2 = bol_WechatDouDiZhu2;

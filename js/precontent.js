@@ -81,8 +81,10 @@ export function precontent(bilibilicharacter) {
     };
     //技能
     game.bol_loadSkill = function (pack) {
-        for (var i in pack) lib.skill[i] = pack[i];
-        game.finishSkill(i);
+        for (var i in pack) {
+            lib.skill[i] = pack[i];
+            game.finishSkill(i);
+        }
     };
     //翻译(动态)
     game.bol_loadDyTrans = function (pack) {
@@ -91,29 +93,6 @@ export function precontent(bilibilicharacter) {
     //翻译
     game.bol_loadTrans = function (pack) {
         for (var i in pack) lib.translate[i] = pack[i];
-    };
-    //点击显示
-    get.mx_skillTips = function (tipname, id) {
-        var dibeijing = ui.create.div('.bol-dibeijing', document.body);
-        dibeijing.style.zIndex = 16;
-        var skilltip = ui.create.div('.bol-skilltip', dibeijing);
-        skilltip.innerHTML = tipname;
-        var herf = document.getElementById(id);
-        if (herf) {
-            var left = herf.getBoundingClientRect().left;
-            if (game.getBolPhone()) left += herf.offsetParent.offsetLeft;
-            left += document.body.offsetWidth * 0.15;
-            skilltip.style.left = left + 'px';
-            skilltip.style.top = (herf.getBoundingClientRect().top + 30) + 'px';
-        }
-        dibeijing.listen(function (e) {
-            e.stopPropagation();
-            this.remove();
-        })
-    };
-    get.mx_inform = function (str1, str2) {
-        const id = Math.random().toString(36).slice(-8);
-        return "<a id='" + id + "' style='color:unset' href=\"javascript:get.mx_skillTips('" + str2 + "','" + id + "');\">" + str1 + "※</a>";
     };
     //编辑加载卡牌
     game.finishCard ??= function (libCardKey) {

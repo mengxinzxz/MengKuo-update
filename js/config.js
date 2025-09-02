@@ -10,21 +10,16 @@ export let config = {
 	},
 	FenJieXianAA: {
 		clear: true,
-		name: '<li>新斗地主/超级斗地主',
+		name: '<li>超级斗地主',
 	},
 	use_DDZname: {
 		name: '超级斗地主启用特定将池',
 		intro: '打开此选项后，超级斗地主模式改为下方编辑的特定将池（不编辑则默认为新服活动将池）',
 		init: false,
 	},
-	decade_shanlian: {
-		name: '闪连模式',
-		intro: '打开此选项后，新服斗地主模式于开始时添加全局技能【闪连】（锁定技，当你得到【闪】后，你摸一张牌。）',
-		init: false,
-	},
 	view_DDZname: {
 		clear: true,
-		name: '新斗地主默认将池一览',
+		name: '超级斗地主默认将池一览',
 		onclick() {
 			alert(get.translation([
 				'shen_zhaoyun', 'shen_ganning', 'liuyan', 'xizhicai', 're_wuyi', 'xin_lingtong', 'zhoushan', 'chengui',
@@ -35,7 +30,7 @@ export let config = {
 		},
 	},
 	edit_DDZname: {
-		name: '编辑新服斗地主专属将池',
+		name: '编辑超级斗地主专属将池',
 		clear: true,
 		onclick() {
 			var container = ui.create.div('.popup-container.editor');
@@ -46,7 +41,7 @@ export let config = {
 				're_sunyi', 'caomao', 'xushao', 'zhujianping', 'tenggongzhu', 'zhangxuan', 'dc_zhouxuān', 'zerong',
 				'dc_luotong', 'ruanji', 'dc_xujing', 'xuelingyun', 'yue_caiwenji', 'star_caoren'
 			];
-			var str = '//编辑新服斗地主将池';
+			var str = '//编辑超级斗地主将池';
 			str += '\nDDZname=[\n';
 			for (var i = 0; i < map.length; i++) {
 				str += '"' + map[i] + '",';
@@ -108,13 +103,13 @@ export let config = {
 		},
 	},
 	reset_DDZname: {
-		name: '重置新服斗地主专属将池',
+		name: '重置超级斗地主专属将池',
 		clear: true,
 		onclick() {
-			if (confirm('是否重置已编辑的新服斗地主将池？')) {
+			if (confirm('是否重置已编辑的超级斗地主将池？')) {
 				if (confirm('该操作不可撤销！是否确认重置？')) {
 					game.saveConfig('extension_活动萌扩_DDZname', null);
-					alert('自定义新服斗地主将池已重置');
+					alert('自定义超级斗地主将池已重置');
 				}
 			}
 		},
