@@ -359,7 +359,9 @@ const brawl = {
                                             for (var name of _status.characterlist) {
                                                 if (lib.character[name][1] == target.identity) listxx.push(name);
                                             }
-                                            target.init(listxx.randomGet());
+                                            const name2 = listxx.randomRemove();
+                                            _status.characterlist.remove(name2);
+                                            target.init(name2);
                                             if (target.countCards('hejsx')) {
                                                 var hs = target.getCards('hejsx')
                                                 for (var i = 0; i < hs.length; i++) {
@@ -396,7 +398,9 @@ const brawl = {
                                         for (var name of _status.characterlist) {
                                             if (lib.character[name][1] == identityxx) listx.push(name);
                                         }
-                                        var target = game.addFellow(tempNum - game.me.getSeatNum(), listx.randomGet());
+                                        const name2 = listx.randomRemove();
+                                        _status.characterlist.remove(name2);
+                                        var target = game.addFellow(tempNum - game.me.getSeatNum(), name2);
                                         target.identity = identityxx;
                                         tempNum++;
                                         target.removeMark('_lz_zong_mark', target.countMark('_lz_zong_mark'), false);
@@ -1180,7 +1184,7 @@ const brawl = {
             Object.assign(lib.element.player, changeFunction.lib.element.player);
             //游戏初始阵型
             let choice = lib.config.extension_活动萌扩_chooseGroup;
-            let list = [],groupList = ['wei', 'shu', 'wu', 'qun', 'jin'].randomSort();
+            let list = [], groupList = ['wei', 'shu', 'wu', 'qun', 'jin'].randomSort();
             groupList.remove(choice);
             groupList = groupList.randomGets(1);
             for (let i of [choice].addArray(groupList)) {
