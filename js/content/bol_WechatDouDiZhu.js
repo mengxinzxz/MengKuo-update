@@ -152,9 +152,8 @@ const brawl = {
                                 if (!i.node.seat) i.setNickname(get.cnNumber(i.seatNum, true) + '号位');
                                 i.identity = (game.zhu == i ? 'zhu' : 'fan');
                                 i.OriginalSkills = game.doudizhuSkills.randomRemove(15);
-                                i.setIdentity();
-                                i.identityShown = true;
                             });
+                            game.showIdentity();
                             let map = {};
                             game.zhu.maxHp = game.zhu.maxHp + 1;
                             game.zhu.hp = game.zhu.hp + 1;
@@ -292,11 +291,9 @@ const brawl = {
             Object.assign(lib.element.player, changeFunction.lib.element.player);
             game.players.forEach(i => {
                 i.identity = 'cai';
-                i.setIdentity();
-                i.identityShown = true;
                 Object.assign(i, changeFunction.lib.element.player);
             });
-            game.showIdentity(true);
+            game.showIdentity();
             if (get.is.phoneLayout()) ui.decade_ddzInfo = ui.create.div('.touchinfo.left', ui.window);
             else ui.decade_ddzInfo = ui.create.div(ui.gameinfo);
             ui.decade_ddzInfo.innerHTML = '抢地主阶段';

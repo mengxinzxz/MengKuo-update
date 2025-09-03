@@ -155,9 +155,8 @@ const brawl = {
                                 i.identity = (game.zhu == i ? 'zhu' : 'fan');
                                 i.OriginalSkills = game.doudizhuSkills.randomRemove(10);
                                 i.OriginalCharacters = list.randomRemove(game.zhu == i ? 5 : 3);
-                                i.setIdentity();
-                                i.identityShown = true;
                             });
+                            game.showIdentity();
                             let map2 = {}, choosed = [];
                             if (lib.onfree) {
                                 lib.onfree.push(() => {
@@ -337,11 +336,9 @@ const brawl = {
             Object.assign(lib.element.player, changeFunction.lib.element.player);
             game.players.forEach(i => {
                 i.identity = 'cai';
-                i.setIdentity();
-                i.identityShown = true;
                 Object.assign(i, changeFunction.lib.element.player);
             });
-            game.showIdentity(true);
+            game.showIdentity();
             if (get.is.phoneLayout()) ui.decade_ddzInfo = ui.create.div('.touchinfo.left', ui.window);
             else ui.decade_ddzInfo = ui.create.div(ui.gameinfo);
             ui.decade_ddzInfo.innerHTML = '抢地主阶段';

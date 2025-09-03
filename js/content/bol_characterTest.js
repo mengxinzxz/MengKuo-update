@@ -22,11 +22,8 @@ const brawl = {
             game.me.identity = 'zhu';
             targets[1].identity = targets[2].identity = 'fan';
             targets[3].identity = 'zhong';
-            for (const i of targets) {
-                i.showIdentity();
-                i.identityShown = true;
-            }
-            game.showIdentity(true);
+            for (const i of targets) i.showIdentity();
+            game.showIdentity();
             //加载将池
             if (!_status.characterlist) lib.skill.pingjian.initList();
             targets[1].init(_status.characterlist.randomRemove());

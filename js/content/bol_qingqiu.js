@@ -378,13 +378,11 @@ const brawl = {
             game.zhu = _status.firstAct2 = target.next;
             game.players.forEach((i, index) => {
                 i.identity = (target == i ? 'HuNv' : 'cai');
-                i.setIdentity();
-                i.identityShown = true;
                 i.setSeatNum(index + 1);
                 if (!i.node.seat) i.setNickname(get.cnNumber(i.seatNum, true) + '号位');
                 Object.assign(i, changeFunction.lib.element.player);
             });
-            game.showIdentity(true);
+            game.showIdentity();
         },
     },
 };

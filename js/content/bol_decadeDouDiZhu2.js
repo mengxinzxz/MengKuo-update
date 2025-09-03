@@ -144,9 +144,8 @@ const brawl = {
                                 i.setSeatNum(index + 1);
                                 if (!i.node.seat) i.setNickname(get.cnNumber(i.seatNum, true) + '号位');
                                 i.identity = (game.zhu == i ? 'zhu' : 'fan');
-                                i.setIdentity();
-                                i.identityShown = true;
                             });
+                            game.showIdentity();
                             ui.arena.classList.add('choose-character');
                             var getCharacter = function (list) {
                                 var listx = [], num = 0;
@@ -396,11 +395,9 @@ const brawl = {
             Object.assign(lib.element.player, changeFunction.lib.element.player);
             game.players.forEach(i => {
                 i.identity = 'cai';
-                i.setIdentity();
-                i.identityShown = true;
                 Object.assign(i, changeFunction.lib.element.player);
             });
-            game.showIdentity(true);
+            game.showIdentity();
             if (get.is.phoneLayout()) ui.decade_ddzInfo = ui.create.div('.touchinfo.left', ui.window);
             else ui.decade_ddzInfo = ui.create.div(ui.gameinfo);
             ui.decade_ddzInfo.innerHTML = '准备阶段';

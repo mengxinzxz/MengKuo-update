@@ -355,8 +355,6 @@ const brawl = {
                                             }
                                             target.uninit();
                                             target.identity = groupList[0];
-                                            target.setIdentity();
-                                            target.identityShown = true;
                                             var listxx = [];
                                             for (var name of _status.characterlist) {
                                                 if (lib.character[name][1] == target.identity) listxx.push(name);
@@ -400,8 +398,6 @@ const brawl = {
                                         }
                                         var target = game.addFellow(tempNum - game.me.getSeatNum(), listx.randomGet());
                                         target.identity = identityxx;
-                                        target.setIdentity();
-                                        target.identityShown = true;
                                         tempNum++;
                                         target.removeMark('_lz_zong_mark', target.countMark('_lz_zong_mark'), false);
                                         target.addMark('_lz_zong_mark', 2);
@@ -424,6 +420,7 @@ const brawl = {
                                                 break;
                                         }
                                     }
+                                    game.showIdentity();
                                     //分配座位号
                                     var current;
                                     if (game.me.isAlive()) current = ((fellow && game.me.next == fellow) ? game.me.next.next : game.me.next);
@@ -1199,11 +1196,9 @@ const brawl = {
                 current.setSeatNum(index + 1);
                 if (!current.node.seat) current.setNickname(get.cnNumber(current.seatNum, true) + '号位');
                 current.identity = list[index];
-                current.setIdentity();
-                current.identityShown = true;
                 Object.assign(current, changeFunction.lib.element.player);
             });
-            game.showIdentity(true);
+            game.showIdentity();
         },
     },
 };

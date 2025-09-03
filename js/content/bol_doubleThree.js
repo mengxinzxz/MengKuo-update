@@ -210,11 +210,9 @@ const brawl = {
                 i.setSeatNum(index + 1);
                 if (!i.node.seat) i.setNickname(get.cnNumber(i.getSeatNum(), true) + '号位');
                 i.identity = (i.getSeatNum() % 2 === 0 ? 'fan' : 'zhong');
-                i.setIdentity();
-                i.identityShown = true;
                 Object.assign(i, changeFunction.lib.element.player);
             });
-            game.showIdentity(true);
+            game.showIdentity();
         },
     },
 };

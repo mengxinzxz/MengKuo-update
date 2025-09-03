@@ -210,7 +210,7 @@ const brawl = {
             Object.assign(lib.translate, changeFunction.lib.translate);
             Object.assign(lib.element.player, changeFunction.lib.element.player);
             game.players.forEach(i => Object.assign(i, changeFunction.lib.element.player));
-            game.showIdentity(true);
+            game.showIdentity();
         },
     },
 };

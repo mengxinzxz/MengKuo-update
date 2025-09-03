@@ -628,12 +628,10 @@ const brawl = {
                 current.setSeatNum(num);
                 if (!current.node.seat) current.setNickname(get.cnNumber(num, true) + '号位');
                 current.identity = 'whlw_identity';
-                current.setIdentity();
-                current.identityShown = true;
                 current.node.identity.firstChild.innerHTML = ' ';
                 Object.assign(current, changeFunction.lib.element.player);
             });
-            game.showIdentity(true);
+            game.showIdentity();
         },
     },
 };

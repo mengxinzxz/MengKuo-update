@@ -2194,12 +2194,10 @@ const brawl = {
                         const fellow = map == item ? player : game.addFellow(players.indexOf(map), map.name);
                         fellow.identity = map.identity;
                         if (fellow.identity == 'zhu') _status.firstAct2 = fellow;
-                        fellow.setIdentity();
-                        fellow.identityShown = true;
                         fellow.node.identity.classList.remove('guessing');
                         Object.assign(fellow, changeFunction.lib.element.player);
                     }
-                    game.showIdentity(true);
+                    game.showIdentity();
                     const map = game.versusMap.randomGet();
                     const kangqinList = game.filterPlayer(current => {
                         if (current.name === 'hezongkangqin_player') current._isKangqinPlayer = true;

@@ -844,10 +844,8 @@ const brawl = {
                 Object.assign(i, changeFunction.lib.element.player);
                 i.setSeatNum(game.players.indexOf(i) + 1);
                 if (!i.node.seat) i.setNickname(get.cnNumber(i.seatNum, true) + '号位');
-                i.setIdentity();
-                i.identityShown = true;
             }
-            game.showIdentity(true);
+            game.showIdentity();
         },
     },
 };

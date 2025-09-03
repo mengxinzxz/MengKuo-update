@@ -294,13 +294,11 @@ const brawl = {
                 target.characterStorage = _status.characterlist.randomRemove(8);
                 target.identity = ([0, 3].includes(index) ? 'fan' : 'zhong');
                 target.side = ([0, 3].includes(index) ? 114514 : 1919810);
-                target.setIdentity();
-                target.identityShown = true;
                 target.setSeatNum(index + 1);
                 if (!target.node.seat) target.setNickname(get.cnNumber(target.seatNum, true) + '号位');
                 Object.assign(target, changeFunction.lib.element.player);
             });
-            game.showIdentity(true);
+            game.showIdentity();
         },
     },
 };
