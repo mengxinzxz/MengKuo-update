@@ -643,7 +643,7 @@ const brawl = {
                                     break;
                             }
                             if (fellow) {
-                                fellow.init(result.links[1] || (list => {
+                                const name = result.links[1] || (list => {
                                     let listx = [], num = 0;
                                     for (const name of list) {
                                         const numx = get.rank(name, true);
@@ -654,7 +654,9 @@ const brawl = {
                                         else if (numx == num) listx.push(name);
                                     }
                                     return listx;
-                                })(aiList).randomGet());
+                                })(aiList).randomGet();
+                                _status.characterlist.remove(name);
+                                fellow.init(name);
                                 if (lib.config.extension_活动萌扩_JiaZhuAwaken) {
                                     fellow._LZ_jiazuAwaken = true;
                                     game.log(fellow, '已激活家族特殊技能');
