@@ -157,7 +157,7 @@ const brawl = {
                                 i.OriginalCharacters = list.randomRemove(game.zhu == i ? 5 : 3);
                             });
                             game.showIdentity();
-                            let map2 = {}, choosed = [];
+                            let map2 = {};
                             if (lib.onfree) {
                                 lib.onfree.push(() => {
                                     event.dialogxx = ui.create.characterDialog('heightset');
@@ -168,76 +168,17 @@ const brawl = {
                                 });
                             }
                             else event.dialogxx = ui.create.characterDialog('heightset');
-                            ui.create.cheat = function () {
-                                _status.createControl = ui.cheat2;
-                                ui.cheat = ui.create.control('更换', function () {
-                                    if (ui.cheat2 && ui.cheat2.dialog == _status.event.dialog) return;
-                                    const buttons = ui.create.div('.buttons');
-                                    const node = _status.event.dialog.buttons[0].parentNode;
-                                    list.addArray(game.me.OriginalCharacters);
-                                    const list2 = game.me.OriginalCharacters = list.randomRemove(game.me.OriginalCharacters.length);
-                                    _status.event.dialog.buttons = ui.create.buttons(list2, 'characterx', buttons);
-                                    _status.event.dialog.content.insertBefore(buttons, node);
-                                    buttons.animate('start');
-                                    node.remove();
-                                    game.uncheck();
-                                    game.check();
-                                });
-                                delete _status.createControl;
-                            };
-                            ui.create.cheat2 = function () {
-                                ui.cheat2 = ui.create.control('自由选将', function () {
-                                    if (this.dialog == _status.event.dialog) {
-                                        this.dialog.close();
-                                        _status.event.dialog = this.backup;
-                                        this.backup.open();
-                                        delete this.backup;
-                                        game.uncheck();
-                                        game.check();
-                                        if (ui.cheat) {
-                                            ui.cheat.animate('controlpressdownx', 500);
-                                            ui.cheat.classList.remove('disabled');
-                                        }
-                                    }
-                                    else {
-                                        this.backup = _status.event.dialog;
-                                        _status.event.dialog.close();
-                                        _status.event.dialog = _status.event.parent.dialogxx;
-                                        this.dialog = _status.event.dialog;
-                                        this.dialog.open();
-                                        game.uncheck();
-                                        game.check();
-                                        if (ui.cheat) ui.cheat.classList.add('disabled');
-                                    }
-                                });
-                                if (lib.onfree) ui.cheat2.classList.add('disabled');
-                            };
                             ui.arena.classList.add('choose-character');
-                            for (const target of game.players.slice().sortBySeat(player)) {
+                            for (const target of game.players) {
                                 const dialog = event.dialog = ui.create.dialog('请选择你的初始角色和技能', 'hidden');
                                 dialog.add([target.OriginalCharacters, 'character']);
                                 dialog.add([target.OriginalSkills.map(name => ['', '', 'skillCard_' + name]), 'vcard']);
-                                if (target === game.me) {
-                                    if (!ui.cheat) ui.create.cheat();
-                                    if (!ui.cheat2) ui.create.cheat2();
-                                }
                                 const result2 = await target.chooseButton(dialog, true, 2).set('filterButton', button => {
-                                    const { choosed: list } = get.event(), choice = button.link, goon = !!ui.selected.buttons.length === Array.isArray(choice);
-                                    if (list.includes(choice) || !goon) return false;
-                                    return (!ui.selected.buttons.length) ? true : !(get.character(ui.selected.buttons[0].link)?.skills ?? []).includes(choice[2]);
-                                }).set('choosed', choosed).forResult();
-                                if (ui.cheat) {
-                                    ui.cheat.close();
-                                    delete ui.cheat;
-                                }
-                                if (ui.cheat2) {
-                                    ui.cheat2.close();
-                                    delete ui.cheat2;
-                                }
-                                if (result2?.bool && result2.links?.length) {
-                                    choosed.add(result2.links[0]);
-                                    map2[target.playerid] = [result2.links[0], result2.links[1][2].slice(10)];
-                                }
+                                    const choice = button.link, goon = !!ui.selected.buttons.length;
+                                    if (goon !== Array.isArray(choice)) return false;
+                                    return !goon ? true : !(get.character(ui.selected.buttons[0].link)?.skills ?? []).includes(choice[2]);
+                                }).forResult();
+                                if (result2?.bool && result2.links?.length) map2[target.playerid] = [result2.links[0], result2.links[1][2].slice(10)];
                             }
                             for (const i of game.players) {
                                 delete i.max_beishu
