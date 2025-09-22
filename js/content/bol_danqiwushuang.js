@@ -1,0 +1,568 @@
+import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
+const brawl = {
+    name: '单骑无双<br><span style="font-size:22px;">施工ing</span>',
+    mode: 'identity',
+    intro: [
+        '1对1挑战模式，过程中可以成长变强，制定针对对手的策略，击败对手，赢取胜利',
+        '游戏开始时，所有玩家可以查看三个备选武将并开始抢先手，双方一次竞价抢先手，若有玩家出最高价则立刻结束，无玩家抢先手则随机先后手',
+        '牌局进行过程中，双方玩家可获得【成长】，成长包括战法、技能、手牌三种类型',
+        '在每个回合，双方均可获得1枚虎符，可在购买阶段中使用虎符购买成长，商店可消耗1枚虎符手动刷新，每名玩家至多拥有2个额外技能',
+    ],
+    init() {
+        lib.configOL.number = 2;
+    },
+    content: {
+        submode: 'normal',
+        chooseCharacterBefore() {
+            //函数覆盖
+            const originFunction = {
+                lib: {
+                    element: {
+                        player: {
+                            init: lib.element.player.init,
+                            uninit: lib.element.player.uninit,
+                        },
+                    },
+                },
+            };
+            const changeFunction = {
+                get: {
+                    //设置态度值
+                    rawAttitude(from, to) {
+                        if (!from || !to) return 0;
+                        return from.identity === to.identity ? 10 : -10;
+                    },
+                    //获取战法价值
+                    ZhanFaCost(zhanfa) {
+                        if (game.phaseNumber === 0 || lib.translate[zhanfa]?.includes('喜从天降')) return 0;
+                        return { 'common': 1, 'rare': 2, 'epic': 3, 'legend': 4 }[lib.zhanfa.getRarity(zhanfa)] || 1;
+                    },
+                },
+                game: {
+                    //选将
+                    chooseCharacter() {
+                        const next = game.createEvent('chooseCharacter', false);
+                        next.showConfig = true;
+                        next.player = game.me;
+                        next.setContent(async function (event, trigger, player) {
+                            if (!_status.characterlist) lib.skill.pingjian.initList();
+                            _status.HDcharacterlist = _status.characterlist.slice();
+                            const map = lib.characterReplace, list3 = Object.values(map).flat(), getBeiShu = { '一倍': 1, '两倍': 2, '三倍': 3, '不叫': 0 };
+                            game.broadcastAll(list => {
+                                for (const name in lib.characterReplace) {
+                                    lib.characterReplace[name] = lib.characterReplace[name].filter(i => list.includes(i));
+                                }
+                            }, _status.characterlist);
+                            for (const i of game.players) {
+                                i.characterlist = _status.HDcharacterlist.filter(name => {
+                                    return map[name] || !list3.includes(name);
+                                }).randomGets(3);
+                                _status.HDcharacterlist.removeArray(i.characterlist);
+                                const content = ['你的初始武将', [i.characterlist, 'character']];
+                                await i.chooseControl('ok').set('dialog', content);
+                            }
+                            if (ui.decade_ddzInfo) ui.decade_ddzInfo.innerHTML = '抢地主阶段';
+                            let target = game.players.randomGet(), beginner = target, control = ['一倍', '两倍', '三倍', '不叫'];
+                            while (true) {
+                                const result = await target.chooseControl(control).set('ai', () => {
+                                    return _status.event.controls.randomGet();
+                                }).set('prompt', '是否' + (control.length == 4 ? '叫' : '抢') + '地主？').forResult();
+                                target.chat(result.control);
+                                const num = control.indexOf(result.control);
+                                target.max_beishu = getBeiShu[result.control];
+                                if (result.control == '三倍') {
+                                    game.zhu = target;
+                                    game.max_beishu = 3;
+                                    break;
+                                }
+                                else {
+                                    await game.delay(1.5);
+                                    if (result.control != '不叫') {
+                                        let temp = [];
+                                        for (var i = 0; i < control.length; i++) {
+                                            if (i > num) temp.push(control[i]);
+                                        }
+                                        control = temp;
+                                    }
+                                    if (target.next == beginner) {
+                                        if (control.length == 4) {
+                                            game.zhu = beginner;
+                                        }
+                                        else {
+                                            var winner = game.players.find(current => {
+                                                return !game.players.some(currentx => current.max_beishu < currentx.max_beishu);
+                                            });
+                                            game.zhu = winner;
+                                            game.max_beishu = winner.max_beishu;
+                                        }
+                                        break;
+                                    }
+                                    else target = target.next;
+                                }
+                            }
+                            if (ui.decade_ddzInfo) ui.decade_ddzInfo.innerHTML = '本局票数：' + game.max_beishu * 100;
+                            lib.onover.push(bool => {
+                                var numx = game.max_beishu * 100;
+                                if (bool == undefined) {
+                                    for (var i of game.filterPlayer2()) i.chat('+0');
+                                }
+                                else {
+                                    const player = game.me;
+                                    if (game.zhu.isAlive()) {
+                                        for (var i of game.filterPlayer2()) {
+                                            if (i == game.zhu) i.chat('+' + numx * 2);
+                                            else i.chat('-' + numx);
+                                        }
+                                    }
+                                    if (!game.zhu.isAlive()) {
+                                        for (var i of game.filterPlayer2()) {
+                                            if (i == game.zhu) i.chat('-' + numx * 2);
+                                            else i.chat('+' + numx);
+                                        }
+                                    }
+                                    const num = numx * (game.zhu === player ? 2 : 1);
+                                    game.bol_say(`战斗${bool ? '胜利' : '失败'}，${bool ? '获得' : '失去'}${num}萌币`);
+                                    game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin + num * (bool ? 1 : -1));
+                                }
+                            });
+                            game.players.sortBySeat(game.zhu);
+                            game.players.forEach((i, index) => {
+                                i.setSeatNum(index + 1);
+                                if (!i.node.seat) i.setNickname(get.cnNumber(i.seatNum, true) + '号位');
+                                i.identity = (game.zhu == i ? 'fan' : 'zhong');
+                            });
+                            game.showIdentity();
+                            ui.arena.classList.add('choose-character');
+                            var getCharacter = function (list) {
+                                var listx = [], num = 0;
+                                for (var name of list) {
+                                    var numx = get.rank(name, true);
+                                    if (numx > num) {
+                                        num = numx;
+                                        listx = [name];
+                                    }
+                                    else if (numx == num) listx.push(name);
+                                }
+                                return listx;
+                            };
+                            let createDialog = ['请选择你的武将', [player.characterlist, 'characterx']];
+                            if (lib.onfree) {
+                                lib.onfree.push(() => {
+                                    event.dialogxx = ui.create.characterDialog('heightset');
+                                    if (ui.cheat2) {
+                                        ui.cheat2.animate('controlpressdownx', 500);
+                                        ui.cheat2.classList.remove('disabled');
+                                    }
+                                });
+                            }
+                            else event.dialogxx = ui.create.characterDialog('heightset');
+                            ui.create.cheat = function () {
+                                _status.createControl = ui.cheat2;
+                                ui.cheat = ui.create.control('更换', function () {
+                                    if (ui.cheat2 && ui.cheat2.dialog == _status.event.dialog) return;
+                                    const characters = game.me.characterlist = _status.HDcharacterlist.randomGets(game.me.characterlist.length);
+                                    const buttons = ui.create.div('.buttons');
+                                    const node = _status.event.dialog.buttons[0].parentNode;
+                                    _status.event.dialog.buttons = ui.create.buttons(characters, 'characterx', buttons);
+                                    _status.event.dialog.content.insertBefore(buttons, node);
+                                    buttons.animate('start');
+                                    node.remove();
+                                    game.uncheck();
+                                    game.check();
+                                });
+                                delete _status.createControl;
+                            };
+                            ui.create.cheat2 = function () {
+                                ui.cheat2 = ui.create.control('自由选将', function () {
+                                    if (this.dialog == _status.event.dialog) {
+                                        this.dialog.close();
+                                        _status.event.dialog = this.backup;
+                                        this.backup.open();
+                                        delete this.backup;
+                                        game.uncheck();
+                                        game.check();
+                                        if (ui.cheat) {
+                                            ui.cheat.animate('controlpressdownx', 500);
+                                            ui.cheat.classList.remove('disabled');
+                                        }
+                                    }
+                                    else {
+                                        this.backup = _status.event.dialog;
+                                        _status.event.dialog.close();
+                                        _status.event.dialog = _status.event.parent.dialogxx;
+                                        this.dialog = _status.event.dialog;
+                                        this.dialog.open();
+                                        game.uncheck();
+                                        game.check();
+                                        if (ui.cheat) ui.cheat.classList.add('disabled');
+                                    }
+                                });
+                                if (lib.onfree) ui.cheat2.classList.add('disabled');
+                            };
+                            if (!ui.cheat) ui.create.cheat();
+                            if (!ui.cheat2) ui.create.cheat2();
+                            const result2 = await player.chooseButton(createDialog, true).set('onfree', true).set('ai', button => {
+                                const { player, getCharacter } = get.event();
+                                return getCharacter(player.characterlist).includes(button.link) ? get.rank(button.link, true) : -1;
+                            }).set('getCharacter', getCharacter).forResult();
+                            if (ui.cheat) {
+                                ui.cheat.close();
+                                delete ui.cheat;
+                            }
+                            if (ui.cheat2) {
+                                ui.cheat2.close();
+                                delete ui.cheat2;
+                            }
+                            game.addRecentCharacter(...result2.links);
+                            _status.characterlist.removeArray(result2.links);
+                            player.init(...result2.links);
+                            for (var i of game.players) {
+                                if (i !== player) {
+                                    let list = i.characterlist.slice().removeArray(result2.links);
+                                    let name = getCharacter(list).randomGet();
+                                    _status.characterlist.remove(name);
+                                    i.init(name);
+                                }
+                            }
+                            delete _status.HDcharacterlist;
+                            setTimeout(() => ui.arena.classList.remove('choose-character'), 500);
+                        });
+                    },
+                },
+                lib: {
+                    skill: {
+                        _hufu: {
+                            trigger: { player: 'phaseBefore' },
+                            silent: true,
+                            firstDo: true,
+                            priority: Infinity,
+                            async content(event, trigger, player) {
+                                const targets = game.filterPlayer();
+                                if (!targets.length) return;
+                                //获取虎符
+                                for (const i of targets) i.addMark('_hufu', lib.skill[event.name].getNum(trigger, i));
+                                //角色成长
+                                let map = {}, locals = targets.slice();
+                                let humans = targets.filter(current => current === game.me || current.isOnline());
+                                locals.removeArray(humans);
+                                const eventId = get.id(), time = ((lib.configOL && lib.configOL.choose_timeout) ? parseInt(lib.configOL.choose_timeout) : 10) * 1000;
+                                const send = (current, skill, eventId) => {
+                                    lib.skill[skill].chooseButton(current, skill, eventId);
+                                    game.resume();
+                                };
+                                event._global_waiting = true;
+                                for (const i of targets) i.showTimer(time);
+                                if (humans.length > 0) {
+                                    const solve = resolve => () => resolve();
+                                    await Promise.all(humans.map(current => {
+                                        return new Promise((resolve, reject) => {
+                                            if (current.isOnline()) {
+                                                current.send(send, current, event.name, eventId);
+                                                current.wait(solve(resolve, reject));
+                                            }
+                                            else {
+                                                const next = lib.skill[event.name].chooseButton(current, event.name, eventId);
+                                                const solver = solve(resolve, reject);
+                                                if (_status.connectMode) game.me.wait(solver);
+                                                return next.forResult().then(result => {
+                                                    if (_status.connectMode) game.me.unwait(result, current);
+                                                    else solver(result, current);
+                                                });
+                                            }
+                                        });
+                                    })).catch(() => { });
+                                    game.broadcastAll('cancel', eventId);
+                                }
+                                if (locals.length > 0) {
+                                    for (const current of locals) await lib.skill[event.name].chooseButton(current, event.name);
+                                }
+                                delete event._global_waiting;
+                                for (const i of targets) i.hideTimer();
+                                //获得奖励
+                                for (const i of targets) {
+                                    if ((map[i.playerid] ?? []).length > 0) {
+
+                                    }
+                                }
+                            },
+                            getNum(event, player) {
+                                let num = 1, isRound = game.roundNumber > 3;
+                                if (game.roundNumber === 3 && lib.onround.every(i => i(event, player))) {
+                                    isRound = _status.roundSkipped;
+                                    if (_status.isRoundFilter) {
+                                        isRound = _status.isRoundFilter(event, player);
+                                    }
+                                    else if (_status.seatNumSettled) {
+                                        let seatNum = player.getSeatNum();
+                                        if (seatNum != 0) {
+                                            if (get.itemtype(_status.lastPhasedPlayer) != "player" || seatNum < _status.lastPhasedPlayer.getSeatNum()) isRound = true;
+                                            _status.lastPhasedPlayer = player;
+                                        }
+                                    }
+                                    else if (player === _status.roundStart) isRound = true;
+                                }
+                                if (isRound) num++;
+                                num += player.getSkills(null, null, false).reduce((sum, skill) => sum + (lib.skill[skill]?.getExtraDanQiHuFu?.(player) ?? 0), 0);
+                                return num;
+                            },
+                            getNum2(player) {
+                                return 3 + player.getSkills(null, null, false).reduce((sum, skill) => sum + (lib.skill[skill]?.getExtraDanQiShop ?? 0), 0);
+                            },
+                            chooseButton(player, skill, eventId) {
+                                const event = get.event(), func = () => {
+                                    const event = get.event();
+                                    const controls_freeze = [
+                                        () => {
+                                            const evt = get.event(), player = evt.player;
+                                            if (evt.dialog?.buttons) {
+                                                for (const item of evt.dialog?.buttons) item.classList.toggle('selectedx');
+                                                if (!player._freeze_links) player._freeze_links = evt.dialog.buttons.map(i => i.link);
+                                                else delete player._freeze_links;
+                                            }
+                                            return;
+                                        },
+                                    ];
+                                    const controls_replace = [
+                                        () => {
+                                            const evt = get.event(), player = evt.player;
+                                            if ((player.hasMark('_hufu') || player.hasMark('shop_refresh')) && evt.dialog?.buttons) {
+                                                player.removeMark(player.hasMark('shop_refresh') ? 'shop_refresh' : '_hufu', 1, !player.hasMark('shop_refresh'));
+                                                if (evt.dialog?.buttons) {
+                                                    const buttons = ui.create.div('.buttons');
+                                                    const node = evt.dialog.buttons[0].parentNode;
+                                                    evt.dialog.buttons = ui.create.buttons(lib.zhanfa.getList().filter(skill => {
+                                                        return !player.hasSkill(skill);
+                                                    }).randomGets(lib.skill['_hufu'].getNum2(player)).map(skill => {
+                                                        const num = get.ZhanFaCost(skill);
+                                                        return ['', num + '虎符', skill, ''];
+                                                    }), 'vcard', buttons);
+                                                    evt.dialog.content.insertBefore(buttons, node);
+                                                    buttons.animate('start');
+                                                    node.remove();
+                                                    game.uncheck();
+                                                    game.check();
+                                                }
+                                            }
+                                            return;
+                                        },
+                                    ];
+                                    if (game.phaseNumber > 0) {
+                                        event.controls = [
+                                            ui.create.control(controls_freeze.concat(['冻结', 'stayleft'])),
+                                            ui.create.control(controls_replace.concat(['替换', 'stayleft'])),
+                                        ];
+                                    }
+                                };
+                                if (event.isMine()) func();
+                                else if (event.isOnline()) event.player.send(func);
+                                return player.chooseButton([
+                                    '请选择你要获得的战法',
+                                    [(() => {
+                                        let list = player._freeze_links || lib.zhanfa.getList().filter(skill => {
+                                            return !player.hasSkill(skill);
+                                        }).randomGets(lib.skill[skill].getNum2(player)).map(skill => {
+                                            const num = get.ZhanFaCost(skill);
+                                            return ['', num + '虎符', skill, ''];
+                                        });
+                                        if (player._freeze_links) delete player._freeze_links;
+                                        return list;
+                                    })(), 'vcard'],
+                                ]).set('filterButton', button => {
+                                    const player = get.player();
+                                    return player.countMark('_hufu') >= get.ZhanFaCost(button.link[2]);
+                                }).set('ai', button => get.value({ name: button.link[2] })).set('custom', {
+                                    add: {
+                                        confirm(bool) {
+                                            if (bool !== true) return;
+                                            const event = get.event().parent;
+                                            if (Array.isArray(event.controls)) event.controls.forEach(i => i.close());
+                                            if (ui.confirm) ui.confirm.close();
+                                            game.uncheck();
+                                        },
+                                        button() {
+                                            if (ui.selected.buttons.length) return;
+                                            const event = get.event();
+                                            if (event.dialog?.buttons) {
+                                                if (event.dialog.buttons.length > 0) {
+                                                    for (let i = 0; i < event.dialog.buttons.length; i++) {
+                                                        const button = event.dialog.buttons[i];
+                                                        const counterNode = button.querySelector('.caption');
+                                                        if (counterNode) counterNode.childNodes[0].innerHTML = ``;
+                                                    }
+                                                }
+                                                else event.parent?.controls?.[0]?.classList.add('disabled');
+                                            }
+                                        },
+                                    },
+                                    replace: {
+                                        button(button) {
+                                            const event = get.event(), player = event.player;
+                                            if (!event.isMine() || !event.filterButton(button)) return;
+                                            if (player._freeze_links) {
+                                                player._freeze_links.remove(button.link);
+                                                if (!player._freeze_links.length) delete player._freeze_links;
+                                            }
+                                            const num = get.ZhanFaCost(button.link[2]);
+                                            if (num > 0) player.removeMark('_hufu', num);
+                                            player.addZhanfa(button.link[2]);
+                                            const buttons = ui.create.div('.buttons');
+                                            const node = event.dialog.buttons[0].parentNode;
+                                            let list = [];
+                                            if (game.phaseNumber > 0) {
+                                                list.addArray(event.dialog.buttons);
+                                                list.remove(button);
+                                            }
+                                            event.dialog.buttons = ui.create.buttons(list.map(i => i.link), 'vcard', buttons);
+                                            event.dialog.content.insertBefore(buttons, node);
+                                            buttons.animate('start');
+                                            node.remove();
+                                            game.uncheck();
+                                            game.check();
+                                        },
+                                    },
+                                }).set('id', eventId).set('_global_waiting', true);
+                            },
+                            markimage: 'image/card/danqi_hufu.png',
+                            intro: { content: 'mark' },
+                        },
+                        shop_refresh: {
+                            marktext: '<span style="text-decoration: line-through;">💰</span>',
+                            intro: { content: '可免费刷新#次' },
+                        },
+                    },
+                    translate: {
+                        fan: '先',
+                        fan2: '先手',
+                        zhong: '后',
+                        zhong2: '后手',
+                        _hufu: '虎符',
+                        shop_refresh: '刷新',
+                    },
+                    element: {
+                        player: {
+                            logAi() { },
+                            dieAfter() {
+                                game.checkResult();
+                            },
+                            init() {
+                                const player = originFunction.lib.element.player.init.apply(this, arguments);
+                                player._danqi_skills = [];
+                                return player;
+                            },
+                            uninit() {
+                                const player = originFunction.lib.element.player.uninit.apply(this, arguments);
+                                player._danqi_skills = [];
+                                return player;
+                            },
+                        },
+                    },
+                },
+            };
+            Object.assign(get, changeFunction.get);
+            Object.assign(game, changeFunction.game);
+            Object.assign(lib.translate, changeFunction.lib.translate);
+            Object.assign(lib.skill, changeFunction.lib.skill);
+            for (const i in changeFunction.lib.skill) game.finishSkill(i);
+            Object.assign(lib.element.player, changeFunction.lib.element.player);
+            game.players.forEach(i => Object.assign(i, changeFunction.lib.element.player));
+            game.showIdentity();
+            //战法--零元购
+            lib.zhanfa.add({
+                id: 'zf_zerorefresh1',
+                rarity: 'common',
+                translate: '零元购Ⅰ',
+                info: '可免费刷新四次商店',
+                card: { value: 4 },
+                skill: {
+                    init(player) {
+                        player.addMark('shop_refresh', 4);
+                    },
+                },
+            });
+            lib.zhanfa.add({
+                id: 'zf_zerorefresh2',
+                rarity: 'rare',
+                translate: '零元购Ⅱ',
+                info: '每次购买均可免费刷新一次商店',
+                card: { value: 4 },
+                skill: {
+                    trigger: { player: ['chooseButtonBegin', 'chooseButtonEnd'] },
+                    filter(event, player) {
+                        return event.getParent().name === '_hufu';
+                    },
+                    silent: true,
+                    async content(event, trigger, player) {
+                        player[event.triggername.endsWith('Begin') ? 'addMark' : 'removeMark']('shop_refresh', 1, false);
+                    },
+                },
+            });
+            //战法--商道
+            lib.zhanfa.add({
+                id: 'zf_shangdao',
+                rarity: 'rare',
+                translate: '商道',
+                info: '商店物品数+1',
+                card: { value: 4 },
+                skill: {
+                    init(player) {
+                        const event = get.event();
+                        if (event.dialog?.buttons) {
+                            const buttons = ui.create.div('.buttons');
+                            const node = event.dialog.buttons[0].parentNode;
+                            let list = event.dialog.buttons.map(i => i.link);
+                            list.add(lib.zhanfa.getList().filter(skill => {
+                                return !player.hasSkill(skill) && !list.some(l => skill === l[4]);
+                            }).map(skill => {
+                                const num = get.ZhanFaCost(skill);
+                                return ['', num + '虎符', skill, ''];
+                            }).randomGet());
+                            event.dialog.buttons = ui.create.buttons(list, 'vcard', buttons);
+                            event.dialog.content.insertBefore(buttons, node);
+                            buttons.animate('start');
+                            node.remove();
+                            game.uncheck();
+                            game.check();
+                        }
+                    },
+                    getExtraDanQiShop: 1,
+                },
+            });
+            //战法--兵权在握
+            lib.zhanfa.add({
+                id: 'zf_bingquanzaiwo1',
+                rarity: 'rare',
+                translate: '兵权在握Ⅰ',
+                info: '若虎符数大于3，则每回合获得的虎符+1',
+                card: { value: 3 },
+                skill: {
+                    getExtraDanQiHuFu(player) {
+                        return player.countMark('_hufu') > 3 ? 1 : 0;
+                    },
+                },
+            });
+            lib.zhanfa.add({
+                id: 'zf_bingquanzaiwo2',
+                rarity: 'epic',
+                translate: '兵权在握Ⅱ',
+                info: '自己的回合获得的虎符+1',
+                card: { value: 6 },
+                skill: {
+                    getExtraDanQiHuFu(player) {
+                        return get.event().getParent('phase').player === player ? 1 : 0;
+                    },
+                },
+            });
+            lib.zhanfa.add({
+                id: 'zf_bingquanzaiwo3',
+                rarity: 'legend',
+                translate: '兵权在握Ⅲ',
+                info: '每回合获得的虎符+1',
+                card: { value: 8 },
+                skill: {
+                    getExtraDanQiHuFu: () => 2,
+                },
+            });
+        },
+    },
+};
+export default brawl;

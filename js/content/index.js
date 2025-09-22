@@ -17,6 +17,7 @@ import bol_wuhuang from './bol_wuhuang.js';
 import bol_kunyangzhizhan from './bol_kunyangzhizhan.js';
 import bol_characterTest from './bol_characterTest.js';
 import bol_hezongkangqin from './bol_hezongkangqin.js';
+import bol_danqiwushuang from './bol_danqiwushuang.js';
 export function content(config, pack) {
 	//更新公告
 	var version = lib.config.extension_活动萌扩_HDversion;
@@ -85,6 +86,7 @@ export function content(config, pack) {
 	lib.brawl.bol_bingjingliangzu = bol_bingjingliangzu;
 	lib.brawl.bol_xingyunsixsixsix = bol_xingyunsixsixsix;
 	lib.brawl.bol_characterTest = bol_characterTest;
+	lib.brawl.bol_danqiwushuang = bol_danqiwushuang;
 	//十周年活动场
 	lib.brawl.bol_whlw = bol_whlw;
 	lib.brawl.bol_xuezhan = bol_xuezhan;
