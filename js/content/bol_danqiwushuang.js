@@ -45,6 +45,7 @@ const brawl = {
                         next.showConfig = true;
                         next.player = game.me;
                         next.setContent(async function (event, trigger, player) {
+                            ui.arena.classList.add('choose-character');
                             if (!_status.characterlist) lib.skill.pingjian.initList();
                             _status.HDcharacterlist = _status.characterlist.slice();
                             const map = lib.characterReplace, list3 = Object.values(map).flat(), getBeiShu = { '一倍': 1, '两倍': 2, '三倍': 3, '不叫': 0 };
@@ -58,15 +59,24 @@ const brawl = {
                                     return map[name] || !list3.includes(name);
                                 }).randomGets(3);
                                 _status.HDcharacterlist.removeArray(i.characterlist);
-                                const content = ['你的初始武将', [i.characterlist, 'character']];
-                                await i.chooseControl('ok').set('dialog', content);
                             }
-                            if (ui.decade_ddzInfo) ui.decade_ddzInfo.innerHTML = '抢地主阶段';
+                            const videoId = lib.status.videoId++;
+                            game.broadcastAll((player, id) => {
+                                const dialog = ui.create.dialog('你的初始武将', [player.characterlist, 'character']);
+                                dialog.videoId = id;
+                            }, player, videoId);
+                            const time = get.utc();
+                            await game.delay(2.5);
+                            game.broadcastAll(id => {
+                                const dialog = get.idDialog(id);
+                                if (!_status.auto) dialog.content.childNodes[0].textContent = `抢先手阶段`;
+                            }, videoId);
+                            if (ui.decade_ddzInfo) ui.decade_ddzInfo.innerHTML = '抢先手阶段';
                             let target = game.players.randomGet(), beginner = target, control = ['一倍', '两倍', '三倍', '不叫'];
                             while (true) {
                                 const result = await target.chooseControl(control).set('ai', () => {
                                     return _status.event.controls.randomGet();
-                                }).set('prompt', '是否' + (control.length == 4 ? '叫' : '抢') + '地主？').forResult();
+                                }).set('prompt', '是否' + (control.length == 4 ? '叫' : '抢') + '先手？').forResult();
                                 target.chat(result.control);
                                 const num = control.indexOf(result.control);
                                 target.max_beishu = getBeiShu[result.control];
@@ -132,7 +142,6 @@ const brawl = {
                                 i.identity = (game.zhu == i ? 'fan' : 'zhong');
                             });
                             game.showIdentity();
-                            ui.arena.classList.add('choose-character');
                             var getCharacter = function (list) {
                                 var listx = [], num = 0;
                                 for (var name of list) {
@@ -145,7 +154,20 @@ const brawl = {
                                 }
                                 return listx;
                             };
-                            let createDialog = ['请选择你的武将', [player.characterlist, 'characterx']];
+                            game.broadcastAll((player, id) => {
+                                const dialog = get.idDialog(id);
+                                if (!_status.auto) {
+                                    dialog.content.childNodes[0].textContent = `请选择你的武将`;
+                                    const buttons = ui.create.div('.buttons');
+                                    const node = dialog.buttons[0].parentNode;
+                                    dialog.buttons = ui.create.buttons(player.characterlist, 'characterx', buttons);
+                                    dialog.content.insertBefore(buttons, node);
+                                    buttons.animate('start');
+                                    node.remove();
+                                    game.uncheck();
+                                    game.check();
+                                }
+                            }, player, videoId);
                             if (lib.onfree) {
                                 lib.onfree.push(() => {
                                     event.dialogxx = ui.create.characterDialog('heightset');
@@ -201,10 +223,10 @@ const brawl = {
                             };
                             if (!ui.cheat) ui.create.cheat();
                             if (!ui.cheat2) ui.create.cheat2();
-                            const result2 = await player.chooseButton(createDialog, true).set('onfree', true).set('ai', button => {
+                            const result2 = await player.chooseButton(true).set('ai', button => {
                                 const { player, getCharacter } = get.event();
                                 return getCharacter(player.characterlist).includes(button.link) ? get.rank(button.link, true) : -1;
-                            }).set('getCharacter', getCharacter).forResult();
+                            }).set('onfree', true).set('dialog', videoId).set('getCharacter', getCharacter).forResult();
                             if (ui.cheat) {
                                 ui.cheat.close();
                                 delete ui.cheat;
@@ -213,6 +235,9 @@ const brawl = {
                                 ui.cheat2.close();
                                 delete ui.cheat2;
                             }
+                            const time2 = 1000 - (get.utc() - time);
+                            if (time2 > 0) await game.delay(0, time2);
+                            game.broadcastAll('closeDialog', videoId);
                             game.addRecentCharacter(...result2.links);
                             _status.characterlist.removeArray(result2.links);
                             player.init(...result2.links);
