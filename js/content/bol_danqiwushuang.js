@@ -240,28 +240,33 @@ const brawl = {
                                 const targets = game.filterPlayer();
                                 if (!targets.length) return;
                                 //获取虎符
-                                for (const i of targets) i.addMark('_hufu', lib.skill[event.name].getNum(trigger, i));
+                                for (const i of targets) i.addMark('danqi_hufu', lib.skill['_hufu'].getNum(trigger, i));
                                 //角色成长
                                 let map = {}, locals = targets.slice();
                                 let humans = targets.filter(current => current === game.me || current.isOnline());
                                 locals.removeArray(humans);
                                 const eventId = get.id(), time = ((lib.configOL && lib.configOL.choose_timeout) ? parseInt(lib.configOL.choose_timeout) : 10) * 1000;
-                                const send = (current, skill, eventId) => {
-                                    lib.skill[skill].chooseButton(current, skill, eventId);
+                                const send = (current, eventId) => {
+                                    lib.skill['_hufu'].chooseButton(current, eventId);
                                     game.resume();
                                 };
                                 event._global_waiting = true;
                                 for (const i of targets) i.showTimer(time);
                                 if (humans.length > 0) {
-                                    const solve = resolve => () => resolve();
+                                    const solve = function (resolve, reject) {
+                                        return function (result, player) {
+                                            if (result?.links?.length) map[player.playerid] = result.links;
+                                            resolve();
+                                        };
+                                    };
                                     await Promise.all(humans.map(current => {
                                         return new Promise((resolve, reject) => {
                                             if (current.isOnline()) {
-                                                current.send(send, current, event.name, eventId);
+                                                current.send(send, current, eventId);
                                                 current.wait(solve(resolve, reject));
                                             }
                                             else {
-                                                const next = lib.skill[event.name].chooseButton(current, event.name, eventId);
+                                                const next = lib.skill['_hufu'].chooseButton(current, eventId);
                                                 const solver = solve(resolve, reject);
                                                 if (_status.connectMode) game.me.wait(solver);
                                                 return next.forResult().then(result => {
@@ -274,14 +279,21 @@ const brawl = {
                                     game.broadcastAll('cancel', eventId);
                                 }
                                 if (locals.length > 0) {
-                                    for (const current of locals) await lib.skill[event.name].chooseButton(current, event.name);
+                                    for (const current of locals) {
+                                        const result = await lib.skill['_hufu'].chooseButton(current).forResult();
+                                        if (result?.links?.length) map[current.playerid] = result.links;
+                                    }
                                 }
                                 delete event._global_waiting;
                                 for (const i of targets) i.hideTimer();
                                 //获得奖励
                                 for (const i of targets) {
                                     if ((map[i.playerid] ?? []).length > 0) {
-
+                                        for (const zhanfa of map[i.playerid]) {
+                                            const num = get.ZhanFaCost(zhanfa[2]);
+                                            if (num > 0) i.removeMark('danqi_hufu', num);
+                                            i.addZhanfa(zhanfa[2]);
+                                        }
                                     }
                                 }
                             },
@@ -308,7 +320,7 @@ const brawl = {
                             getNum2(player) {
                                 return 3 + player.getSkills(null, null, false).reduce((sum, skill) => sum + (lib.skill[skill]?.getExtraDanQiShop ?? 0), 0);
                             },
-                            chooseButton(player, skill, eventId) {
+                            chooseButton(player, eventId) {
                                 const event = get.event(), func = () => {
                                     const event = get.event();
                                     const controls_freeze = [
@@ -325,7 +337,7 @@ const brawl = {
                                     const controls_replace = [
                                         () => {
                                             const evt = get.event(), player = evt.player;
-                                            if ((player.hasMark('_hufu') || player.hasMark('shop_refresh')) && evt.dialog?.buttons) {
+                                            if ((player.hasMark('danqi_hufu') || player.hasMark('shop_refresh')) && evt.dialog?.buttons) {
                                                 player.removeMark(player.hasMark('shop_refresh') ? 'shop_refresh' : '_hufu', 1, !player.hasMark('shop_refresh'));
                                                 if (evt.dialog?.buttons) {
                                                     const buttons = ui.create.div('.buttons');
@@ -355,22 +367,26 @@ const brawl = {
                                 };
                                 if (event.isMine()) func();
                                 else if (event.isOnline()) event.player.send(func);
-                                return player.chooseButton([
-                                    '请选择你要获得的战法',
-                                    [(() => {
-                                        let list = player._freeze_links || lib.zhanfa.getList().filter(skill => {
-                                            return !player.hasSkill(skill);
-                                        }).randomGets(lib.skill[skill].getNum2(player)).map(skill => {
-                                            const num = get.ZhanFaCost(skill);
-                                            return ['', num + '虎符', skill, ''];
-                                        });
-                                        if (player._freeze_links) delete player._freeze_links;
-                                        return list;
-                                    })(), 'vcard'],
-                                ]).set('filterButton', button => {
+                                let list = (player._freeze_links || lib.zhanfa.getList()).filter(skill => {
+                                    return !player.hasSkill(skill);
+                                }).randomGets(lib.skill['_hufu'].getNum2(player)).map(skill => {
+                                    const num = get.ZhanFaCost(skill);
+                                    return ['', num + '虎符', skill, ''];
+                                });
+                                if (player._freeze_links) delete player._freeze_links;
+                                return player.chooseButton(['请选择你要获得的战法', [list, 'vcard']], game.phaseNumber === 0).set('filterButton', button => {
                                     const player = get.player();
-                                    return player.countMark('_hufu') >= get.ZhanFaCost(button.link[2]);
-                                }).set('ai', button => get.value({ name: button.link[2] })).set('custom', {
+                                    return player.countMark('danqi_hufu') >= get.ZhanFaCost(button.link[2]);
+                                }).set('processAI', () => {
+                                    const { player, list, forced } = get.event();
+                                    let canChoice = list.filter(zhanfa => forced || player.countMark('danqi_hufu') >= get.ZhanFaCost(zhanfa[2]));
+                                    if (!forced && !canChoice.length) return { bool: false };
+                                    canChoice.sort((a, b) => get.value({ name: b[2] }) - get.value({ name: a[2] }));
+                                    return {
+                                        bool: forced || get.value({ name: canChoice[0][2] }) > 0,
+                                        links: [canChoice[0]].filter(zhanfa => get.value({ name: zhanfa }) > 0),
+                                    };
+                                }).set('list', list).set('custom', {
                                     add: {
                                         confirm(bool) {
                                             if (bool !== true) return;
@@ -403,7 +419,7 @@ const brawl = {
                                                 if (!player._freeze_links.length) delete player._freeze_links;
                                             }
                                             const num = get.ZhanFaCost(button.link[2]);
-                                            if (num > 0) player.removeMark('_hufu', num);
+                                            if (num > 0) player.removeMark('danqi_hufu', num);
                                             player.addZhanfa(button.link[2]);
                                             const buttons = ui.create.div('.buttons');
                                             const node = event.dialog.buttons[0].parentNode;
@@ -412,6 +428,7 @@ const brawl = {
                                                 list.addArray(event.dialog.buttons);
                                                 list.remove(button);
                                             }
+                                            if (!list.length) ui.click.ok();
                                             event.dialog.buttons = ui.create.buttons(list.map(i => i.link), 'vcard', buttons);
                                             event.dialog.content.insertBefore(buttons, node);
                                             buttons.animate('start');
@@ -422,8 +439,6 @@ const brawl = {
                                     },
                                 }).set('id', eventId).set('_global_waiting', true);
                             },
-                            markimage: 'image/card/danqi_hufu.png',
-                            intro: { content: 'mark' },
                         },
                         shop_refresh: {
                             marktext: '<span style="text-decoration: line-through;">💰</span>',
@@ -472,7 +487,7 @@ const brawl = {
                 rarity: 'common',
                 translate: '零元购Ⅰ',
                 info: '可免费刷新四次商店',
-                card: { value: 4 },
+                card: { value: 0 },
                 skill: {
                     init(player) {
                         player.addMark('shop_refresh', 4);
@@ -484,7 +499,7 @@ const brawl = {
                 rarity: 'rare',
                 translate: '零元购Ⅱ',
                 info: '每次购买均可免费刷新一次商店',
-                card: { value: 4 },
+                card: { value: 0 },
                 skill: {
                     trigger: { player: ['chooseButtonBegin', 'chooseButtonEnd'] },
                     filter(event, player) {
@@ -536,7 +551,7 @@ const brawl = {
                 card: { value: 3 },
                 skill: {
                     getExtraDanQiHuFu(player) {
-                        return player.countMark('_hufu') > 3 ? 1 : 0;
+                        return player.countMark('danqi_hufu') > 3 ? 1 : 0;
                     },
                 },
             });
