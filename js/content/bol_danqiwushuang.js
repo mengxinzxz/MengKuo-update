@@ -5,7 +5,7 @@ const brawl = {
     intro: [
         '1对1挑战模式，过程中可以成长变强，制定针对对手的策略，击败对手，赢取胜利',
         '游戏开始时，所有玩家可以查看三个备选武将并开始抢先手，双方一次竞价抢先手，若有玩家出最高价则立刻结束，无玩家抢先手则随机先后手',
-        '牌局进行过程中，双方玩家可获得【成长】，成长包括战法、技能、手牌三种类型',
+        '牌局进行过程中，双方玩家可获得【成长】，成长包括战法、技能、手牌三种类型<span class=\'texiaotext\' style=\'color:#FF0000\'>（目前由于时间原因，暂无技能和手牌成长道具，剩余内容敬请期待）</span>',
         '在每个回合，双方均可获得1枚虎符，可在购买阶段中使用虎符购买成长，商店可消耗1枚虎符手动刷新，每名玩家至多拥有2个额外技能',
     ],
     init() {
@@ -64,12 +64,6 @@ const brawl = {
                     },
                     //获取商店刷新的物品品质
                     HuFuShopping(player) {
-                        if (!_status._others_initList) {
-                            _status._others_initList = (() => {
-                                let list = [];
-                                
-                            })();
-                        }
                         let list = lib.zhanfa.getList();
                         let round = game.roundNumber + 1;
                         return list.filter(zhanfa => {
@@ -432,17 +426,18 @@ const brawl = {
                                     canChoice.sort((a, b) => {
                                         let getNum = function (zhanfa) {
                                             if (lib.translate[zhanfa]?.includes('喜从天降')) return 114514 * (forced ? -1919810 : 1919810);
-                                            return get.value({ name: zhanfa });
+                                            return lib.card[zhanfa].value || 0;
                                         };
                                         return getNum(b[2]) - getNum(a[2]);
                                     });
+                                    console.log(canChoice);
                                     let gains = [], sum = 0, add = 0;
                                     for (let choice of canChoice) {
-                                        const cost = get.ZhanFaCost(choice[2]);
-                                        if (lib.translate[choice[2]]?.includes('喜从天降')) {
-                                            add += { '喜从天降': 1, '喜从天降Ⅱ': 2 }[lib.translate[choice[2]]] || 0;
+                                        const zhanfa = choice[2], cost = get.ZhanFaCost(zhanfa);
+                                        if (lib.translate[zhanfa]?.includes('喜从天降')) {
+                                            add += { '喜从天降': 1, '喜从天降Ⅱ': 2 }[lib.translate[zhanfa]] || 0;
                                         }
-                                        if ((!forced && get.value({ name: choice[2] }) <= 0) || player.countMark('danqi_hufu') + add < sum + cost) break;
+                                        if ((!forced && (lib.card[zhanfa].value || 0) <= 0) || player.countMark('danqi_hufu') + add < sum + cost) break;
                                         gains.push(choice);
                                         sum += cost;
                                         if (forced) break;
