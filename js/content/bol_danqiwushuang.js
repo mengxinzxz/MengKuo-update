@@ -64,6 +64,12 @@ const brawl = {
                     },
                     //获取商店刷新的物品品质
                     HuFuShopping(player) {
+                        if (!_status._others_initList) {
+                            _status._others_initList = (() => {
+                                let list = [];
+                                
+                            })();
+                        }
                         let list = lib.zhanfa.getList();
                         let round = game.roundNumber + 1;
                         return list.filter(zhanfa => {
@@ -78,6 +84,10 @@ const brawl = {
                     },
                 },
                 game: {
+                    //检测胜负
+                    checkResult() {
+                        game.over(game.players.includes(game.me._trueMe || game.me));
+                    },
                     //选将
                     chooseCharacter() {
                         const next = game.createEvent('chooseCharacter', false);
