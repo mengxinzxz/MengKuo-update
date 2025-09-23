@@ -415,7 +415,7 @@ const brawl = {
                                         ];
                                     }
                                 };
-                                if (event.isMine()) func();
+                                if (player.isMine()) func();
                                 else if (event.isOnline()) event.player.send(func);
                                 let list = (player._freeze_links || get.HuFuShopping(player)).randomGets(get.HuFuShopNum(player)).map(skill => {
                                     const num = get.ZhanFaCost(skill);
