@@ -389,7 +389,7 @@ const brawl = {
                                         () => {
                                             const evt = get.event(), player = evt.player;
                                             if ((player.hasMark('danqi_hufu') || player.hasMark('shop_refresh')) && evt.dialog?.buttons) {
-                                                player.removeMark(player.hasMark('shop_refresh') ? 'shop_refresh' : '_hufu', 1, !player.hasMark('shop_refresh'));
+                                                player.removeMark(player.hasMark('shop_refresh') ? 'shop_refresh' : 'danqi_hufu', 1, !player.hasMark('shop_refresh'));
                                                 if (evt.dialog?.buttons) {
                                                     const buttons = ui.create.div('.buttons');
                                                     const node = evt.dialog.buttons[0].parentNode;
@@ -478,15 +478,22 @@ const brawl = {
                                             const num = get.ZhanFaCost(button.link[2]);
                                             if (num > 0) player.removeMark('danqi_hufu', num);
                                             player.addZhanfa(button.link[2]);
+                                            if (event.forced) ui.click.ok();
                                             const buttons = ui.create.div('.buttons');
                                             const node = event.dialog.buttons[0].parentNode;
-                                            let list = [];
-                                            if (game.phaseNumber > 0) {
-                                                list.addArray(event.dialog.buttons);
-                                                list.remove(button);
+                                            let list = event.dialog.buttons.slice();
+                                            list.remove(button);
+                                            list = list.map(i => i.link);
+                                            if (button.link[2] === 'zf_shangdao') {
+                                                list.add(get.HuFuShopping(player).filter(skill => {
+                                                    return !list.some(l => skill === l[2]);
+                                                }).map(skill => {
+                                                    const num = get.ZhanFaCost(skill);
+                                                    return ['', num + '虎符', skill, ''];
+                                                }).randomGet());
                                             }
                                             if (!list.length) ui.click.ok();
-                                            event.dialog.buttons = ui.create.buttons(list.map(i => i.link), 'vcard', buttons);
+                                            event.dialog.buttons = ui.create.buttons(list, 'vcard', buttons);
                                             event.dialog.buttons.forEach(but => but.classList.add(`zf_${lib.zhanfa.getRarity(but.link[2])}`));
                                             event.dialog.content.insertBefore(buttons, node);
                                             buttons.animate('start');
@@ -577,27 +584,6 @@ const brawl = {
                 info: '商店物品数+1',
                 card: { value: 4 },
                 skill: {
-                    init(player) {
-                        const event = get.event();
-                        if (event.dialog?.buttons) {
-                            const buttons = ui.create.div('.buttons');
-                            const node = event.dialog.buttons[0].parentNode;
-                            let list = event.dialog.buttons.map(i => i.link);
-                            list.add(get.HuFuShopping(player).filter(skill => {
-                                return !list.some(l => skill === l[4]);
-                            }).map(skill => {
-                                const num = get.ZhanFaCost(skill);
-                                return ['', num + '虎符', skill, ''];
-                            }).randomGet());
-                            event.dialog.buttons = ui.create.buttons(list, 'vcard', buttons);
-                            event.dialog.buttons.forEach(but => but.classList.add(`zf_${lib.zhanfa.getRarity(but.link[2])}`));
-                            event.dialog.content.insertBefore(buttons, node);
-                            buttons.animate('start');
-                            node.remove();
-                            game.uncheck();
-                            game.check();
-                        }
-                    },
                     getExtraDanQiShop: 1,
                 },
             });
