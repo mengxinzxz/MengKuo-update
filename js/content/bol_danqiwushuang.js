@@ -37,6 +37,45 @@ const brawl = {
                         if (game.phaseNumber === 0 || lib.translate[zhanfa]?.includes('喜从天降')) return 0;
                         return { 'common': 1, 'rare': 2, 'epic': 3, 'legend': 4 }[lib.zhanfa.getRarity(zhanfa)] || 1;
                     },
+                    //获取获得的虎符数
+                    HuFuGainNum(event, player) {
+                        let num = 1, isRound = game.roundNumber > 3;
+                        if (game.roundNumber === 3 && lib.onround.every(i => i(event, player))) {
+                            isRound = _status.roundSkipped;
+                            if (_status.isRoundFilter) {
+                                isRound = _status.isRoundFilter(event, player);
+                            }
+                            else if (_status.seatNumSettled) {
+                                let seatNum = player.getSeatNum();
+                                if (seatNum != 0) {
+                                    if (get.itemtype(_status.lastPhasedPlayer) != "player" || seatNum < _status.lastPhasedPlayer.getSeatNum()) isRound = true;
+                                    _status.lastPhasedPlayer = player;
+                                }
+                            }
+                            else if (player === _status.roundStart) isRound = true;
+                        }
+                        if (isRound) num++;
+                        num += player.getSkills(null, null, false).reduce((sum, skill) => sum + (lib.skill[skill]?.getExtraDanQiHuFu?.(player) ?? 0), 0);
+                        return num;
+                    },
+                    //获取商店的商品数
+                    HuFuShopNum(player) {
+                        return 3 + player.getSkills(null, null, false).reduce((sum, skill) => sum + (lib.skill[skill]?.getExtraDanQiShop ?? 0), 0);
+                    },
+                    //获取商店刷新的物品品质
+                    HuFuShopping(player) {
+                        let list = lib.zhanfa.getList();
+                        let round = game.roundNumber + 1;
+                        return list.filter(zhanfa => {
+                            let sum = { 'common': 1, 'rare': 2, 'epic': 3, 'legend': 4 }[lib.zhanfa.getRarity(zhanfa)] || 1;
+                            if (get.itemtype(player) === 'player' && player.hasSkill(zhanfa, null, false, false)) return false;
+                            switch (Math.sign(round - 3)) {
+                                case -1: return sum <= 2;
+                                case 0: return sum <= 3;
+                                case 1: return true;
+                            }
+                        });
+                    },
                 },
                 game: {
                     //选将
@@ -265,7 +304,7 @@ const brawl = {
                                 const targets = game.filterPlayer();
                                 if (!targets.length) return;
                                 //获取虎符
-                                for (const i of targets) i.addMark('danqi_hufu', lib.skill['_hufu'].getNum(trigger, i));
+                                for (const i of targets) i.addMark('danqi_hufu', get.HuFuGainNum(trigger, i));
                                 //角色成长
                                 let map = {}, locals = targets.slice();
                                 let humans = targets.filter(current => current === game.me || current.isOnline());
@@ -322,29 +361,6 @@ const brawl = {
                                     }
                                 }
                             },
-                            getNum(event, player) {
-                                let num = 1, isRound = game.roundNumber > 3;
-                                if (game.roundNumber === 3 && lib.onround.every(i => i(event, player))) {
-                                    isRound = _status.roundSkipped;
-                                    if (_status.isRoundFilter) {
-                                        isRound = _status.isRoundFilter(event, player);
-                                    }
-                                    else if (_status.seatNumSettled) {
-                                        let seatNum = player.getSeatNum();
-                                        if (seatNum != 0) {
-                                            if (get.itemtype(_status.lastPhasedPlayer) != "player" || seatNum < _status.lastPhasedPlayer.getSeatNum()) isRound = true;
-                                            _status.lastPhasedPlayer = player;
-                                        }
-                                    }
-                                    else if (player === _status.roundStart) isRound = true;
-                                }
-                                if (isRound) num++;
-                                num += player.getSkills(null, null, false).reduce((sum, skill) => sum + (lib.skill[skill]?.getExtraDanQiHuFu?.(player) ?? 0), 0);
-                                return num;
-                            },
-                            getNum2(player) {
-                                return 3 + player.getSkills(null, null, false).reduce((sum, skill) => sum + (lib.skill[skill]?.getExtraDanQiShop ?? 0), 0);
-                            },
                             chooseButton(player, eventId) {
                                 const event = get.event(), func = () => {
                                     const event = get.event();
@@ -367,12 +383,11 @@ const brawl = {
                                                 if (evt.dialog?.buttons) {
                                                     const buttons = ui.create.div('.buttons');
                                                     const node = evt.dialog.buttons[0].parentNode;
-                                                    evt.dialog.buttons = ui.create.buttons(lib.zhanfa.getList().filter(skill => {
-                                                        return !player.hasSkill(skill);
-                                                    }).randomGets(lib.skill['_hufu'].getNum2(player)).map(skill => {
+                                                    evt.dialog.buttons = ui.create.buttons(get.HuFuShopping(player).randomGets(get.HuFuShopNum(player)).map(skill => {
                                                         const num = get.ZhanFaCost(skill);
                                                         return ['', num + '虎符', skill, ''];
                                                     }), 'vcard', buttons);
+                                                    evt.dialog.buttons.forEach(but => but.classList.add(`zf_${lib.zhanfa.getRarity(but.link[2])}`));
                                                     evt.dialog.content.insertBefore(buttons, node);
                                                     buttons.animate('start');
                                                     node.remove();
@@ -392,9 +407,7 @@ const brawl = {
                                 };
                                 if (event.isMine()) func();
                                 else if (event.isOnline()) event.player.send(func);
-                                let list = (player._freeze_links || lib.zhanfa.getList()).filter(skill => {
-                                    return !player.hasSkill(skill);
-                                }).randomGets(lib.skill['_hufu'].getNum2(player)).map(skill => {
+                                let list = (player._freeze_links || get.HuFuShopping(player)).randomGets(get.HuFuShopNum(player)).map(skill => {
                                     const num = get.ZhanFaCost(skill);
                                     return ['', num + '虎符', skill, ''];
                                 });
@@ -404,12 +417,29 @@ const brawl = {
                                     return player.countMark('danqi_hufu') >= get.ZhanFaCost(button.link[2]);
                                 }).set('processAI', () => {
                                     const { player, list, forced } = get.event();
-                                    let canChoice = list.filter(zhanfa => forced || player.countMark('danqi_hufu') >= get.ZhanFaCost(zhanfa[2]));
+                                    let canChoice = list.filter(zhanfa => player.countMark('danqi_hufu') >= get.ZhanFaCost(zhanfa[2]));
                                     if (!forced && !canChoice.length) return { bool: false };
-                                    canChoice.sort((a, b) => get.value({ name: b[2] }) - get.value({ name: a[2] }));
+                                    canChoice.sort((a, b) => {
+                                        let getNum = function (zhanfa) {
+                                            if (lib.translate[zhanfa]?.includes('喜从天降')) return 114514 * (forced ? -1919810 : 1919810);
+                                            return get.value({ name: zhanfa });
+                                        };
+                                        return getNum(b[2]) - getNum(a[2]);
+                                    });
+                                    let gains = [], sum = 0, add = 0;
+                                    for (let choice of canChoice) {
+                                        const cost = get.ZhanFaCost(choice[2]);
+                                        if (lib.translate[choice[2]]?.includes('喜从天降')) {
+                                            add += { '喜从天降': 1, '喜从天降Ⅱ': 2 }[lib.translate[choice[2]]] || 0;
+                                        }
+                                        if ((!forced && get.value({ name: choice[2] }) <= 0) || player.countMark('danqi_hufu') + add < sum + cost) break;
+                                        gains.push(choice);
+                                        sum += cost;
+                                        if (forced) break;
+                                    }
                                     return {
-                                        bool: forced || get.value({ name: canChoice[0][2] }) > 0,
-                                        links: [canChoice[0]].filter(zhanfa => get.value({ name: zhanfa }) > 0),
+                                        bool: forced || !!gains.length,
+                                        links: gains,
                                     };
                                 }).set('list', list).set('custom', {
                                     add: {
@@ -421,17 +451,9 @@ const brawl = {
                                             game.uncheck();
                                         },
                                         button() {
-                                            if (ui.selected.buttons.length) return;
                                             const event = get.event();
-                                            if (event.dialog?.buttons) {
-                                                if (event.dialog.buttons.length > 0) {
-                                                    for (let i = 0; i < event.dialog.buttons.length; i++) {
-                                                        const button = event.dialog.buttons[i];
-                                                        const counterNode = button.querySelector('.caption');
-                                                        if (counterNode) counterNode.childNodes[0].innerHTML = ``;
-                                                    }
-                                                }
-                                                else event.parent?.controls?.[0]?.classList.add('disabled');
+                                            if (event.dialog?.buttons?.length) {
+                                                event.dialog.buttons.forEach(but => but.classList.add(`zf_${lib.zhanfa.getRarity(but.link[2])}`));
                                             }
                                         },
                                     },
@@ -455,6 +477,7 @@ const brawl = {
                                             }
                                             if (!list.length) ui.click.ok();
                                             event.dialog.buttons = ui.create.buttons(list.map(i => i.link), 'vcard', buttons);
+                                            event.dialog.buttons.forEach(but => but.classList.add(`zf_${lib.zhanfa.getRarity(but.link[2])}`));
                                             event.dialog.content.insertBefore(buttons, node);
                                             buttons.animate('start');
                                             node.remove();
@@ -550,13 +573,14 @@ const brawl = {
                             const buttons = ui.create.div('.buttons');
                             const node = event.dialog.buttons[0].parentNode;
                             let list = event.dialog.buttons.map(i => i.link);
-                            list.add(lib.zhanfa.getList().filter(skill => {
-                                return !player.hasSkill(skill) && !list.some(l => skill === l[4]);
+                            list.add(get.HuFuShopping(player).filter(skill => {
+                                return !list.some(l => skill === l[4]);
                             }).map(skill => {
                                 const num = get.ZhanFaCost(skill);
                                 return ['', num + '虎符', skill, ''];
                             }).randomGet());
                             event.dialog.buttons = ui.create.buttons(list, 'vcard', buttons);
+                            event.dialog.buttons.forEach(but => but.classList.add(`zf_${lib.zhanfa.getRarity(but.link[2])}`));
                             event.dialog.content.insertBefore(buttons, node);
                             buttons.animate('start');
                             node.remove();
