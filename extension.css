@@ -10,3 +10,14 @@
 .player .identity[data-color="HuNv"] {
 	text-shadow: rgba(20, 20, 200, 1) 0 0 2px, rgba(20, 20, 200, 1) 0 0 5px, rgba(57, 123, 4, 1) 0 0 5px, rgba(20, 20, 200, 1) 0 0 5px, black 0 0 1px;
 }
+/*单骑无双模式虎符显示*/
+.hufu-display {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	color: white;
+	font-family: "xinwei";
+	font-size: 16px;
+	z-index: 1000;
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}

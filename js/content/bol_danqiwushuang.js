@@ -8,9 +8,30 @@ const brawl = {
         '牌局进行过程中，双方玩家可获得【成长】，成长包括战法、技能、手牌三种类型<span class=\'texiaotext\' style=\'color:#FF0000\'>（目前由于时间原因，暂无技能和手牌成长道具，剩余内容敬请期待）</span>',
         '在每个回合，双方均可获得1枚虎符，可在购买阶段中使用虎符购买成长，商店可消耗1枚虎符手动刷新，每名玩家至多拥有2个额外技能',
     ],
-    init() {
-        lib.configOL.number = 2;
-    },
+        init() {
+            lib.configOL.number = 2;
+            this.addHuFuDisplay();
+        },
+        addHuFuDisplay() {
+            if (!ui.hufuDisplay) {
+                ui.hufuDisplay = ui.create.div('.hufu-display', ui.arena);
+                ui.hufuDisplay.textContent = '当前虎符：0';
+                if (!_status.hufuUpdateTimer) {
+                    _status.hufuUpdateTimer = setInterval(() => {
+                        if (ui.hufuDisplay && game.me) {
+                            brawl.updateHuFuDisplay();
+                        }
+                    }, 1000);
+                }
+            }
+        },
+        updateHuFuDisplay() {
+            if (ui.hufuDisplay && game.me) {
+                const hufuCount = game.me.countMark('danqi_hufu') || 0;
+                ui.hufuDisplay.textContent = `当前虎符：${hufuCount}`;
+                console.log('虎符数量更新:', hufuCount, '玩家:', game.me.name);
+            }
+        },
     content: {
         submode: 'normal',
         chooseCharacterBefore() {
@@ -177,6 +198,10 @@ const brawl = {
                                     game.bol_say(`战斗${bool ? '胜利' : '失败'}，${bool ? '获得' : '失去'}${num}萌币`);
                                     game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin + num * (bool ? 1 : -1));
                                 }
+                                if (_status.hufuUpdateTimer) {
+                                    clearInterval(_status.hufuUpdateTimer);
+                                    delete _status.hufuUpdateTimer;
+                                }
                             });
                             game.players.sortBySeat(game.zhu);
                             game.players.forEach((i, index) => {
@@ -185,6 +210,9 @@ const brawl = {
                                 i.identity = (game.zhu == i ? 'fan' : 'zhong');
                             });
                             game.showIdentity();
+                            if (game.me && game.me.isMine()) {
+                                brawl.updateHuFuDisplay();
+                            }
                             var getCharacter = function (list) {
                                 var listx = [], num = 0;
                                 for (var name of list) {
@@ -309,6 +337,9 @@ const brawl = {
                                 if (!targets.length) return;
                                 //获取虎符
                                 for (const i of targets) i.addMark('danqi_hufu', get.HuFuGainNum(trigger, i));
+                                if (game.me && game.me.isMine()) {
+                                    brawl.updateHuFuDisplay();
+                                }
                                 //角色成长
                                 let map = {}, locals = targets.slice();
                                 let humans = targets.filter(current => current === game.me || current.isOnline());
@@ -363,6 +394,9 @@ const brawl = {
                                             i.addZhanfa(zhanfa[2]);
                                         }
                                     }
+                                }
+                                if (game.me && game.me.isMine()) {
+                                    brawl.updateHuFuDisplay();
                                 }
                             },
                             chooseButton(player, eventId) {
