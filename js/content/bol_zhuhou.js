@@ -958,7 +958,7 @@ const brawl = {
                                 }
                             },
                             dieAfter2(source) {
-                                if (source && source.identity !== "cxyMengJun") {
+                                if (this.identity == "cxyMengJun" && source?.identity !== "cxyMengJun") {
                                     const targets = game.filterPlayer(current => current.identity == "cxyMengJun");
                                     if (targets.length > 0) game.asyncDraw(targets, 3);
                                 }
