@@ -227,7 +227,7 @@ const brawl = {
                             game.addRecentCharacter(...result.links);
                             _status.characterlist.removeArray(result.links);
                             player.init(...result.links);
-                            const target = game.me.seatNum == 1 ? game.playerBySeat(2) : game.playerBySeat(1);
+                            const target = game.me.seatNum == 1 ? game.playerBySeat(5) : game.playerBySeat(1);
                             const name = (() => {
                                 let listx = [], num = 0;
                                 for (const name of list) {
