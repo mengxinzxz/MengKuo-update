@@ -227,10 +227,10 @@ const brawl = {
                             game.addRecentCharacter(...result.links);
                             _status.characterlist.removeArray(result.links);
                             player.init(...result.links);
-                            const target = game.me.seatNum == 1 ? game.playerBySeat(5) : game.playerBySeat(1);
+                            const target = game.playerBySeat({ 1: _status.cxyCPState === 'normal' ? 2 : 5, 2: 1, 5: 1 }[game.me.seatNum]);
                             const name = (() => {
                                 let listx = [], num = 0;
-                                for (const name of list) {
+                                for (const name of list2) {
                                     const numx = get.rank(name, true);
                                     if (numx > num) {
                                         num = numx;
