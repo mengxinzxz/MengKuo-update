@@ -10,7 +10,7 @@ game.bol_showNewPackx = function () {
 	//更新告示
 	let HuoDong_update = [
 		'模式翻新，bugfix',
-		'增加单骑无双模式（由于时间问题，目前商店暂无技能和卡牌出售，敬请期待未来补充）',
+		'完善单骑无双模式',
 		'To be continued...',
 	];
 	//加载
