@@ -715,7 +715,7 @@ const brawl = {
             //战法--零元购
             lib.zhanfa.add({
                 id: 'zf_zerorefresh1',
-                rarity: 'common',
+                rarity: 'zf_common',
                 translate: '零元购Ⅰ',
                 info: '可免费刷新四次商店',
                 card: { value: 0 },
@@ -727,7 +727,7 @@ const brawl = {
             });
             lib.zhanfa.add({
                 id: 'zf_zerorefresh2',
-                rarity: 'rare',
+                rarity: 'zf_rare',
                 translate: '零元购Ⅱ',
                 info: '每次购买均可免费刷新一次商店',
                 card: { value: 0 },
@@ -745,7 +745,7 @@ const brawl = {
             //战法--商道
             lib.zhanfa.add({
                 id: 'zf_shangdao',
-                rarity: 'rare',
+                rarity: 'zf_rare',
                 translate: '商道',
                 info: '商店物品数+1',
                 card: { value: 4 },
@@ -756,7 +756,7 @@ const brawl = {
             //战法--兵权在握
             lib.zhanfa.add({
                 id: 'zf_bingquanzaiwo1',
-                rarity: 'rare',
+                rarity: 'zf_rare',
                 translate: '兵权在握Ⅰ',
                 info: '若虎符数大于3，则每回合获得的虎符+1',
                 card: { value: 3 },
@@ -768,7 +768,7 @@ const brawl = {
             });
             lib.zhanfa.add({
                 id: 'zf_bingquanzaiwo2',
-                rarity: 'epic',
+                rarity: 'zf_epic',
                 translate: '兵权在握Ⅱ',
                 info: '自己的回合获得的虎符+1',
                 card: { value: 6 },
@@ -780,12 +780,26 @@ const brawl = {
             });
             lib.zhanfa.add({
                 id: 'zf_bingquanzaiwo3',
-                rarity: 'legend',
+                rarity: 'zf_legend',
                 translate: '兵权在握Ⅲ',
                 info: '每回合获得的虎符+1',
                 card: { value: 8 },
                 skill: {
                     getExtraDanQiHuFu: () => 2,
+                },
+            });
+            //战法--运筹帷幄
+            lib.zhanfa.add({
+                id: 'zf_yunchouweiwo',
+                rarity: 'zf_rare',
+                translate: '运筹帷幄',
+                info: '技能槽数量+1',
+                card: { value: 2 },
+                skill: {
+                    getExtraDanQiHuFu(player) {
+                        player.storage['zhanfa_skill'] ??= [[], 2];
+                        player.storage['zhanfa_skill'][1]++;
+                    },
                 },
             });
         },
