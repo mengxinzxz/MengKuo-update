@@ -34,7 +34,7 @@ const brawl = {
                     },
                     //获取战法价值
                     ZhanFaCost(zhanfa2, first) {
-                        let zhanfa = zhanfa2.slice(zhanfa2.startsWith('skillcard_') ? 'skillcard_'.length : 0)
+                        let zhanfa = zhanfa2.slice(zhanfa2.startsWith('skillcard_') ? 'skillcard_'.length : 0);
                         if (first || lib.translate[zhanfa]?.includes('喜从天降')) return 0;
                         if (_status._hufu_skillcardShopping?.[zhanfa]) return _status._hufu_skillcardShopping[zhanfa].cost || 1;
                         return { 'zf_common': 1, 'zf_rare': 2, 'zf_epic': 3, 'zf_legend': 4 }[lib.zhanfa.getRarity(zhanfa)] || 1;
@@ -81,11 +81,17 @@ const brawl = {
                             }));
                         }
                         let round = game.roundNumber + 1;
-                        return list.filter(zhanfa => {
+                        return list.filter(zhanfa2 => {
+                            let zhanfa;
                             let sum = (() => {
+                                if (Array.isArray(zhanfa2)) {
+                                    zhanfa = zhanfa2[2].slice(zhanfa2[2].startsWith('skillcard_') ? 'skillcard_'.length : 0);
+                                    return _status._hufu_skillcardShopping[zhanfa].cost || 1;
+                                }
+                                zhanfa = zhanfa2;
                                 return { 'zf_common': 1, 'zf_rare': 2, 'zf_epic': 3, 'zf_legend': 4 }[lib.zhanfa.getRarity(zhanfa)] || 1;
                             })();
-                            if (get.itemtype(player) === 'player' && player.hasSkill(zhanfa, null, false, false)) return false;
+                            if (player.hasSkill(zhanfa, null, false, false)) return false;
                             switch (Math.sign(round - 3)) {
                                 case -1: return sum <= 2;
                                 case 0: return sum <= 3;
@@ -715,7 +721,7 @@ const brawl = {
             //战法--零元购
             lib.zhanfa.add({
                 id: 'zf_zerorefresh1',
-                rarity: 'zf_common',
+                rarity: 'common',
                 translate: '零元购Ⅰ',
                 info: '可免费刷新四次商店',
                 card: { value: 0 },
@@ -727,7 +733,7 @@ const brawl = {
             });
             lib.zhanfa.add({
                 id: 'zf_zerorefresh2',
-                rarity: 'zf_rare',
+                rarity: 'rare',
                 translate: '零元购Ⅱ',
                 info: '每次购买均可免费刷新一次商店',
                 card: { value: 0 },
@@ -745,7 +751,7 @@ const brawl = {
             //战法--商道
             lib.zhanfa.add({
                 id: 'zf_shangdao',
-                rarity: 'zf_rare',
+                rarity: 'rare',
                 translate: '商道',
                 info: '商店物品数+1',
                 card: { value: 4 },
@@ -756,7 +762,7 @@ const brawl = {
             //战法--兵权在握
             lib.zhanfa.add({
                 id: 'zf_bingquanzaiwo1',
-                rarity: 'zf_rare',
+                rarity: 'rare',
                 translate: '兵权在握Ⅰ',
                 info: '若虎符数大于3，则每回合获得的虎符+1',
                 card: { value: 3 },
@@ -768,7 +774,7 @@ const brawl = {
             });
             lib.zhanfa.add({
                 id: 'zf_bingquanzaiwo2',
-                rarity: 'zf_epic',
+                rarity: 'epic',
                 translate: '兵权在握Ⅱ',
                 info: '自己的回合获得的虎符+1',
                 card: { value: 6 },
@@ -780,7 +786,7 @@ const brawl = {
             });
             lib.zhanfa.add({
                 id: 'zf_bingquanzaiwo3',
-                rarity: 'zf_legend',
+                rarity: 'legend',
                 translate: '兵权在握Ⅲ',
                 info: '每回合获得的虎符+1',
                 card: { value: 8 },
@@ -791,7 +797,7 @@ const brawl = {
             //战法--运筹帷幄
             lib.zhanfa.add({
                 id: 'zf_yunchouweiwo',
-                rarity: 'zf_rare',
+                rarity: 'rare',
                 translate: '运筹帷幄',
                 info: '技能槽数量+1',
                 card: { value: 2 },
