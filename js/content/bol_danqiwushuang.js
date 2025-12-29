@@ -502,7 +502,7 @@ const brawl = {
                                         () => {
                                             const evt = get.event(), player = evt.player;
                                             if (evt.dialog?.buttons) {
-                                                for (const item of evt.dialog?.buttons) item.classList.toggle('selectedx');
+                                                for (const item of evt.dialog?.buttons) item.classList.toggle('glow');
                                                 if (!player._freeze_links) player._freeze_links = evt.dialog.buttons.map(i => i.link);
                                                 else delete player._freeze_links;
                                             }
@@ -618,17 +618,29 @@ const brawl = {
                                                         player.directgain([game.createCard2(zhanfa, lib.suit.randomGet(), get.rand(1, 13), info.nature)], true);
                                                         break;
                                                     case 'skill':
-                                                        if (Array.isArray(player.storage['zhanfa_skill']) && player.storage['zhanfa_skill'][1].length + 1 > player.storage['zhanfa_skill'][0]) {
-                                                            const dialog = ui.create.dialog(`请选择一个技能失去，否则你不会获得【${lib.translate[`${zhanfa}_ab`] || get.translation(zhanfa).slice(0, 2)}】`, 'hidden');
-                                                            for (const skill of player.storage['zhanfa_skill'][1]) {
-                                                                const item = dialog.add(`<div class='skill'>【${lib.translate[`${skill}_ab`] || get.translation(skill).slice(0, 2)}】</div><div>${get.skillInfoTranslation(skill, player, false)}</div>`);
+                                                        if (Array.isArray(player.storage['zhanfa_skill']) && player.storage['zhanfa_skill'][0].length + 1 > player.storage['zhanfa_skill'][1]) {
+                                                            let control, dialog, controls = ui.controls.slice();
+                                                            controls.forEach(i => i.hide());
+                                                            control = ui.create.control('取消', () => {
+                                                                if (ui.dialog === dialog) {
+                                                                    dialog.close();
+                                                                    control.close();
+                                                                    controls.forEach(i => i.show());
+                                                                }
+                                                            });
+                                                            dialog = ui.create.dialog(`请选择一个技能失去，否则你不会获得【${lib.translate[`${zhanfa}_ab`] || get.translation(zhanfa).slice(0, 2)}】`, 'hidden');
+                                                            for (const skill of player.storage['zhanfa_skill'][0]) {
+                                                                const item = dialog.add(`<div class='popup text pointerdiv' style='width:calc(100% - 10px);display:inline-block'>${get.skillTranslation(skill, player, false)}</div>`);
                                                                 item.firstChild.link = skill;
                                                                 item.firstChild.addEventListener(lib.config.touchscreen ? "touchend" : "click", function () {
                                                                     dialog.close();
-                                                                    player.storage['zhanfa_skill'][1].remove(this.link);
+                                                                    control.close();
+                                                                    controls.forEach(i => i.show());
+                                                                    player.storage['zhanfa_skill'][0].remove(this.link);
                                                                     player.removeSkill(this.link);
-                                                                    player.storage['zhanfa_skill'][0].push(zhanfa);
+                                                                    player.popup(this.link);
                                                                     game.log(player, '失去了战法技能', `#g【${get.translation(this.link)}】`);
+                                                                    player.storage['zhanfa_skill'][0].push(zhanfa);
                                                                     player.addAdditionalSkill('zhanfa_skill', zhanfa, true);
                                                                     player.popup(zhanfa);
                                                                     game.log(player, '获得了战法技能', `#g【${get.translation(zhanfa)}】`);
