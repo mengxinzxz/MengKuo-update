@@ -443,55 +443,42 @@ const brawl = {
                         },
                         //核心魔军
                         cxyMoJun: {
-                            trigger: { global: "damageEnd" },
+                            trigger: { global: 'damageSource' },
                             filter(event, player) {
-                                if (!event.source || !event.source.isAlive()) return false;
-                                if (get.attitude(player, event.source) < 2) return false;
-                                if (!event.card || event.card.name != "sha") return false;
-                                return event.notLink();
+                                if (event.getParent().type !== 'card' || event.card.name !== 'sha') return false;
+                                return event.source?.isFriendOf(player);
                             },
                             forced: true,
-                            content() {
-                                'step 0'
-                                trigger.source.judge(function (card) {
-                                    return get.color(card) == 'black' ? 2 : 0;
-                                });
-                                'step 1'
-                                if (result.bool) {
-                                    event.targets = game.filterPlayer(function (current) {
-                                        return get.attitude(player, current) > 0;
-                                    });
-                                    event.targets.sort(lib.sort.seat);
-                                    game.asyncDraw(event.targets);
+                            async content(event, trigger, player) {
+                                const result = await trigger.source.judge(card => {
+                                    return get.color(card) == 'black' ? 2 : -2;
+                                }).forResult();
+                                if (result?.bool) {
+                                    const targets = game.filterPlayer(current => current.isFriendOf(player)).sortBySeat();
+                                    if (targets.length > 0) {
+                                        await game.asyncDraw(targets);
+                                        await game.delayx();
+                                    }
                                 }
                             },
                         },
                         cxyJieLve: {
-                            trigger: { source: "damageEnd" },
+                            trigger: { source: 'damageSource' },
                             filter(event, player) {
-                                if (!event.player.isAlive() || event.player == player) return false;
-                                return event.player.num("hej") > 0;
+                                if (!event.player.isIn() || event.player == player) return false;
+                                return event.player.countCards('hej') > 0;
                             },
-                            logTarget: "player",
                             forced: true,
-                            content() {
-                                "step 0"
-                                var num = 0;
-                                if (trigger.player.num("h")) num++;
-                                if (trigger.player.num("e")) num++;
-                                if (trigger.player.num("j")) num++;
-                                if (num) {
-                                    player.gainPlayerCard(trigger.player, "hej", num, true).set("filterButton", function (button) {
-                                        for (var i = 0; i < ui.selected.buttons.length; i++) {
-                                            if (get.position(button.link) == get.position(ui.selected.buttons[i].link)) return false;
-                                        }
-                                        return true;
-                                    });
-                                } else {
-                                    event.finish();
-                                }
-                                "step 1"
-                                player.loseHp();
+                            logTarget: 'player',
+                            async content(event, trigger, player) {
+                                let num = 0;
+                                if (trigger.player.countCards("h")) num++;
+                                if (trigger.player.countCards("e")) num++;
+                                if (trigger.player.countCards("j")) num++;
+                                const result = await player.gainPlayerCard(trigger.player, 'hej', num, true).set("filterButton", button => {
+                                    return !ui.selected.buttons.some(but => get.position(button.link) == get.position(but.link));
+                                }).forResult();
+                                if (result?.bool && result.cards?.length) await player.loseHp();
                             },
                         },
                         cxyTunJun: {
@@ -500,177 +487,137 @@ const brawl = {
                                 return player.maxHp != 1;
                             },
                             forced: true,
-                            content() {
-                                "step 0"
-                                player.loseMaxHp();
-                                "step 1"
-                                player.draw(player.maxHp);
+                            async content(event, trigger, player) {
+                                await player.loseMaxHp();
+                                await player.draw(player.maxHp);
                             },
                         },
                         cxyFanGong: {
-                            trigger: { target: "useCardToAfter" },
+                            trigger: { global: 'useCardAfter' },
                             filter(event, player) {
-                                return get.attitude(player, event.player) < 0;
+                                return event.targets?.includes(player) && event.player.isIn() && event.player.isEnemyOf(player);
                             },
                             direct: true,
-                            content() {
-                                player.chooseToUse("是否发动反攻，对" + get.translation(trigger.player) + "使用一张[杀]？", { name: "sha" }).set("filterTarget", function (card, player, target) {
-                                    return target == _status.event.source;
-                                }).set("selectTarget", -1).set('source', trigger.player).set("logSkill", "cxyFanGong");
+                            async content(event, trigger, player) {
+                                const target = trigger.player, list = [event.name, target];
+                                await player.chooseToUse(get.prompt2(...list), function (card, player, event) {
+                                    if (get.name(card) !== 'sha') return false;
+                                    return lib.filter.filterCard.apply(this, arguments);
+                                }).set('filterTarget', function (card, player, target) {
+                                    if (target !== _status.event.sourcex && !ui.selected.targets.includes(_status.event.sourcex)) return false;
+                                    return lib.filter.targetEnabled.apply(this, arguments);
+                                }).set('selectTarget', -1).set('sourcex', target).set('logSkill', list);
                             },
                         },
                         cxyJiaoXia: {
-                            trigger: { global: "phaseDiscardBefore" },
-                            filter(event, player) {
-                                return get.attitude(player, event.player) > 2;
-                            },
-                            forced: true,
-                            logTarget: 'player',
-                            content() {
-                                trigger.player.addTempSkill("cxyJiaoXia_buff", "phaseDiscardEnd");
-                            },
+                            global: 'cxyJiaoXia_global',
                             subSkill: {
-                                buff: {
+                                global: {
                                     mod: {
-                                        maxHandcard(player, num) {
-                                            var hs = player.getCards('h');
-                                            for (var i = 0; i < hs.length; i++) {
-                                                if (get.color(hs[i]) == 'black') {
-                                                    num++;
-                                                }
-                                            }
-                                            return num;
+                                        ignoredHandcard(card, player) {
+                                            if (!game.hasPlayer(target => target.hasSkill('cxyJiaoXia') && player.isFriendOf(target))) return;
+                                            if (get.color(card) === 'black') return true;
                                         },
                                         cardDiscardable(card, player, name) {
-                                            if (name == 'phaseDiscard' && get.color(card) == 'black') return false;
-                                        }
+                                            if (!game.hasPlayer(target => target.hasSkill('cxyJiaoXia') && player.isFriendOf(target))) return;
+                                            if (name === 'phaseDiscard' && get.color(card) === 'black') return false;
+                                        },
                                     },
                                 },
                             },
                         },
                         cxyKuangXi: {
                             enable: 'phaseUse',
-                            filter(event, player) {
-                                return !player.hasSkill('cxyKuangXi_silent');
-                            },
                             filterTarget: lib.filter.notMe,
-                            content() {
-                                'step 0'
-                                player.loseHp();
-                                target.damage('nocard');
-                                'step 1'
-                                if (!target.isAlive() || target.hasHistory('damage', function (evt) {
+                            async content(event, trigger, player) {
+                                await player.loseHp();
+                                await target.damage();
+                                if (!target.isIn() || target.hasHistory('damage', evt => {
                                     return evt.getParent('cxyKuangXi') == event && evt._dyinged;
-                                })) player.addTempSkill('cxyKuangXi_silent');
+                                })) player.tempBanSkill(event.name, false, false);
                             },
                             ai: {
                                 threaten(player, target) {
-                                    if (!game.hasPlayer(function (current) {
-                                        return player.getFriends().includes(current) && current.hp <= target.hp;
-                                    })) return 1;
-                                    return 1 + target.hp / 2;
+                                    return 1 + target.getHp();
                                 },
                                 order: 1,
                                 result: {
                                     target(player, target) {
-                                        if (player.hp + player.countCards('hs', { name: ['jiu', 'tao'] }) + game.countPlayer(function (current) {
-                                            return current.hasSkill('cxyBaoYing') && !current.awakenedSkills.includes('cxyBaoYing');
-                                        }) <= 0) return 0;
+                                        if (player.countCards('hs', card => player.canSaveCard(card, player)) + game.countPlayer(current => {
+                                            return current.hasSkill('cxyBaoYing') && player.isFriend(current);
+                                        }) + player.hp <= 1) return 0;
                                         return get.damageEffect(target, player);
                                     },
-                                    player: 1,
                                 },
                             },
-                            subSkill: { silent: { charlotte: true } },
                         },
                         cxyYangWu: {
-                            trigger: { player: "phaseZhunbeiBegin" },
-                            direct: true,
-                            content() {
-                                "step 0"
-                                event.targets = game.filterPlayer(function (current) {
-                                    return current != player;
-                                });
-                                event.targets.sort(lib.sort.seat);
-                                player.logSkill("cxyYangWu", event.targets);
-                                for (var i = 0; i < event.targets.length; i++) {
-                                    event.targets[i].damage(player);
-                                    game.delay();
-                                }
-                                "step 1"
-                                player.loseHp();
+                            trigger: { player: 'phaseZhunbeiBegin' },
+                            forced: true,
+                            logTarget(event, player) {
+                                return game.filterPlayer(target => target !== player).sortBySeat();
+                            },
+                            async content(event, trigger, player) {
+                                for (const target of event.targets) await target.damage();
+                                await player.loseHp();
                             },
                         },
                         cxyYangLie: {
-                            trigger: { player: "phaseZhunbeiBegin" },
-                            direct: true,
-                            content() {
-                                "step 0"
-                                var targets = game.filterPlayer(function (current) {
-                                    return current != player;
-                                }).sortBySeat();
-                                player.logSkill("cxyYangLie", targets);
-                                for (var i = 0; i < targets.length; i++) {
-                                    player.gainPlayerCard(targets[i], 'hej', true);
-                                    game.delay();
-                                }
-                                "step 1"
-                                player.loseHp();
+                            trigger: { player: 'phaseZhunbeiBegin' },
+                            forced: true,
+                            logTarget(event, player) {
+                                return game.filterPlayer(target => target !== player).sortBySeat();
+                            },
+                            async content(event, trigger, player) {
+                                await player.gainMultiple(event.targets, 'he');
+                                await player.loseHp();
                             },
                         },
                         cxyRuiQi: {
-                            trigger: { global: "phaseDrawBegin" },
+                            trigger: { global: 'phaseDrawBegin2' },
                             filter(event, player) {
-                                return get.attitude(player, event.player) > 2;
+                                return event.player.isFriendOf(player) && !event.numFixed;
                             },
                             logTarget: 'player',
                             forced: true,
                             content() {
                                 trigger.num++;
                             },
-                            ai: {
-                                threaten: 2.5,
-                            }
+                            ai: { threaten: 2.5 },
                         },
                         cxyHuYing: {
-                            trigger: { player: "phaseUseBegin" },
+                            trigger: { player: 'phaseUseBegin' },
                             filter(event, player) {
-                                return game.cxyJiangLing && game.cxyJiangLing.isAlive();
+                                return game.cxyJiangLing?.isIn();
                             },
                             forced: true,
-                            content() {
-                                "step 0"
-                                player.chooseCard("交给一张[杀]，或失去1点体力，令从牌堆获得一张[杀]", { name: "sha" }).ai = function (card) {
-                                    if (player.countCards('h', { name: "sha" }) < 2) {
-                                        if (player.hp <= 2) return 2;
-                                        if (!game.hasPlayer(function (current) {
-                                            return player.canUse({ name: "sha" }, current);
-                                        })) return 2;
+                            logTarget: () => game.cxyJiangLing,
+                            async content(event, trigger, player) {
+                                const target = game.cxyJiangLing, str = get.translation(target);
+                                const result = await player.chooseToGive(`${get.translation(event.name)}：交给${str}一张【杀】，或失去1点体力并令${str}从牌堆获得一张【杀】`, { name: 'sha' }, target).set('ai', () => {
+                                    const player = get.player();
+                                    if (player.countCards('h', { name: 'sha' }) < 2) {
+                                        if (player.getHp() <= 2 || !player.hasValueTarget(new lib.element.VCard({ name: 'sha' }), true, true)) return 2;
                                         return -1;
                                     }
                                     return 2;
-                                };
-                                "step 1"
-                                if (result.bool) {
-                                    game.cxyJiangLing.gain(result.cards[0], player);
-                                    player.$give(result.cards[0], game.cxyJiangLing);
-                                } else {
-                                    player.loseHp();
-                                    var card = get.cardPile("sha");
-                                    game.cxyJiangLing.gain(card);
-                                    game.cxyJiangLing.$draw(card);
+                                }).forResult();
+                                if (!result?.bool) {
+                                    await player.loseHp();
+                                    const card = get.cardPile2('sha');
+                                    if (card) await target.gain(card, 'gain2');
                                 }
                             },
                         },
                         cxyJingQi: {
                             global: 'cxyJingQi_distance',
-                            ai: { threaten: 1.5 },
+                            ai: { threaten: 2.5 },
                             subSkill: {
                                 distance: {
                                     mod: {
                                         globalFrom(from, to, distance) {
-                                            if (game.hasPlayer(function (current) {
-                                                return current.hasSkill('cxyJingQi') && get.attitude(current, from) > 0 && get.attitude(current, to) < 0;
+                                            if (game.hasPlayer(current => {
+                                                return current.hasSkill('cxyJingQi') && from.isFriendOf(current) && to.isEnemyOf(current);
                                             })) return distance - 1;
                                         },
                                     },
@@ -678,43 +625,29 @@ const brawl = {
                             },
                         },
                         cxyBaoYing: {
-                            skillAnimation: true,
-                            animationColor: "fire",
-                            mark: true,
-                            intro: {
-                                content: "limited",
-                            },
-                            trigger: { global: "dying" },
+                            limited: true,
+                            trigger: { global: 'dying' },
                             filter(event, player) {
-                                if (player.storage.cxyBaoYing) return false;
-                                return get.attitude(player, event.player) > 2;
+                                return event.player.isFriendOf(player);
                             },
-                            logTarget: "player",
-                            check(event, player) {
-                                return event.player.hp < 1;
-                            },
+                            logTarget: 'player',
+                            //skillAnimation: true,
+                            //animationColor: 'fire',
                             content() {
-                                "step 0"
-                                player.storage.cxyBaoYing = true;
-                                player.awakenSkill("cxyBaoYing");
-                                "step 1"
-                                trigger.player.recover(1 - trigger.player.hp);
+                                player.awakenSkill(event.name);
+                                trigger.player.recoverTo(1);
                             },
                         },
                         cxyFengYing: {
                             global: 'cxyFengYing_use',
-                            ai: { threaten: 2.7 },
+                            ai: { threaten: 3.5 },
                             subSkill: {
                                 use: {
                                     mod: {
                                         targetEnabled(card, player, target) {
-                                            if (game.hasPlayer(function (current) {
-                                                return current.hasSkill('cxyFengYing') && get.attitude(current, target) > 0;
-                                            })) {
-                                                if (((get.mode() == 'identity' && get.attitude(player, target) < 0) || (get.mode() != 'identity' && target.isEnemyOf(player))) && !game.hasPlayer(function (current) {
-                                                    return current != target && current.hp <= target.hp;
-                                                })) return false;
-                                            }
+                                            if (target.isMinHp(true) && game.hasPlayer(current => {
+                                                return current.hasSkill('cxyFengYing') && player.isEnemyOf(current) && target.isFriendOf(current);
+                                            })) return false;
                                         },
                                     },
                                 },
@@ -723,143 +656,58 @@ const brawl = {
                         cxyLongYing: {
                             trigger: { player: "phaseUseBegin" },
                             filter(event, player) {
-                                return game.cxyJiangLing && game.cxyJiangLing.isAlive() && game.cxyJiangLing.hp < game.cxyJiangLing.maxHp;
+                                return game.cxyJiangLing?.isIn() && game.cxyJiangLing.isDamaged();
                             },
-                            direct: true,
-                            content() {
-                                "step 0"
-                                player.logSkill("cxyLongYing", game.cxyJiangLing);
-                                player.loseHp();
-                                "step 1"
-                                game.cxyJiangLing.recover();
-                                "step 2"
-                                game.cxyJiangLing.draw();
+                            forced: true,
+                            logTarget: () => game.cxyJiangLing,
+                            async content(event, trigger, player) {
+                                const target = game.cxyJiangLing
+                                await player.loseHp();
+                                await target.recover();
+                                await target.draw();
                             },
-                            ai: {
-                                threaten: 2,
-                            },
+                            ai: { threaten: 1.5 },
                         },
                         cxyMoQu: {
-                            group: ["cxyMoQu_sub1", "cxyMoQu_sub2"],
-                            subSkill: {
-                                sub1: {
-                                    trigger: { global: "phaseEnd" },
-                                    filter(event, player) {
-                                        return player.num('h') <= player.hp;
-                                    },
-                                    forced: true,
-                                    content() {
-                                        player.draw(2);
-                                    },
-                                },
-                                sub2: {
-                                    trigger: { global: "damageEnd" },
-                                    filter(event, player) {
-                                        return event.player != player && get.attitude(player, event.player) > 0;
-                                    },
-                                    forced: true,
-                                    content() {
-                                        player.chooseToDiscard("魔躯：其他友方角色受到伤害后，你弃置一张牌", "he", true);
-                                    },
-                                },
+                            trigger: { global: ['phaseEnd', 'damageEnd'] },
+                            filter(event, player) {
+                                if (event.name === 'damage') return event.player !== player && event.player.isFriendOf(player);
+                                return player.countCards('h') <= player.getHp();
+                            },
+                            forced: true,
+                            content() {
+                                if (trigger.name === 'damage') player.chooseToDiscard('he', true);
+                                else player.draw(2);
                             },
                         },
                         cxyPoLu: {
                             trigger: { global: 'die' },
                             filter(event, player) {
-                                if (event.player == player) return true;
-                                if (!player.isAlive()) return false;
-                                return event.source && get.attitude(player, event.player) < 0 && get.attitude(player, event.source) > 0;
+                                if (event.player !== player && !player.isAlive()) return false;
+                                return event.source && event.player.isEnemyOf(player) && event.source.isFriend(player);
                             },
                             forced: true,
                             forceDie: true,
-                            content() {
-                                'step 0'
-                                if (player.storage.cxyPoLu == undefined) player.storage.cxyPoLu = 0;
+                            async content(event, trigger, player) {
+                                player.storage.cxyPoLu ??= 0;
                                 player.storage.cxyPoLu++;
-                                var targets = game.filterPlayer(function (target) {
-                                    return get.attitude(player, target) > 0;
-                                }).sortBySeat();
-                                event.targets = targets;
-                                'step 1'
-                                player.line(targets);
-                                game.asyncDraw(targets, player.storage.cxyPoLu);
+                                const targets = game.filterPlayer(target => target.isFriend(player)).sortBySeat();
+                                if (targets.length > 0) {
+                                    player.line(targets);
+                                    await game.asyncDraw(targets, player.storage.cxyPoLu);
+                                    await game.delayx();
+                                }
                             },
-                            ai: {
-                                //优先攻击孙坚
-                                threaten: 80,
-                            },
+                            ai: { threaten: 80 },//优先攻击孙坚
                         },
                         cxyYaoWu: {
-                            trigger: { player: "damageBegin" },
-                            filter(event, player) {
-                                if (!event.source || !event.source.isAlive()) return false;
-                                return event.card && event.card.name == "sha" && get.color(event.card) == "red";
-                            },
-                            forced: true,
-                            content() {
-                                "step 0"
-                                if (trigger.source.hp == trigger.source.maxHp) {
-                                    trigger.source.draw();
-                                    event.finish();
-                                } else {
-                                    trigger.source.chooseControl("回血", "摸牌", function (event, player) {
-                                        return "回血";
-                                    }).prompt = "耀武：请选择回血或摸牌";
-                                }
-                                "step 1"
-                                if (result.control == "回血") {
-                                    trigger.source.recover();
-                                } else {
-                                    trigger.source.draw();
-                                }
-                            },
+                            audio: false,
+                            inherit: 'yaowu',
                         },
                         cxyYingHun: {
-                            trigger: { player: "phaseZhunbeiBegin" },
-                            filter(event, player) {
-                                return player.hp < player.maxHp;
-                            },
-                            direct: true,
-                            content() {
-                                "step 0"
-                                player.chooseTarget("是否发动英魂？", function (card, player, target) {
-                                    return target != player;
-                                }).ai = function (target) {
-                                    if (get.attitude(player, target) > 2) return 5 + Math.random();
-                                    var draw = player.maxHp - player.hp;
-                                    var num = target.num('he') + 1;
-                                    if (num == draw) return 4;
-                                    if (num < draw) return Math.min(1, 4 - (draw - num));
-                                    return Math.min(1, 4 - (draw - num) * 0.5);
-                                };
-                                "step 1"
-                                if (result.bool) {
-                                    event.num = player.maxHp - player.hp;
-                                    event.target = result.targets[0];
-                                    event.list = ["摸" + event.num + "弃1", "摸1弃" + event.num];
-                                    player.chooseControl(event.list, function (event, player) {
-                                        if (get.attitude(player, event.target) > 0) return event.list[0];
-                                        return event.list[1];
-                                    }).prompt = "英魂：请选择一项";
-                                } else {
-                                    event.finish();
-                                }
-                                "step 2"
-                                player.logSkill("cxyYingHun", event.target);
-                                if (result.control == event.list[0]) {
-                                    event.target.draw(event.num);
-                                    event.num = 1;
-                                } else {
-                                    event.target.draw(1);
-                                }
-                                "step 3"
-                                event.target.chooseToDiscard("英魂：请弃置" + event.num + "张牌", event.num, "he", true);
-                            },
-                            ai: {
-                                //优先攻击孙坚
-                                threaten: 80,
-                            },
+                            audio: false,
+                            inherit: 'gzyinghun',
+                            ai: { threaten: 80 },//优先攻击孙坚
                         },
                     },
                     translate: {
@@ -923,13 +771,9 @@ const brawl = {
                         cxyMoQu: "魔躯",
                         cxyPoLu: "破掳",
                         cxyMoJun: "魔军",
-                        cxyYaoWu: "耀武",
-                        cxyYingHun: "英魂",
-                        cxyYaoWu_info: "锁定技，当一名角色使用红色【杀】对你造成伤害时，该角色可以回复1点体力或摸一张牌。",
                         cxyPoLu_info: "锁定技，友方角色杀死一名敌方角色或你死亡时，你令友方角色各摸X张牌（X为此技能发动的次数）。",
                         cxyMoJun_info: "锁定技，当友方角色使用【杀】对目标角色造成伤害后，其进行判定，若结果为黑色，友方角色各摸一张牌。",
                         cxyMoQu_info: "锁定技，每名角色的回合结束时，若你的手牌数不大于当前体力值，你摸两张牌；其他友方角色受到伤害后，你弃置一张牌。",
-                        cxyYingHun_info: "准备阶段，若你已受伤，你可以选择一名其他角色并选择一项：1.令其摸X张牌，然后弃置一张牌；2.令其摸一张牌，然后弃置X张牌。（X为你已损失的体力值）",
                     },
                     element: {
                         player: {
@@ -1004,11 +848,11 @@ const brawl = {
                                 }
                                 return targets;
                             },
-                            isFriendOf(player, includeDie, includeOut) {
-                                return this.getFriends(true, includeDie, includeOut).includes(player);
+                            isFriendOf(player) {
+                                return this.getFriends(true, true, true).includes(player);
                             },
-                            isEnemyOf(player, includeDie, includeOut) {
-                                return this.getEnemies(true, includeDie, includeOut).includes(player);
+                            isEnemyOf(player) {
+                                return this.getEnemies(true, true, true).includes(player);
                             },
                         },
                     },

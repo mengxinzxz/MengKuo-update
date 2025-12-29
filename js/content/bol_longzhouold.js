@@ -814,14 +814,14 @@ const brawl = {
                             getEnemies(func, includeDie, includeOut) {
                                 const player = this, method = includeDie ? "filterPlayer2" : "filterPlayer";
                                 return game[method](function (current) {
-                                    return current.identity != this.identity;
+                                    return current.identity != player.identity;
                                 }, [], includeOut);
                             },
-                            isFriendOf(player, includeDie, includeOut) {
-                                return this.getFriends(true, includeDie, includeOut).includes(player);
+                            isFriendOf(player) {
+                                return this.getFriends(true, true, true).includes(player);
                             },
-                            isEnemyOf(player, includeDie, includeOut) {
-                                return this.getEnemies(true, includeDie, includeOut).includes(player);
+                            isEnemyOf(player) {
+                                return this.getEnemies(true, true, true).includes(player);
                             },
                             dieAfter() { },
                         },
