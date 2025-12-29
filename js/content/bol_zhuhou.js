@@ -769,7 +769,7 @@ const brawl = {
                         cxySunJian: "孙坚",
                         cxyHuaXiong: "华雄",
                         cxyMoQu: "魔躯",
-                        cxyPoLu: "破掳",
+                        cxyPoLu: "破虏",
                         cxyMoJun: "魔军",
                         cxyPoLu_info: "锁定技，友方角色杀死一名敌方角色或你死亡时，你令友方角色各摸X张牌（X为此技能发动的次数）。",
                         cxyMoJun_info: "锁定技，当友方角色使用【杀】对目标角色造成伤害后，其进行判定，若结果为黑色，友方角色各摸一张牌。",
