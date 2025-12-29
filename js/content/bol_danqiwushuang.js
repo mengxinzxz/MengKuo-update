@@ -168,25 +168,16 @@ const brawl = {
                             }
                             if (ui.decade_ddzInfo) ui.decade_ddzInfo.innerHTML = '本局票数：' + game.max_beishu * 100;
                             lib.onover.push(bool => {
-                                const num = game.max_beishu * 100;
-                                if (bool == undefined) {
-                                    for (var i of game.filterPlayer2()) i.chat('+0');
-                                }
-                                else {
-                                    if (game.zhu.isAlive()) {
-                                        for (var i of game.filterPlayer2()) {
-                                            if (i == game.zhu) i.chat('+' + num * 2);
-                                            else i.chat('-' + num);
-                                        }
-                                    }
-                                    if (!game.zhu.isAlive()) {
-                                        for (var i of game.filterPlayer2()) {
-                                            if (i == game.zhu) i.chat('-' + num * 2);
-                                            else i.chat('+' + num);
-                                        }
+                                if (bool !== undefined) {
+                                    const num = game.max_beishu * 100;
+                                    for (const i of game.filterPlayer2()) {
+                                        i.chat(((i === (game.me._trueMe || game.me)) === bool) ? '+' : '-' + num);
                                     }
                                     game.bol_say(`战斗${bool ? '胜利' : '失败'}，${bool ? '获得' : '失去'}${num}萌币`);
                                     game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin + num * (bool ? 1 : -1));
+                                }
+                                else {
+                                    game.bol_say('战斗平局，萌币不发生变化');
                                 }
                             });
                             game.players.sortBySeat(game.zhu);
