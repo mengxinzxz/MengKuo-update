@@ -125,7 +125,6 @@ const brawl = {
                                 _status.HDcharacterlist.removeArray(i.characterlist);
                             }
                             const dialog = event.dialog = ui.create.dialog('你的初始武将', [player.characterlist, 'character']);
-                            const time = get.utc();
                             await game.delay(2.5);
                             if (!_status.auto) dialog.content.childNodes[0].textContent = `抢先手阶段`;
                             if (ui.decade_ddzInfo) ui.decade_ddzInfo.innerHTML = '抢先手阶段';
@@ -277,10 +276,10 @@ const brawl = {
                             };
                             if (!ui.cheat) ui.create.cheat();
                             if (!ui.cheat2) ui.create.cheat2();
-                            const result2 = await player.chooseButton(true).set('ai', button => {
+                            const result2 = await player.chooseButton(dialog, true).set('ai', button => {
                                 const { player, getCharacter } = get.event();
                                 return getCharacter(player.characterlist).includes(button.link) ? get.rank(button.link, true) : -1;
-                            }).set('onfree', true).set('dialog', dialog).set('getCharacter', getCharacter).forResult();
+                            }).set('onfree', true).set('getCharacter', getCharacter).forResult();
                             if (ui.cheat) {
                                 ui.cheat.close();
                                 delete ui.cheat;
@@ -289,9 +288,6 @@ const brawl = {
                                 ui.cheat2.close();
                                 delete ui.cheat2;
                             }
-                            const time2 = 1000 - (get.utc() - time);
-                            if (time2 > 0) await game.delay(0, time2);
-                            dialog.close();
                             game.addRecentCharacter(...result2.links);
                             _status.characterlist.removeArray(result2.links);
                             player.init(...result2.links);
