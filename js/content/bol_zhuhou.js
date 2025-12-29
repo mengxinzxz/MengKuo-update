@@ -631,7 +631,7 @@ const brawl = {
                                 return event.player.isFriendOf(player);
                             },
                             logTarget: 'player',
-                            //skillAnimation: true,
+                            skillAnimation: false,
                             //animationColor: 'fire',
                             content() {
                                 player.awakenSkill(event.name);
