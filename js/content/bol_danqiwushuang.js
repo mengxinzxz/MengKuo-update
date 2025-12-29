@@ -171,7 +171,7 @@ const brawl = {
                                 if (bool !== undefined) {
                                     const num = game.max_beishu * 100;
                                     for (const i of game.filterPlayer2()) {
-                                        i.chat(((i === (game.me._trueMe || game.me)) === bool) ? '+' : '-' + num);
+                                        i.chat((((i === (game.me._trueMe || game.me)) === bool) ? '+' : '-') + num);
                                     }
                                     game.bol_say(`战斗${bool ? '胜利' : '失败'}，${bool ? '获得' : '失去'}${num}萌币`);
                                     game.saveConfig('extension_活动萌扩_decade_Coin', lib.config.extension_活动萌扩_decade_Coin + num * (bool ? 1 : -1));
