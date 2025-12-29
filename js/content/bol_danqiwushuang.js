@@ -568,7 +568,6 @@ const brawl = {
                                         };
                                         return getNum(b[2]) - getNum(a[2]);
                                     });
-                                    console.log(canChoice);
                                     let gains = [], sum = 0, add = 0;
                                     for (let choice of canChoice) {
                                         const zhanfa = choice[2], cost = get.ZhanFaCost(zhanfa[2], forced);
