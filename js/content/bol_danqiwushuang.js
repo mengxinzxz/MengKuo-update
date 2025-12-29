@@ -628,7 +628,7 @@ const brawl = {
                                                                     controls.forEach(i => i.show());
                                                                 }
                                                             });
-                                                            dialog = ui.create.dialog(`请选择一个技能失去，否则你不会获得【${lib.translate[`${zhanfa}_ab`] || get.translation(zhanfa).slice(0, 2)}】`, 'hidden');
+                                                            dialog = ui.create.dialog(`选择失去一个技能以获得【${lib.translate[`${zhanfa}_ab`] || get.translation(zhanfa).slice(0, 2)}】`, 'hidden');
                                                             for (const skill of player.storage['zhanfa_skill'][0]) {
                                                                 const item = dialog.add(`<div class='popup text pointerdiv' style='width:calc(100% - 10px);display:inline-block'>${get.skillTranslation(skill, player, false)}</div>`);
                                                                 item.firstChild.link = skill;
