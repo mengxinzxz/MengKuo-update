@@ -544,7 +544,7 @@ const brawl = {
                                 result: {
                                     target(player, target) {
                                         if (player.countCards('hs', card => player.canSaveCard(card, player)) + game.countPlayer(current => {
-                                            return current.hasSkill('cxyBaoYing') && player.isFriend(current);
+                                            return current.hasSkill('cxyBaoYing') && player.isFriendOf(current);
                                         }) + player.hp <= 1) return 0;
                                         return get.damageEffect(target, player);
                                     },
@@ -684,14 +684,14 @@ const brawl = {
                             trigger: { global: 'die' },
                             filter(event, player) {
                                 if (event.player !== player && !player.isAlive()) return false;
-                                return event.source && event.player.isEnemyOf(player) && event.source.isFriend(player);
+                                return event.source && event.player.isEnemyOf(player) && event.source.isFriendOf(player);
                             },
                             forced: true,
                             forceDie: true,
                             async content(event, trigger, player) {
                                 player.storage.cxyPoLu ??= 0;
                                 player.storage.cxyPoLu++;
-                                const targets = game.filterPlayer(target => target.isFriend(player)).sortBySeat();
+                                const targets = game.filterPlayer(target => target.isFriendOf(player)).sortBySeat();
                                 if (targets.length > 0) {
                                     player.line(targets);
                                     await game.asyncDraw(targets, player.storage.cxyPoLu);
