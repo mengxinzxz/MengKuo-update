@@ -11,6 +11,7 @@ game.bol_showNewPackx = function () {
 	let HuoDong_update = [
 		'模式翻新，bugfix',
 		'完善单骑无双模式',
+		'重置部分模式的代码',
 		'To be continued...',
 	];
 	//加载
