@@ -228,7 +228,7 @@ const brawl = {
                                 _status.createControl = ui.cheat2;
                                 ui.cheat = ui.create.control('更换', function () {
                                     if (ui.cheat2 && ui.cheat2.dialog == _status.event.dialog) return;
-                                    const characters = game.me.characterlist = _status.HDcharacterlist.randomGets(game.me.characterlist.length);
+                                    const characters = game.me.characterlist = [..._status.HDcharacterlist, ...game.me.characterlist].randomGets(game.me.characterlist.length);
                                     const buttons = ui.create.div('.buttons');
                                     const node = _status.event.dialog.buttons[0].parentNode;
                                     _status.event.dialog.buttons = ui.create.buttons(characters, 'characterx', buttons);
