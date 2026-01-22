@@ -185,6 +185,10 @@ const brawl = {
                                 i.setSeatNum(index + 1);
                                 if (!i.node.seat) i.setNickname(get.cnNumber(i.seatNum, true) + '号位');
                                 i.identity = (game.zhu == i ? 'fan' : 'zhong');
+                                i.characterlist.addArray(_status.HDcharacterlist.filter(name => {
+                                    return map[name] || !list3.includes(name);
+                                }).randomGets(index + 1));
+                                _status.HDcharacterlist.removeArray(i.characterlist);
                             });
                             game.showIdentity();
                             var getCharacter = function (list) {
