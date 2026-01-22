@@ -289,6 +289,10 @@ const brawl = {
                                 }
                             }
                             delete _status.HDcharacterlist;
+                            if (lib.skill.olfeiyang) {
+                                lib.skill.olfeiyang.skillAnimation = false;
+                                game.zhu.next.addSkill('olfeiyang');
+                            }
                             setTimeout(() => ui.arena.classList.remove('choose-character'), 500);
                         });
                     },
