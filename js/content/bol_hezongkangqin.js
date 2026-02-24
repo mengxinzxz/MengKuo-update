@@ -1150,45 +1150,37 @@ const brawl = {
                                     audio: 'ext:活动萌扩/audio:true',
                                     trigger: {
                                         player: 'useCardToPlayered',
+                                        target: 'useCardToTargeted',
                                     },
-                                    forced: true,
                                     filter(event, player) {
                                         return event.card.name == 'sha';
                                     },
-                                    content() {
-                                        'step 0';
-                                        trigger.target
-                                            .judge(function (card) {
-                                                return get.suit(card) == 'spade' ? -2 : 0;
-                                            })
-                                            .set('judge2', result => (result.bool === false ? true : false));
-                                        'step 1';
-                                        if (result.judge < 0) {
-                                            trigger.getParent().directHit.add(trigger.target);
+                                    forced: true,
+                                    async content(event, trigger, player) {
+                                        if (trigger.name === 'useCardToTargeted') {
+                                            const result = await player.judge(card => get.suit(card) === 'heart' ? 2 : -2).forResult();
+                                            if (result?.bool) {
+                                                trigger.getParent().excluded.add(player);
+                                                game.log(trigger.card, '对', player, '无效');
+                                            }
+                                        }
+                                        else {
+                                            const result = await player.judge(card => get.suit(card) === 'spade' ? 2 : -2).forResult();
+                                            if (result?.bool) {
+                                                trigger.getParent().directHit.add(trigger.target);
+                                                game.log(trigger.target, '不可响应', trigger.card);
+                                            }
                                         }
                                     },
-                                    group: ['qibing_liangju_judge'],
-                                    subSkill: {
-                                        judge: {
-                                            audio: 'qibing_liangju',
-                                            trigger: {
-                                                target: 'useCardToTargeted',
-                                            },
-                                            filter(event, player) {
-                                                if (event.player == player) return false;
-                                                if (event.card.name == 'sha') return true;
-                                                return false;
-                                            },
-                                            forced: true,
-                                            content() {
-                                                'step 0';
-                                                player.judge(function (card) {
-                                                    return get.suit(card) == 'heart' ? 2 : -1;
-                                                });
-                                                'step 1';
-                                                if (result.judge > 0) {
-                                                    trigger.getParent().excluded.add(player);
-                                                }
+                                    ai: {
+                                        directHit_ai: true,
+                                        skillTagFilter(player, tag, arg) {
+                                            if (!arg?.card || !ui.cardPile.firstChild || arg.card.name !== 'sha') return false;
+                                            return get.suit(ui.cardPile.firstChild, player) === 'spade';
+                                        },
+                                        effect: {
+                                            target(card, player, target) {
+                                                if (card.name === 'sha') return 0.75;
                                             },
                                         },
                                     },
@@ -1645,45 +1637,38 @@ const brawl = {
                                     audio: 'ext:活动萌扩/audio:true',
                                     trigger: {
                                         player: 'useCardToPlayered',
+                                        target: 'useCardToTargeted',
                                     },
-                                    forced: true,
                                     filter(event, player) {
                                         return event.card.name == 'sha';
                                     },
-                                    content() {
-                                        'step 0';
-                                        player.judge(function (card) {
-                                            return get.color(card) == 'black' ? 2 : 0;
-                                        });
-                                        'step 1';
-                                        if (result.judge > 0) {
-                                            trigger.getParent().directHit.add(trigger.target);
+                                    forced: true,
+                                    async content(event, trigger, player) {
+                                        if (trigger.name === 'useCardToTargeted') {
+                                            const result = await player.judge(card => get.color(card) === 'red' ? 2 : -2).forResult();
+                                            if (result?.bool) {
+                                                trigger.getParent().excluded.add(player);
+                                                game.log(trigger.card, '对', player, '无效');
+                                            }
+                                        }
+                                        else {
+                                            const result = await player.judge(card => get.color(card) === 'black' ? 2 : -2).forResult();
+                                            if (result?.bool) {
+                                                trigger.getParent().directHit.add(trigger.target);
+                                                game.log(trigger.target, '不可响应', trigger.card);
+                                            }
                                         }
                                     },
-                                    group: ['zhaoji_shanwu_judge'],
-                                    subSkill: {
-                                        judge: {
-                                            audio: 'zhaoji_shanwu',
-                                            trigger: {
-                                                target: 'useCardToTargeted',
+                                    ai: {
+                                        directHit_ai: true,
+                                        skillTagFilter(player, tag, arg) {
+                                            if (!arg?.card || !ui.cardPile.firstChild || arg.card.name !== 'sha') return false;
+                                            return get.color(ui.cardPile.firstChild, player) === 'red';
+                                        },
+                                        effect: {
+                                            target(card, player, target) {
+                                                if (card.name === 'sha') return 0.5;
                                             },
-                                            filter(event, player) {
-                                                if (event.player == player) return false;
-                                                if (event.card.name == 'sha') return true;
-                                                return false;
-                                            },
-                                            forced: true,
-                                            content() {
-                                                'step 0';
-                                                player.judge(function (card) {
-                                                    return get.color(card) == 'red' ? 2 : 0;
-                                                });
-                                                'step 1';
-                                                if (result.judge > 0) {
-                                                    trigger.getParent().excluded.add(player);
-                                                }
-                                            },
-                                            sub: true,
                                         },
                                     },
                                 },
@@ -1895,7 +1880,7 @@ const brawl = {
                                 qibing_changjian: '长剑',
                                 qibing_changjian_info: '锁定技，你的攻击范围+1，你使用【杀】指定目标后，可额外选择一名目标，或令此杀伤害+1。',
                                 qibing_liangju: '良驹',
-                                qibing_liangju_info: '锁定技，你使用【杀】指定目标后，令目标进行判定，若为黑桃则此杀不可被闪避；当你成为【杀】的目标后，你进行判定，若为红桃则此杀对你无效。',
+                                qibing_liangju_info: '锁定技，你使用【杀】指定目标后，令目标进行判定，若为黑桃则其不可响应此牌；当你成为【杀】的目标后，你进行判定，若为红桃则此牌对你无效。',
                                 bubing_fangzhen: '方阵',
                                 bubing_fangzhen_info: '锁定技，当你成为非秦势力角色使用普通锦囊或【杀】的目标后，若其在你的攻击范围内，你进行判定，若为黑色，则视为你对其使用一张【杀】。',
                                 bubing_changbing: '长兵',
@@ -1929,7 +1914,7 @@ const brawl = {
                                 lvbuwei_zhongfu: '仲父',
                                 lvbuwei_zhongfu_info: '锁定技，你的回合开始时，你随机获得【奸雄】、【仁德】、【制衡】中的一个直到你的下个回合开始。',
                                 zhaoji_shanwu: '善舞',
-                                zhaoji_shanwu_info: '锁定技，你使用【杀】指定目标后，你进行判定，若为黑色则敌方不能打出【闪】；当你成为【杀】的目标后，你进行判定，若为红色此杀无效。',
+                                zhaoji_shanwu_info: '锁定技，你使用【杀】指定目标后，你进行判定，若为黑色则其不能响应此牌；当你成为【杀】的目标后，你进行判定，若为红色则此牌对你无效。',
                                 zhaoji_daqi: '大期',
                                 zhaoji_daqi_info: '锁定技，你每使用或打出一张手牌、造成1点伤害、受到1点伤害，均会得到一个“期”标记。你的回合开始时，若你拥有的“期”标记大于等于10，则弃置所有“期”，体力回复至体力上限，并将手牌补至体力上限。',
                                 zhaoji_xianji: '献姬',
