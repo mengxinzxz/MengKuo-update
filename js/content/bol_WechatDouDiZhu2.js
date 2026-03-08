@@ -162,7 +162,7 @@ const brawl = {
                                 lib.onfree.push(() => {
                                     event.dialogxx = ui.create.characterDialog('heightset');
                                     if (ui.cheat2) {
-                                        ui.cheat2.animate('controlpressdownx', 500);
+                                        ui.cheat2.addTempClass('controlpressdownx', 500);
                                         ui.cheat2.classList.remove('disabled');
                                     }
                                 });

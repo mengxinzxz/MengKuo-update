@@ -309,7 +309,7 @@ const brawl = {
                                 lib.onfree.push(() => {
                                     event.dialogxx = ui.create.characterDialog('heightset');
                                     if (ui.cheat2) {
-                                        ui.cheat2.animate('controlpressdownx', 500);
+                                        ui.cheat2.addTempClass('controlpressdownx', 500);
                                         ui.cheat2.classList.remove('disabled');
                                     }
                                 });
@@ -323,7 +323,7 @@ const brawl = {
                                     const node = _status.event.dialog.buttons[0].parentNode;
                                     _status.event.dialog.buttons = ui.create.buttons(list.randomGets(5), 'characterx', buttons);
                                     _status.event.dialog.content.insertBefore(buttons, node);
-                                    buttons.animate('start');
+                                    buttons.addTempClass('start');
                                     node.remove();
                                     game.uncheck();
                                     game.check();
@@ -340,7 +340,7 @@ const brawl = {
                                         game.uncheck();
                                         game.check();
                                         if (ui.cheat) {
-                                            ui.cheat.animate('controlpressdownx', 500);
+                                            ui.cheat.addTempClass('controlpressdownx', 500);
                                             ui.cheat.classList.remove('disabled');
                                         }
                                     }
@@ -445,7 +445,7 @@ const brawl = {
                                 event.currented = [];
                                 "step 1"
                                 event.currented.push(event.current);
-                                event.current.animate('target');
+                                event.current.addTempClass('target');
                                 event.current.chooseToUse('乱武：使用一张杀或失去1点体力', function (card) {
                                     if (get.name(card) != 'sha') return false;
                                     return lib.filter.cardEnabled.apply(this, arguments)

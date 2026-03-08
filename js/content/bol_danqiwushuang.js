@@ -209,7 +209,7 @@ const brawl = {
                                 const node = dialog.buttons[0].parentNode;
                                 dialog.buttons = ui.create.buttons(player.characterlist, 'characterx', buttons);
                                 dialog.content.insertBefore(buttons, node);
-                                buttons.animate('start');
+                                buttons.addTempClass('start');
                                 node.remove();
                                 game.uncheck();
                                 game.check();
@@ -218,7 +218,7 @@ const brawl = {
                                 lib.onfree.push(() => {
                                     event.dialogxx = ui.create.characterDialog('heightset');
                                     if (ui.cheat2) {
-                                        ui.cheat2.animate('controlpressdownx', 500);
+                                        ui.cheat2.addTempClass('controlpressdownx', 500);
                                         ui.cheat2.classList.remove('disabled');
                                     }
                                 });
@@ -233,7 +233,7 @@ const brawl = {
                                     const node = _status.event.dialog.buttons[0].parentNode;
                                     _status.event.dialog.buttons = ui.create.buttons(characters, 'characterx', buttons);
                                     _status.event.dialog.content.insertBefore(buttons, node);
-                                    buttons.animate('start');
+                                    buttons.addTempClass('start');
                                     node.remove();
                                     game.uncheck();
                                     game.check();
@@ -250,7 +250,7 @@ const brawl = {
                                         game.uncheck();
                                         game.check();
                                         if (ui.cheat) {
-                                            ui.cheat.animate('controlpressdownx', 500);
+                                            ui.cheat.addTempClass('controlpressdownx', 500);
                                             ui.cheat.classList.remove('disabled');
                                         }
                                     }
@@ -517,7 +517,7 @@ const brawl = {
                                                     }), 'vcard', buttons);
                                                     evt.dialog.buttons.forEach(but => but.classList.add(`zf_${lib.zhanfa.getRarity(but.link[2])}`));
                                                     evt.dialog.content.insertBefore(buttons, node);
-                                                    buttons.animate('start');
+                                                    buttons.addTempClass('start');
                                                     node.remove();
                                                     game.uncheck();
                                                     game.check();
@@ -672,7 +672,7 @@ const brawl = {
                                             event.dialog.buttons = ui.create.buttons(list, 'vcard', buttons);
                                             event.dialog.buttons.forEach(but => but.classList.add(`zf_${lib.zhanfa.getRarity(but.link[2])}`));
                                             event.dialog.content.insertBefore(buttons, node);
-                                            buttons.animate('start');
+                                            buttons.addTempClass('start');
                                             node.remove();
                                             game.uncheck();
                                             game.check();

@@ -544,7 +544,7 @@ const brawl = {
                                         return info.doubleGroup.length > 0 || info.group !== game.me.identity;
                                     });
                                     if (ui.cheat2) {
-                                        ui.cheat2.animate('controlpressdownx', 500);
+                                        ui.cheat2.addTempClass('controlpressdownx', 500);
                                         ui.cheat2.classList.remove('disabled');
                                     }
                                 });
@@ -565,7 +565,7 @@ const brawl = {
                                     const node = _status.event.dialog.buttons[0].parentNode;
                                     _status.event.dialog.buttons = ui.create.buttons(list, 'character', buttons);
                                     _status.event.dialog.content.insertBefore(buttons, node);
-                                    buttons.animate('start');
+                                    buttons.addTempClass('start');
                                     node.remove();
                                     game.uncheck();
                                     game.check();
@@ -582,7 +582,7 @@ const brawl = {
                                         game.uncheck();
                                         game.check();
                                         if (ui.cheat) {
-                                            ui.cheat.animate('controlpressdownx', 500);
+                                            ui.cheat.addTempClass('controlpressdownx', 500);
                                             ui.cheat.classList.remove('disabled');
                                         }
                                     }
